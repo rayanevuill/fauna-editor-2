@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fauna Morocco — Éditeur de fiches (prototype)</title>
+<style>
+  :root{--ocre:#b06b2c;--vert:#7f9b4d;--dark:#2b2b2b;--line:#e2ddd4;--bg:#f6f3ee;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--dark);background:var(--bg);}
+  header{background:#fff;border-bottom:1px solid var(--line);padding:.6rem 1rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:5;flex-wrap:wrap;}
+  header h1{font-size:1rem;margin:0;font-weight:700;}
+  header h1 span{color:var(--ocre);}
+  .badge{background:#fdf1e5;color:var(--ocre);font-size:.7rem;padding:.15rem .5rem;border-radius:1rem;font-weight:600;}
+  .langtabs{display:flex;gap:.25rem;margin-left:auto;}
+  .langtabs button{border:1px solid var(--line);background:#fff;padding:.35rem .7rem;border-radius:.4rem;cursor:pointer;font-weight:600;}
+  .langtabs button.active{background:var(--vert);color:#fff;border-color:var(--vert);}
+  .btn{border:none;background:var(--ocre);color:#fff;padding:.45rem .8rem;border-radius:.4rem;cursor:pointer;font-weight:600;font-size:.85rem;}
+  .btn.ghost{background:#fff;color:var(--dark);border:1px solid var(--line);}
+  .btn.sm{padding:.25rem .5rem;font-size:.75rem;}
+  main{display:grid;grid-template-columns:minmax(480px,1.2fr) 1fr;height:calc(100vh - 52px);}
+  .editor{overflow:auto;padding:1rem 1.1rem 4rem;border-right:1px solid var(--line);}
+  .preview{overflow:hidden;background:#fff;display:flex;flex-direction:column;}
+  .preview .pv-head{font-size:.72rem;color:#888;padding:.3rem .8rem;border-bottom:1px solid var(--line);background:#faf8f4;}
+  .preview iframe{border:0;width:100%;height:100%;background:#fff;}
+  .field{margin-bottom:.9rem;}
+  .field label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:#8a8477;margin-bottom:.25rem;font-weight:700;}
+  .field input[type=text],.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:.4rem;padding:.5rem .6rem;font:inherit;background:#fff;}
+  .field textarea{min-height:120px;resize:vertical;line-height:1.5;}
+  .editor textarea{width:100%;min-height:150px;border:1px solid var(--line);border-radius:.5rem;padding:.8rem .9rem;font:inherit;font-size:.95rem;line-height:1.75;resize:vertical;background:#fff;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:.6rem;padding:.8rem;margin-bottom:.8rem;}
+  .card>.card-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;}
+  .card-head input{flex:1;font-weight:700;}
+  .chip{font-size:.68rem;background:#eef2e6;color:var(--vert);padding:.12rem .45rem;border-radius:1rem;font-weight:700;}
+  .block{border:1px dashed var(--line);border-radius:.5rem;padding:.6rem;margin:.5rem 0;background:#fbfaf7;}
+  .block .block-top{display:flex;align-items:center;gap:.4rem;margin-bottom:.4rem;}
+  .block .block-top .chip{background:#fdf1e5;color:var(--ocre);}
+  .imgrow{display:flex;gap:.5rem;align-items:flex-start;margin:.4rem 0;}
+  .imgrow .thumb{width:64px;height:48px;object-fit:cover;border-radius:.3rem;border:1px solid var(--line);background:#eee;flex:none;}
+  .imgrow .imeta{flex:1;}
+  .imgrow .imeta input{margin-bottom:.3rem;}
+  .addbar{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem;}
+  .muted{color:#9a9488;font-size:.78rem;}
+  .del{color:#b33;background:none;border:none;cursor:pointer;font-size:.9rem;padding:.1rem .3rem;}
+  .sectionlist>.card{border-left:4px solid var(--vert);}
+  dialog{border:none;border-radius:.6rem;max-width:820px;width:90%;padding:0;}
+  dialog .dh{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem;border-bottom:1px solid var(--line);}
+  dialog textarea{width:100%;height:60vh;border:0;padding:1rem;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem;}
+  .hint{background:#fdf1e5;border:1px solid #f0dcc3;border-radius:.5rem;padding:.6rem .7rem;font-size:.8rem;margin-bottom:1rem;color:#7a4f22;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Fauna <span>Morocco</span> — Éditeur de fiches</h1>
+  <span class="badge">PROTOTYPE</span>
+  <div class="langtabs" id="langtabs">
+    <button data-l="en">EN</button>
+    <button data-l="fr">FR</button>
+    <button data-l="ar">AR</button>
+  </div>
+  <button class="btn ghost sm" onclick="showHTML()">&lt;/&gt; Voir le HTML généré</button>
+</header>
+<main>
+  <section class="editor" id="editor"></section>
+  <section class="preview">
+    <div class="pv-head">Aperçu en direct — rendu avec ton CSS et tes images réelles</div>
+    <iframe id="preview" title="aperçu"></iframe>
+  </section>
+</main>
+
+<dialog id="htmlDlg">
+  <div class="dh"><strong>HTML généré (avec tes classes exactes)</strong><button class="btn ghost sm" onclick="htmlDlg.close()">Fermer</button></div>
+  <textarea id="htmlOut" readonly></textarea>
+</dialog>
+
+<script>
+/* ---------- Données d'exemple (fiche varan), structurées par langue ---------- */
+const IMG = "images/encyclopedia/sauria/varanidae/varanus-griseus/";
+const state = {
+  lang: "fr",
+  langs: {
+    en: {
+      name:"Desert Monitor", sci:"Varanus griseus", status:"Least Concern", trend:"Decreasing",
+      intro:"As the largest lizard in Morocco, the desert monitor is one of the most impressive reptiles in the country. As an apex predator, it plays a crucial role in maintaining ecological balance.",
+      introImg: IMG+"varanus-griseus-intro.jpg",
+      introMap: IMG+"varanus-griseus-map-intro.jpg",
+      sections:[
+        {title:"Description", blocks:[
+          {type:"text", text:"The Desert monitor (Varanus griseus) is the largest Saharan lizard and belongs to the family Varanidae. Its body can reach more than one meter in total length."},
+          {type:"gallery-16-9", images:[
+            {src:IMG+"varanus-griseus-1.jpg", cap:"Desert monitor in a relaxed posture."},
+            {src:IMG+"varanus-griseus-2.jpg", cap:"Defensive posture, throat inflated."}
+          ]}
+        ]},
+        {title:"Habitat", blocks:[
+          {type:"text", text:"The species occupies desert and semi-desert environments: dunes, regs, rocky plains and sparsely shrub-covered areas."}
+        ]}
+      ]
+    },
+    fr: {
+      name:"Varan du désert", sci:"Varanus griseus", status:"Préoccupation mineure", trend:"En déclin",
+      intro:"Plus grand lézard du Maroc, le Varan du désert est l'un des reptiles les plus impressionnants du pays. En tant que prédateur au sommet de la chaîne alimentaire, il joue un rôle crucial dans l'équilibre écologique.",
+      introImg: IMG+"varanus-griseus-intro.jpg",
+      introMap: IMG+"varanus-griseus-map-intro.jpg",
+      sections:[
+        {title:"Description", blocks:[
+          {type:"text", text:"Le Varan du désert (Varanus griseus) est le plus grand lézard saharien et appartient à la famille des Varanidae. Son corps peut dépasser un mètre de longueur totale{{Bennett1995}}."},
+          {type:"gallery-16-9", images:[
+            {src:IMG+"varanus-griseus-1.jpg", cap:"Varan du désert dans une posture détendue."},
+            {src:IMG+"varanus-griseus-2.jpg", cap:"Posture défensive, gorge gonflée."}
+          ]}
+        ]},
+        {title:"Habitat", blocks:[
+          {type:"text", text:"L'espèce occupe des environnements désertiques et semi-désertiques : dunes, regs, plaines rocheuses et zones faiblement arbustives."}
+        ]},
+        {title:"Histoire naturelle", icon:"fa-leaf", blocks:[], subs:[
+          {title:"Régime alimentaire", icon:"fa-utensils", text:"Prédateur opportuniste, le Varan du désert consomme insectes, petits mammifères, oiseaux, œufs et autres reptiles{{Ibrahim2000}}.\n\nIl chasse activement en journée et peut parcourir de longues distances à la recherche de proies."},
+          {title:"Reproduction", icon:"fa-venus-mars", text:"La ponte compte généralement plusieurs œufs, déposés dans un terrier. L'incubation dépend fortement de la température du sol."}
+        ]}
+      ]
+    },
+    ar: {
+      name:"ورل الصحراء", sci:"Varanus griseus", status:"غير مهدد", trend:"في تراجع",
+      intro:"بوصفه أكبر سحلية في المغرب، يُعدّ ورل الصحراء من أكثر زواحف البلاد إثارةً للإعجاب. وباعتباره مفترسًا على قمة السلسلة الغذائية، يؤدّي دورًا حاسمًا في حفظ التوازن البيئي.",
+      introImg: IMG+"varanus-griseus-intro.jpg",
+      introMap: IMG+"varanus-griseus-map-intro.jpg",
+      sections:[
+        {title:"الوصف", blocks:[
+          {type:"text", text:"ورل الصحراء (Varanus griseus) هو أكبر سحالي الصحراء الكبرى وينتمي إلى فصيلة Varanidae. وقد يتجاوز طول جسمه المتر الواحد."},
+          {type:"gallery-16-9", images:[
+            {src:IMG+"varanus-griseus-1.jpg", cap:"ورل الصحراء في وضعية مسترخية."},
+            {src:IMG+"varanus-griseus-2.jpg", cap:"وضعية دفاعية مع انتفاخ الحلق."}
+          ]}
+        ]},
+        {title:"الموطن", blocks:[
+          {type:"text", text:"يشغل هذا النوع البيئات الصحراوية وشبه الصحراوية: الكثبان والحمادة والسهول الصخرية والمناطق قليلة الغطاء الشجيري."}
+        ]}
+      ]
+    }
+  }
+};
+/* Bibliographie : COMMUNE aux 3 langues (les citations restent en latin) */
+state.refs = [
+  {key:"Bennett1995", text:"Bennett, D. (1995). A little book of monitor lizards."},
+  {key:"Ibrahim2000", text:"Ibrahim, A.A. (2000). A radiotelemetric study of the body temperature of Varanus griseus in Zaranik Protected Area, North Sinai, Egypt. Egyptian Journal of Biology, 2, 57–66."},
+  {key:"CITES2025", text:"CITES (2025). Appendices. https://cites.org/eng/app/appendices.php"}
+];
+function refNum(key){const i=state.refs.findIndex(r=>r.key===key);return i<0?"?":i+1;}
+function genText(t){return esc(t).replace(/\*([^*\n]+)\*/g,'<em>$1</em>').replace(/\{\{([^}]+)\}\}/g,(m,k)=>`<ref>${refNum(k.trim())}</ref>`);}
+function shortRef(r){const t=r.text||"";return t.slice(0,34)+(t.length>34?"…":"");}
+function insertAtCursor(ta,txt){const s=ta.selectionStart,e=ta.selectionEnd;ta.value=ta.value.slice(0,s)+txt+ta.value.slice(e);ta.selectionStart=ta.selectionEnd=s+txt.length;ta.focus();autoGrow(ta);}
+function autoGrow(ta){ta.style.height='auto';ta.style.height=Math.max(ta.scrollHeight+6,150)+'px';}
+
+/* Statut IUCN + tendance : listes déroulantes (le CODE est commun aux 3 langues, seul le libellé change) */
+state.statusCode = "LC"; state.trendCode = "decreasing";
+const IUCN = [
+ {c:"EX",dot:"⚫",en:"Extinct",fr:"Éteint",ar:"منقرض"},
+ {c:"EW",dot:"🟤",en:"Extinct in the Wild",fr:"Éteint à l'état sauvage",ar:"منقرض في البرية"},
+ {c:"CR",dot:"🔴",en:"Critically Endangered",fr:"En danger critique",ar:"مهدد بشكل حرج"},
+ {c:"EN",dot:"🟠",en:"Endangered",fr:"En danger",ar:"مهدد بالانقراض"},
+ {c:"VU",dot:"🟡",en:"Vulnerable",fr:"Vulnérable",ar:"معرّض للخطر"},
+ {c:"NT",dot:"🟢",en:"Near Threatened",fr:"Quasi menacé",ar:"قريب من التهديد"},
+ {c:"LC",dot:"🟢",en:"Least Concern",fr:"Préoccupation mineure",ar:"غير مهدد"},
+ {c:"DD",dot:"⚪",en:"Data Deficient",fr:"Données insuffisantes",ar:"نقص البيانات"},
+ {c:"NE",dot:"⚪",en:"Not Evaluated",fr:"Non évalué",ar:"غير مُقيَّم"}
+];
+const TREND = [
+ {c:"decreasing",ic:"↓",en:"Decreasing",fr:"En déclin",ar:"في تراجع"},
+ {c:"stable",ic:"→",en:"Stable",fr:"Stable",ar:"مستقر"},
+ {c:"increasing",ic:"↑",en:"Increasing",fr:"En augmentation",ar:"في ازدياد"},
+ {c:"unknown",ic:"?",en:"Unknown",fr:"Inconnu",ar:"غير معروف"}
+];
+function iucnOf(c){return IUCN.find(x=>x.c===c)||IUCN[6];}
+function trendOf(c){return TREND.find(x=>x.c===c)||TREND[0];}
+// Le HTML ne contient QUE le texte (comme les vraies fiches) ; les pastilles
+// colorées sont posées par species-account.js + species-account.css du site.
+function statusLabel(l){const s=iucnOf(state.statusCode);return s[l]||s.en;}
+function trendLabel(l){const t=trendOf(state.trendCode);return t[l]||t.en;}
+const STATUS_LBL={en:"Conservation status:",fr:"Statut de conservation :",ar:"حالة الحفظ:"};
+const TREND_LBL={en:"Population trend:",fr:"Tendance de population :",ar:"اتجاه التعداد:"};
+
+const BLOCK_TYPES = {
+  "text":"Paragraphe", "gallery-16-9":"Galerie 16:9", "gallery-2-3":"Galerie 2:3",
+  "gallery-5-4":"Diaporama 5:4", "gallery-full-width":"Image pleine largeur", "distribution-map":"Carte de répartition"
+};
+/* Icônes d'accordéon et de sous-section (Font Awesome), comme sur tes fiches */
+const SECTION_ICONS=[["fa-info-circle","Description"],["fa-globe-africa","Répartition"],["fa-tree","Habitat"],["fa-leaf","Histoire naturelle"],["fa-shield-alt","Conservation"],["fa-book","Références"],["fa-dna","ADN / génétique"],["fa-ruler-combined","Morphologie"],["fa-utensils","Alimentation"],["fa-venus-mars","Reproduction"],["fa-exclamation-triangle","Menaces"],["fa-paw","Comportement"]];
+const SUB_ICONS=[
+  ["fa-cogs","Écologie / comportement"],
+  ["fa-utensils","Régime alimentaire"],
+  ["fa-venus-mars","Reproduction"],
+  ["fa-exclamation-triangle","Toxicité / menaces"],
+  ["fa-paw","Comportement"],
+  ["fa-ruler","Morphologie / taille"],
+  ["fa-clock","Rythme d'activité"],
+  ["fa-temperature-high","Thermorégulation"],
+  ["fa-syringe","Venin"],
+  ["fa-skull-crossbones","Dangerosité"],
+  ["fa-shield-alt","Défense"],
+  ["fa-hourglass-half","Longévité"],
+  ["fa-water","Milieu aquatique"],
+  ["fa-mountain","Altitude / relief"],
+  ["fa-egg","Ponte / œufs"],
+  ["fa-users","Interactions sociales"],
+  ["fa-user","Interaction humaine"],
+  ["fa-globe-africa","Répartition"],
+  ["fa-leaf","Autre"]
+];
+function guessIcon(title){const t=(title||"").toLowerCase();
+  if(/descript|وصف/.test(t))return"fa-info-circle";
+  if(/distrib|répart|repart|انتشار/.test(t))return"fa-globe-africa";
+  if(/habitat|موطن/.test(t))return"fa-tree";
+  if(/natural|naturelle|طبيعي/.test(t))return"fa-leaf";
+  if(/conserv|حفظ/.test(t))return"fa-shield-alt";
+  if(/référ|refer|مراجع/.test(t))return"fa-book";
+  return"fa-leaf";}
+function countImages(s){let n=0;const add=b=>{if(b&&b.images)n+=b.images.filter(im=>im.src).length;};(s.blocks||[]).forEach(add);(s.subs||[]).forEach(su=>(su.blocks||[]).forEach(add));(s.subspecies||[]).forEach(add);return n;}
+function genSub(su){const icon=su.icon||"fa-cogs";
+  const body=(su.text||"").split(/\n{2,}/).filter(p=>p.trim()).map(p=>`                                    <p><span>${genText(p.trim())}</span></p>\n`).join("");
+  return `                            <div class="sub-section">
+                                <button class="sub-section-header"><i class="fas fa-chevron-down sub-section-arrow"></i><div class="sub-section-header-content"><i class="fas ${icon}"></i><span>${esc(su.title)}</span></div><i class="fas fa-chevron-down sub-section-arrow"></i></button>
+                                <div class="sub-section-content"><div class="sub-section-body">
+${body}                                </div></div>
+                            </div>\n`;}
+const RTL = l => l==="ar";
+const d = () => state.langs[state.lang];
+
+/* ---------- Éditeur ---------- */
+function el(html){const t=document.createElement("template");t.innerHTML=html.trim();return t.content.firstChild;}
+function renderEditor(){
+  const c = d(); const ed = document.getElementById("editor");
+  ed.innerHTML = `
+   <div class="hint">Tu édites la version <b>${state.lang.toUpperCase()}</b>. Change de langue en haut à droite. Tout ce que tu tapes se reflète à droite, rendu avec le vrai CSS du site. (Prototype : rien n'est encore enregistré.)</div>
+   <div class="row2">
+     <div class="field"><label>Nom commun</label><input type="text" data-k="name" value="${esc(c.name)}"></div>
+     <div class="field"><label>Nom scientifique</label><input type="text" data-k="sci" value="${esc(c.sci)}"></div>
+   </div>
+   <div class="row2">
+     <div class="field"><label>Statut de conservation</label>
+       <select data-status>${IUCN.map(s=>`<option value="${s.c}" ${s.c===state.statusCode?"selected":""}>${s.dot} ${s[state.lang]||s.en} (${s.c})</option>`).join("")}</select></div>
+     <div class="field"><label>Tendance de population</label>
+       <select data-trend>${TREND.map(t=>`<option value="${t.c}" ${t.c===state.trendCode?"selected":""}>${t.ic} ${t[state.lang]||t.en}</option>`).join("")}</select></div>
+   </div>
+   <div class="field"><label>Introduction</label><textarea data-k="intro">${esc(c.intro)}</textarea></div>
+   <div class="field"><label>Image d'introduction (nom de fichier)</label>
+      <div class="imgrow"><img class="thumb" src="" data-thumb><div class="imeta">
+        <input type="text" data-k="introImg" value="${esc(c.introImg)}">
+        <input type="file" accept="image/*" data-filefor="introImg"></div></div></div>
+   <div class="field"><label>Carte de répartition <span class="muted" style="font-weight:400">— si renseignée, active le bouton bascule photo ⇄ carte dans l'intro</span></label>
+      <div class="imgrow"><img class="thumb" src="" data-thumb><div class="imeta">
+        <input type="text" data-k="introMap" value="${esc(c.introMap||'')}">
+        <input type="file" accept="image/*" data-filefor="introMap"></div></div></div>
+   <h3 style="margin:1.2rem 0 .4rem">Sections</h3>
+   <div class="sectionlist" id="sectionlist"></div>
+   <div class="addbar"><button class="btn sm" onclick="addSection()">+ Ajouter une section</button></div>
+   <h3 style="margin:1.4rem 0 .4rem">Bibliographie <span class="muted" style="font-weight:400">— commune aux 3 langues, numérotée automatiquement</span></h3>
+   <div id="reflist"></div>
+   <div class="addbar"><button class="btn sm" onclick="addRef()">+ Ajouter une source</button></div>
+  `;
+  const list = ed.querySelector("#sectionlist");
+  c.sections.forEach((s,si)=>list.appendChild(renderSection(s,si)));
+  renderRefsEditor();
+  bindTopFields(); refreshThumbs(); renderPreview();
+  document.querySelectorAll('#editor textarea').forEach(autoGrow);
+  const ssel=document.querySelector('[data-status]'); if(ssel)ssel.addEventListener('change',e=>{state.statusCode=e.target.value;renderPreview();});
+  const tsel=document.querySelector('[data-trend]'); if(tsel)tsel.addEventListener('change',e=>{state.trendCode=e.target.value;renderPreview();});
+}
+function renderSection(s,si){
+  const card = el(`<div class="card"></div>`);
+  card.innerHTML = `
+    <div class="card-head"><span class="chip">Section</span>
+      <input list="fa-icons" data-secicon title="Icône : choisis ou tape un nom Font Awesome (ex: fa-dragon) — voir fontawesome.com/search (Free)" style="max-width:210px" value="${esc(s.icon||guessIcon(s.title))}" placeholder="fa-…">
+      <input type="text" data-sectitle value="${esc(s.title)}" placeholder="Titre de la section">
+      <button class="del" title="Supprimer la section" onclick="delSection(${si})">🗑</button></div>
+    <div class="blocks" id="blocks-${si}"></div>
+    <div class="addbar">
+      <span class="muted">Ajouter un bloc :</span>
+      ${Object.entries(BLOCK_TYPES).map(([t,lbl])=>`<button class="btn ghost sm" onclick="addBlock(${si},'${t}')">+ ${lbl}</button>`).join("")}
+    </div>
+    <div class="subs" id="subs-${si}"></div>
+    <div class="addbar"><button class="btn ghost sm" onclick="addSub(${si})">+ Ajouter une sous-section (accordéon)</button></div>
+    <div class="subspecies" id="ssp-${si}"></div>
+    <div class="addbar"><button class="btn ghost sm" onclick="addSubspecies(${si})">+ Ajouter une sous-espèce (accordéon)</button></div>`;
+  const bwrap = card.querySelector(`#blocks-${si}`);
+  s.blocks.forEach((b,bi)=>bwrap.appendChild(renderBlock(b,si,bi)));
+  const subwrap = card.querySelector(`#subs-${si}`);
+  (s.subs||[]).forEach((su,sui)=>subwrap.appendChild(renderSub(su,si,sui)));
+  const sswrap = card.querySelector(`#ssp-${si}`);
+  (s.subspecies||[]).forEach((su,ki)=>sswrap.appendChild(renderSubspecies(su,si,ki)));
+  card.querySelector('[data-sectitle]').addEventListener("input",e=>{d().sections[si].title=e.target.value;renderPreview();});
+  card.querySelector('[data-secicon]').addEventListener("input",e=>{d().sections[si].icon=e.target.value.trim();renderPreview();});
+  return card;
+}
+function renderSubspecies(su,si,ki){
+  su.images=su.images||[];
+  const w = el(`<div class="block" style="border-left:3px solid #7a5cff"></div>`);
+  w.innerHTML=`<div class="block-top"><span class="chip">Sous-espèce</span>
+    <input type="text" data-ssptitle value="${esc(su.title||"")}" placeholder="Nom (ex: *Salamandra algira atlantica*)" style="flex:1">
+    <button class="del" onclick="delSubspecies(${si},${ki})">🗑</button></div>
+    <div class="field" style="margin:.3rem 0"><label>Légende globale du diaporama 5:4 (partagée)</label>
+      <input type="text" data-sspgcap value="${esc(su.globalCap||"")}" placeholder="Légende commune (supporte *italique*)"></div>
+    <div class="muted" style="margin:.2rem 0">Images du diaporama 5:4 (2 par slide) :</div>
+    <div class="sspimgs"></div>
+    <div class="addbar"><button class="btn ghost sm" onclick="addSubspImage(${si},${ki})">+ Ajouter une image</button></div>
+    <div class="field" style="margin-top:.3rem"><label>Texte descriptif (paragraphes séparés par une ligne vide)</label>
+      <textarea data-ssptext placeholder="Description de la sous-espèce…">${esc(su.text||"")}</textarea></div>`;
+  const iw=w.querySelector(".sspimgs");
+  su.images.forEach((im,ii)=>iw.appendChild(renderSubspImage(im,si,ki,ii)));
+  w.querySelector("[data-ssptitle]").addEventListener("input",e=>{d().sections[si].subspecies[ki].title=e.target.value;renderPreview();});
+  w.querySelector("[data-sspgcap]").addEventListener("input",e=>{d().sections[si].subspecies[ki].globalCap=e.target.value;renderPreview();});
+  w.querySelector("[data-ssptext]").addEventListener("input",e=>{d().sections[si].subspecies[ki].text=e.target.value;renderPreview();});
+  return w;
+}
+function renderSubspImage(im,si,ki,ii){
+  const r=el(`<div class="imgrow"></div>`);
+  r.innerHTML=`<img class="thumb" data-thumb src="">
+    <div class="imeta">
+      <input type="text" placeholder="nom de fichier de l'image" data-imgsrc value="${esc(im.src||"")}">
+      <input type="text" placeholder="légende (utilisée dans le zoom / lightbox)" data-imgcap value="${esc(im.cap||"")}">
+      <input type="text" placeholder="texte alternatif (SEO / accessibilité)" data-imgalt value="${esc(im.alt||"")}">
+      <input type="file" accept="image/*" data-imgfile>
+    </div><button class="del" onclick="delSubspImage(${si},${ki},${ii})">🗑</button>`;
+  r.querySelector("[data-imgsrc]").addEventListener("input",e=>{d().sections[si].subspecies[ki].images[ii].src=e.target.value;refreshThumbs();renderPreview();});
+  r.querySelector("[data-imgcap]").addEventListener("input",e=>{d().sections[si].subspecies[ki].images[ii].cap=e.target.value;renderPreview();});
+  r.querySelector("[data-imgalt]").addEventListener("input",e=>{d().sections[si].subspecies[ki].images[ii].alt=e.target.value;renderPreview();});
+  r.querySelector("[data-imgfile]").addEventListener("change",e=>fileToDataURL(e,url=>{d().sections[si].subspecies[ki].images[ii].src=url;refreshThumbs();renderPreview();}));
+  return r;
+}
+function renderSub(su,si,sui){
+  const w = el(`<div class="block" style="border-left:3px solid var(--accent,#c98a3a)"></div>`);
+  w.innerHTML=`<div class="block-top"><span class="chip">Sous-section</span>
+    <input list="fa-icons" data-subicon title="Icône : choisis ou tape un nom Font Awesome (ex: fa-frog)" style="max-width:190px" value="${esc(su.icon||"fa-cogs")}" placeholder="fa-…">
+    <input type="text" data-subtitle value="${esc(su.title||"")}" placeholder="Titre de la sous-section" style="flex:1">
+    <select class="citesel" title="Insérer un appel de source"><option value="">＋ citer…</option>${state.refs.map((r,i)=>`<option value="${esc(r.key)}">${i+1}. ${esc(shortRef(r))}</option>`).join("")}</select>
+    <button class="del" onclick="delSub(${si},${sui})">🗑</button></div>
+    <textarea data-subtext placeholder="Texte (laisse une ligne vide entre deux paragraphes)">${esc(su.text||"")}</textarea>`;
+  const ta=w.querySelector("[data-subtext]");
+  ta.addEventListener("input",e=>{d().sections[si].subs[sui].text=e.target.value;renderPreview();});
+  w.querySelector("[data-subtitle]").addEventListener("input",e=>{d().sections[si].subs[sui].title=e.target.value;renderPreview();});
+  w.querySelector("[data-subicon]").addEventListener("input",e=>{d().sections[si].subs[sui].icon=e.target.value.trim();renderPreview();});
+  w.querySelector(".citesel").addEventListener("change",e=>{
+    if(e.target.value){ insertAtCursor(ta,`{{${e.target.value}}}`); d().sections[si].subs[sui].text=ta.value; e.target.value=""; renderPreview(); }
+  });
+  return w;
+}
+function renderBlock(b,si,bi){
+  const blk = el(`<div class="block"></div>`);
+  if(b.type==="text"){
+    blk.innerHTML=`<div class="block-top"><span class="chip">${BLOCK_TYPES[b.type]}</span>
+      <select class="citesel" title="Insérer un appel de source"><option value="">＋ citer une source…</option>${state.refs.map((r,i)=>`<option value="${esc(r.key)}">${i+1}. ${esc(shortRef(r))}</option>`).join("")}</select>
+      <button class="del" onclick="delBlock(${si},${bi})">🗑</button></div>
+      <textarea data-txt>${esc(b.text||"")}</textarea>`;
+    const ta=blk.querySelector("[data-txt]");
+    ta.addEventListener("input",e=>{d().sections[si].blocks[bi].text=e.target.value;renderPreview();});
+    blk.querySelector(".citesel").addEventListener("change",e=>{
+      if(e.target.value){ insertAtCursor(ta,`{{${e.target.value}}}`); d().sections[si].blocks[bi].text=ta.value; e.target.value=""; renderPreview(); }
+    });
+  } else {
+    b.images=b.images||[];
+    const gcField=b.type==="gallery-5-4"?`<div class="field" style="margin:.4rem 0"><label>Légende globale du diaporama (partagée sous les images)</label><input type="text" data-globalcap value="${esc(b.globalCap||"")}" placeholder="Légende commune (supporte *italique*)"></div>`:"";
+    blk.innerHTML=`<div class="block-top"><span class="chip">${BLOCK_TYPES[b.type]}</span><button class="del" onclick="delBlock(${si},${bi})">🗑</button></div>
+      ${gcField}
+      <div class="imgs"></div>
+      <div class="addbar"><button class="btn ghost sm" onclick="addImage(${si},${bi})">+ Ajouter une image</button></div>`;
+    const gcInput=blk.querySelector("[data-globalcap]");
+    if(gcInput) gcInput.addEventListener("input",e=>{d().sections[si].blocks[bi].globalCap=e.target.value;renderPreview();});
+    const iw=blk.querySelector(".imgs");
+    b.images.forEach((im,ii)=>iw.appendChild(renderImage(im,si,bi,ii)));
+  }
+  return blk;
+}
+function renderImage(im,si,bi,ii){
+  const r=el(`<div class="imgrow"></div>`);
+  r.innerHTML=`<img class="thumb" data-thumb src="">
+    <div class="imeta">
+      <input type="text" placeholder="nom de fichier de l'image" data-imgsrc value="${esc(im.src||"")}">
+      <input type="text" placeholder="légende" data-imgcap value="${esc(im.cap||"")}">
+      <input type="text" placeholder="texte alternatif (SEO / accessibilité)" data-imgalt value="${esc(im.alt||"")}">
+      <input type="file" accept="image/*" data-imgfile>
+    </div><button class="del" onclick="delImage(${si},${bi},${ii})">🗑</button>`;
+  r.querySelector("[data-imgalt]").addEventListener("input",e=>{d().sections[si].blocks[bi].images[ii].alt=e.target.value;renderPreview();});
+  r.querySelector("[data-imgsrc]").addEventListener("input",e=>{d().sections[si].blocks[bi].images[ii].src=e.target.value;refreshThumbs();renderPreview();});
+  r.querySelector("[data-imgcap]").addEventListener("input",e=>{d().sections[si].blocks[bi].images[ii].cap=e.target.value;renderPreview();});
+  r.querySelector("[data-imgfile]").addEventListener("change",e=>fileToDataURL(e,url=>{d().sections[si].blocks[bi].images[ii].src=url;refreshThumbs();renderPreview();}));
+  return r;
+}
+function bindTopFields(){
+  document.querySelectorAll('#editor [data-k]').forEach(inp=>{
+    if(inp.closest('.card')) return; // les champs de section sont gérés à part
+    inp.addEventListener("input",e=>{d()[e.target.dataset.k]=e.target.value; if(e.target.dataset.k==="introImg")refreshThumbs(); renderPreview();});
+  });
+  document.querySelectorAll('#editor [data-filefor]').forEach(f=>f.addEventListener("change",e=>fileToDataURL(e,url=>{d()[f.dataset.filefor]=url;refreshThumbs();renderPreview();})));
+}
+function fileToDataURL(e,cb){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>cb(r.result);r.readAsDataURL(f);}
+function refreshThumbs(){
+  document.querySelectorAll('.imgrow').forEach(row=>{
+    const th=row.querySelector('[data-thumb]'); if(!th)return;
+    const inp=row.querySelector('[data-imgsrc],[data-k="introImg"],[data-k="introMap"]');
+    if(inp) th.src=resolve(inp.value);
+  });
+}
+// Sur le site live -> chemins relatifs ; ailleurs (Render/local) -> on charge le CSS/images du site en ligne
+const SITE_ROOT = /(^|\.)fauna-morocco\.org$/.test(location.hostname) ? new URL('../', location.href).href : "https://fauna-morocco.org/";
+function resolve(s){ if(!s) return ""; return /^(https?:|data:)/.test(s)? s : SITE_ROOT+s; }
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+/* ---------- Actions structure ---------- */
+function addSection(){d().sections.push({title:"Nouvelle section",blocks:[{type:"text",text:""}]});renderEditor();}
+function delSection(si){d().sections.splice(si,1);renderEditor();}
+function addSub(si){(d().sections[si].subs=d().sections[si].subs||[]).push({title:"Nouvelle sous-section",icon:"fa-cogs",text:""});renderEditor();}
+function delSub(si,sui){d().sections[si].subs.splice(sui,1);renderEditor();}
+function addSubspecies(si){(d().sections[si].subspecies=d().sections[si].subspecies||[]).push({title:"*Nouvelle sous-espèce*",globalCap:"",images:[],text:""});renderEditor();}
+function delSubspecies(si,ki){d().sections[si].subspecies.splice(ki,1);renderEditor();}
+function addSubspImage(si,ki){(d().sections[si].subspecies[ki].images=d().sections[si].subspecies[ki].images||[]).push({src:"",cap:"",alt:""});renderEditor();}
+function delSubspImage(si,ki,ii){d().sections[si].subspecies[ki].images.splice(ii,1);renderEditor();}
+function addBlock(si,type){const b={type};if(type!=="text")b.images=[{src:"",cap:""}];else b.text="";d().sections[si].blocks.push(b);renderEditor();}
+function delBlock(si,bi){d().sections[si].blocks.splice(bi,1);renderEditor();}
+function addImage(si,bi){d().sections[si].blocks[bi].images.push({src:"",cap:""});renderEditor();}
+function delImage(si,bi,ii){d().sections[si].blocks[bi].images.splice(ii,1);renderEditor();}
+
+/* ---------- Bibliographie ---------- */
+function renderRefsEditor(){
+  const w=document.getElementById("reflist"); if(!w) return; w.innerHTML="";
+  state.refs.forEach((r,i)=>{
+    const row=el(`<div class="card"></div>`);
+    row.innerHTML=`<div class="card-head"><span class="chip">${i+1}</span>
+      <input type="text" data-rk value="${esc(r.key)}" placeholder="clé (ex: Bennett1995)" style="max-width:160px;flex:none">
+      <input type="text" data-rt value="${esc(r.text)}" placeholder="Référence complète : auteur, année, titre, revue, lien">
+      <button class="btn ghost sm" title="monter" onclick="moveRef(${i},-1)">▲</button>
+      <button class="btn ghost sm" title="descendre" onclick="moveRef(${i},1)">▼</button>
+      <button class="del" onclick="delRef(${i})">🗑</button></div>`;
+    row.querySelector("[data-rk]").addEventListener("input",e=>{state.refs[i].key=e.target.value;renderPreview();});
+    row.querySelector("[data-rt]").addEventListener("input",e=>{state.refs[i].text=e.target.value;renderPreview();});
+    w.appendChild(row);
+  });
+}
+function addRef(){state.refs.push({key:"Source"+(state.refs.length+1),text:""});renderEditor();}
+function delRef(i){state.refs.splice(i,1);renderEditor();}
+function moveRef(i,dir){const j=i+dir;if(j<0||j>=state.refs.length)return;[state.refs[i],state.refs[j]]=[state.refs[j],state.refs[i]];renderEditor();}
+
+/* ---------- Génération du HTML (tes classes exactes) ---------- */
+function galleryClass(t){return t;} // 'gallery-16-9' etc. = tes classes
+// Slug d'un titre (sert de groupe data-lightbox, commun aux 3 langues via le titre EN)
+function slugify(s){return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");}
+// Texte brut d'une légende (retire *italique* et {{citation}}) pour les attributs data-caption
+function plainCap(s){return esc((s||"").replace(/<[^>]+>/g,"").replace(/\*([^*\n]+)\*/g,"$1").replace(/\{\{[^}]+\}\}/g,"").trim());}
+// Légendes EN + FR de la même image (par index) pour data-caption / data-caption-fr
+function capEnFr(si,bi,ii){
+  const pick=lng=>{const b=((((state.langs[lng]||{}).sections||[])[si]||{}).blocks||[])[bi];return b&&b.images&&b.images[ii]?b.images[ii].cap:"";};
+  return {en:pick("en"), fr:pick("fr")};
+}
+// Légendes EN/FR d'une image de sous-espèce (par index) pour data-caption / -fr
+function capSubEnFr(si,ki,ii){
+  const pick=lng=>{const su=((((state.langs[lng]||{}).sections||[])[si]||{}).subspecies||[])[ki];return su&&su.images&&su.images[ii]?su.images[ii].cap:"";};
+  return {en:pick("en"), fr:pick("fr")};
+}
+// Diaporama 5:4 (2 images/slide, flèches, pastilles, légende globale) — ton markup exact.
+// capOf(ii) => {en, fr} pour data-caption / data-caption-fr de chaque image.
+function slideshow54(images, group, globalCap, capOf){
+  const nSlides=Math.max(1,Math.ceil((images.length||0)/2));
+  let slides="";
+  for(let s=0;s<nSlides;s++){
+    let items="";
+    for(let j=0;j<2;j++){
+      const ii=s*2+j, im=images[ii]; if(!im)continue;
+      const c=capOf?capOf(ii):{en:im.cap,fr:im.cap};
+      items+=`                                            <div class="gallery-5-4-item">
+                                                <img src="${esc(im.src)}" class="gallery-5-4-image" data-lightbox="${group}" data-caption="${plainCap(c.en)}" data-caption-fr="${plainCap(c.fr)}" alt="${esc(im.alt||'')}" loading="lazy">
+                                            </div>\n`;
+    }
+    slides+=`                                        <div class="gallery-5-4-slide"><div class="gallery-5-4-grid">\n${items}                                        </div></div>\n`;
+  }
+  const dots=Array.from({length:nSlides},(_,i)=>`<span class="gallery-5-4-dot${i===0?" active":""}"></span>`).join("");
+  const gc=globalCap?`                                <div class="gallery-5-4-global-caption">${genText(globalCap)}</div>\n`:"";
+  return `                            <div class="gallery-5-4-slideshow no-borders global-caption" data-slides="${nSlides}">
+                                <div class="gallery-5-4-container">
+                                    <div class="gallery-5-4-slides">
+${slides}                                    </div>
+                                    <button class="gallery-5-4-nav gallery-5-4-prev"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="gallery-5-4-nav gallery-5-4-next"><i class="fas fa-chevron-right"></i></button>
+                                    <div class="gallery-5-4-dots">${dots}</div>
+                                </div>
+${gc}                            </div>\n`;
+}
+// Un accordéon de sous-espèce = titre + (diaporama 5:4 optionnel) + paragraphes. Ton markup exact.
+function genSubspecies(su,si,ki,first){
+  const enTitle=((((state.langs.en||{}).sections||[])[si]||{}).subspecies||[])[ki];
+  const group=(enTitle&&slugify(enTitle.title))||("subspecies-"+(ki+1));
+  const act=first?" active":"";
+  const show=(su.images&&su.images.length)?slideshow54(su.images, group, su.globalCap, ii=>capSubEnFr(si,ki,ii)):"";
+  const paras=(su.text||"").split(/\n{2,}/).filter(p=>p.trim()).map(p=>`                                    <p>${genText(p.trim())}</p>\n`).join("");
+  return `                        <div class="subspecies-accordion">
+                            <button class="subspecies-header${act}"><i class="fas fa-chevron-down subspecies-arrow"></i><span>${genText(su.title||"")}</span></button>
+                            <div class="subspecies-content${act}"><div class="subspecies-body">
+${show}${paras}                            </div></div>
+                        </div>\n`;
+}
+function genBlock(b,si,bi,lang){
+  if(b.type==="text") return `                            <p><span>${genText(b.text)}</span></p>\n`;
+  const cls=b.type, imgCls=cls+"-image", itemCls=cls+"-item", gridCls=cls+"-grid", capCls=cls+"-caption";
+  // Groupe lightbox = slug du titre EN de la section (identique EN/FR/AR)
+  const group=slugify((((state.langs.en||{}).sections||[])[si]||{}).title)||("section-"+(si+1));
+  const lb=ii=>{const c=capEnFr(si,bi,ii);return `data-lightbox="${group}" data-caption="${plainCap(c.en)}" data-caption-fr="${plainCap(c.fr)}"`;};
+  if(cls==="distribution-map"){
+    const im=(b.images&&b.images[0])||{};
+    return `                            <div class="gallery-distribution-map"><div class="distribution-map-container">
+                                <img src="${esc(im.src)}" class="distribution-map-image" ${lb(0)} alt="${esc(im.alt||'')}" loading="lazy">
+                                <div class="distribution-map-caption"><strong><span>${genText(im.cap||"")}</span></strong></div>
+                            </div></div>\n`;
+  }
+  if(cls==="gallery-full-width"){
+    const im=(b.images&&b.images[0])||{};
+    return `                            <div class="gallery-full-width"><div class="gallery-full-width-item">
+                                <img src="${esc(im.src)}" class="gallery-full-width-image" ${lb(0)} alt="${esc(im.alt||'')}" loading="lazy">
+                                <div class="gallery-full-width-caption"><span>${genText(im.cap||"")}</span></div>
+                            </div></div>\n`;
+  }
+  if(cls==="gallery-5-4"){
+    return slideshow54(b.images||[], group+"-"+(bi+1), b.globalCap, ii=>capEnFr(si,bi,ii));
+  }
+  const items=(b.images||[]).map((im,ii)=>`                                    <div class="${itemCls}">
+                                        <img src="${esc(im.src)}" class="${imgCls}" ${lb(ii)} alt="${esc(im.alt||'')}" loading="lazy">
+                                        <div class="${capCls}"><span>${genText(im.cap||"")}</span></div>
+                                    </div>`).join("\n");
+  return `                            <div class="${cls}"><div class="${gridCls}">\n${items}\n                            </div></div>\n`;
+}
+function genBody(lang){
+  const c=state.langs[lang];
+  const acc = c.sections.map((s,idx)=>{
+    const icon=s.icon||guessIcon(s.title);
+    const cnt=countImages(s);
+    const badge=cnt>0?`<div class="images-badge"><i class="fas fa-image"></i><span>${cnt}</span></div>`:"";
+    const body=(s.blocks||[]).map((b,bi)=>genBlock(b,idx,bi,lang)).join("")+(s.subs||[]).map(genSub).join("")+(s.subspecies||[]).map((su,ki)=>genSubspecies(su,idx,ki,ki===0)).join("");
+    const act=idx===0?" active":"";
+    return `                <div class="accordion-item">
+                    <button class="accordion-header${act}"><div class="accordion-header-content"><i class="fas ${icon}"></i><span>${esc(s.title)}</span></div>${badge}<i class="fas fa-chevron-down accordion-arrow"></i></button>
+                    <div class="accordion-content${act}"><div class="accordion-body">
+${body}                    </div></div>
+                </div>`;}).join("\n");
+  const refsAcc = state.refs.length ? `                <div class="accordion-item">
+                    <button class="accordion-header"><div class="accordion-header-content"><i class="fas fa-book"></i><span>${lang==='ar'?'المراجع':(lang==='fr'?'Références':'References')}</span></div><i class="fas fa-chevron-down accordion-arrow"></i></button>
+                    <div class="accordion-content"><div class="accordion-body"><div class="references-section">
+                        <ol class="references-list">${state.refs.map((r,i)=>`<li id="ref-${i+1}">${esc(r.text)}</li>`).join("")}</ol>
+                    </div></div></div>
+                </div>` : "";
+  return `    <section class="species-section"><div class="container">
+            <div class="species-title-header"><div class="species-names">
+                <h1>${esc(c.name)}</h1><p class="scientific-name"><em>${esc(c.sci)}</em></p>
+            </div></div>
+            <div class="conservation-status-band">
+                <div class="status-item"><span class="status-label">${STATUS_LBL[lang]||STATUS_LBL.en}</span><span class="status-value"><span>${esc(statusLabel(lang))}</span></span></div>
+                <div class="status-item"><span class="status-label">${TREND_LBL[lang]||TREND_LBL.en}</span><span class="status-value"><span>${esc(trendLabel(lang))}</span></span></div>
+            </div>
+            <div class="intro-split"><div class="intro-text"><p><span>${genText(c.intro)}</span></p></div>
+                <div class="intro-image-container"><div class="intro-image-wrapper">
+                    ${c.introMap?'<button class="image-toggle-btn"><i class="fas fa-globe-africa"></i></button>':''}
+                    <img src="${esc(c.introImg)}" class="intro-image" id="species-image" alt="${esc(c.name)}" loading="lazy">
+                    ${c.introMap?`<img src="${esc(c.introMap)}" class="intro-image hidden" id="map-image" alt="" loading="lazy">`:''}
+                </div></div>
+            </div>
+            <div class="accordion-container">
+${acc}
+${refsAcc}
+            </div>
+    </div></section>`;
+}
+/* ---------- Aperçu ---------- */
+function renderPreview(){
+  const lang=state.lang, rtl=RTL(lang);
+  const font = rtl ? `<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"><style>body{font-family:'Cairo',sans-serif;} [dir=rtl] p,[dir=rtl] h1,[dir=rtl] .status-label,[dir=rtl] [class*="-caption"]{text-align:right;}</style>` : "";
+  const doc=`<!DOCTYPE html><html lang="${lang}" ${rtl?'dir="rtl"':''}><head><meta charset="UTF-8">
+    <base href="${SITE_ROOT}">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="encyclopedia/species-account.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    ${font}
+    <style>body{padding:0;}</style>
+    </head><body>${genBody(lang)}
+    <script src="encyclopedia/references.js"><\/script>
+    <script src="encyclopedia/species-account.js"><\/script>
+    </body></html>`;
+  document.getElementById("preview").srcdoc=doc;
+}
+function showHTML(){document.getElementById("htmlOut").value=genBody(state.lang);document.getElementById("htmlDlg").showModal();}
+
+/* ---------- Init ---------- */
+document.getElementById("langtabs").addEventListener("click",e=>{
+  if(e.target.dataset.l){state.lang=e.target.dataset.l;
+    [...document.querySelectorAll("#langtabs button")].forEach(b=>b.classList.toggle("active",b.dataset.l===state.lang));
+    renderEditor();}
+});
+document.querySelector('#langtabs button[data-l="fr"]').classList.add("active");
+document.getElementById('editor').addEventListener('input',e=>{if(e.target.tagName==='TEXTAREA')autoGrow(e.target);});
+renderEditor();
+</script>
+
+<!-- ================= Branchement back-end : édition / brouillon / aperçu / publication ================= -->
+<style>
+  #pubpanel{background:#fff;border-bottom:1px solid var(--line);padding:.6rem 1rem;}
+  #pubpanel summary{cursor:pointer;font-weight:700;color:var(--ocre);}
+  #pubgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin-top:.6rem;}
+  #pubgrid .field{margin:0;}
+  #pubgrid label{font-size:.68rem;}
+  #toolbar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-left:.5rem;}
+  #toolbar .status{font-size:.75rem;color:#8a8477;}
+  .ok{color:#2e7d32 !important;} .err{color:#b33 !important;}
+</style>
+<script>
+(function(){
+  const CFG_KEY="fauna_api_base";
+  let API_BASE = localStorage.getItem(CFG_KEY) || "";
+  let editorKey = null;
+
+  // Suggestions d'icônes (presets) — mais on peut taper N'IMPORTE quelle icône Font Awesome par son nom
+  try{ const dl=document.createElement("datalist"); dl.id="fa-icons";
+    dl.innerHTML=[...new Set([...SECTION_ICONS,...SUB_ICONS].map(x=>x[0]))].map(n=>`<option value="${n}">`).join("");
+    document.body.appendChild(dl);
+  }catch(e){}
+
+  // Métadonnées de publication (défaut = exemple varan)
+  state.pub = state.pub || {
+    slug:"varanus-griseus",
+    order:{slug:"sauria",en:"Sauria",fr:"Sauria"},
+    family:{slug:"varanidae",en:"Varanidae",fr:"Varanidae"},
+    title:{en:"Desert Monitor (Varanus griseus) in Morocco",fr:"Varan du désert (Varanus griseus) au Maroc"},
+    description:{en:"Discover the Desert Monitor (Varanus griseus), the largest lizard in Morocco.",fr:"Découvrez le Varan du désert (Varanus griseus), le plus grand lézard du Maroc."}
+  };
+
+  // Panneau Publication (hors #editor, donc jamais effacé par renderEditor)
+  const panel=document.createElement("details");
+  panel.id="pubpanel"; panel.open=false;
+  panel.innerHTML=`<summary>⚙ Métadonnées de publication (slug, ordre, famille, SEO)</summary>
+    <div id="pubgrid">
+      <div class="field"><label>Slug (nom de fichier, ex: varanus-griseus)</label><input type="text" data-p="slug"></div>
+      <div class="field"><label>Scientifique (auto = nom latin EN)</label><input type="text" data-p="sci" disabled></div>
+      <div class="field"><label>Ordre — slug (ex: sauria)</label><input type="text" data-p="order.slug"></div>
+      <div class="field"><label>Ordre — libellé EN / FR</label><div class="row2"><input type="text" data-p="order.en" placeholder="EN"><input type="text" data-p="order.fr" placeholder="FR"></div></div>
+      <div class="field"><label>Famille — slug (ex: varanidae)</label><input type="text" data-p="family.slug"></div>
+      <div class="field"><label>Famille — libellé EN / FR</label><div class="row2"><input type="text" data-p="family.en" placeholder="EN"><input type="text" data-p="family.fr" placeholder="FR"></div></div>
+      <div class="field"><label>Titre SEO EN</label><input type="text" data-p="title.en"></div>
+      <div class="field"><label>Titre SEO FR</label><input type="text" data-p="title.fr"></div>
+      <div class="field"><label>Description SEO EN</label><input type="text" data-p="description.en"></div>
+      <div class="field"><label>Description SEO FR</label><input type="text" data-p="description.fr"></div>
+    </div>`;
+  document.querySelector("main").before(panel);
+
+  function getP(k){return k.split(".").reduce((o,x)=>o&&o[x],state.pub);}
+  function setP(k,v){const a=k.split("."),last=a.pop();let o=state.pub;a.forEach(x=>o=o[x]=o[x]||{});o[last]=v;}
+  function fillPanel(){panel.querySelectorAll("[data-p]").forEach(inp=>{
+    if(inp.dataset.p==="sci"){inp.value=(state.langs.en||{}).sci||"";return;}
+    inp.value=getP(inp.dataset.p)||"";
+    inp.oninput=e=>setP(e.target.dataset.p,e.target.value);
+  });}
+  fillPanel();
+
+  // Barre d'outils dans le header
+  const tb=document.createElement("div"); tb.id="toolbar";
+  tb.innerHTML=`<button class="btn ghost sm" id="btnLogin">🔑 Se connecter</button>
+    <button class="btn sm" id="btnSave" disabled>💾 Enregistrer le brouillon</button>
+    <button class="btn ghost sm" id="btnPrev" disabled>👁 Lien d'aperçu</button>
+    <button class="btn sm" id="btnPub" disabled style="background:#2e7d32">✅ Publier</button>
+    <button class="btn ghost sm" id="btnCfg">🌐 Serveur</button>
+    <span class="status" id="tbStatus">Non connecté</span>`;
+  document.querySelector("header").appendChild(tb);
+  const $=id=>document.getElementById(id);
+  const setStatus=(t,cls)=>{$("tbStatus").textContent=t;$("tbStatus").className="status "+(cls||"");};
+
+  function needBase(){ if(!API_BASE){ setCfg(); } return !!API_BASE; }
+  function setCfg(){ const v=prompt("URL du service éditeur (Render), ex: https://fauna-editeur.onrender.com", API_BASE||"https://"); if(v){API_BASE=v.replace(/\/$/,"");localStorage.setItem(CFG_KEY,API_BASE);setStatus("Serveur: "+API_BASE);} }
+  $("btnCfg").onclick=setCfg;
+
+  async function api(path,opts={}){ const r=await fetch(API_BASE+path,opts); const t=await r.text(); let j; try{j=JSON.parse(t);}catch{ j={raw:t}; } if(!r.ok) throw new Error(j.error||("HTTP "+r.status)); return j; }
+
+  function buildMeta(){
+    const en=state.langs.en||{}, fr=state.langs.fr||{};
+    return { slug:state.pub.slug, scientific:en.sci||"",
+      order:state.pub.order, family:state.pub.family,
+      common:{en:en.name||"",fr:fr.name||""},
+      title:state.pub.title, description:state.pub.description,
+      introImg:en.introImg||"", statusEN:(iucnOf(state.statusCode).en) };
+  }
+
+  $("btnLogin").onclick=async()=>{
+    if(!needBase())return;
+    const p=prompt("Mot de passe d'édition"); if(!p)return;
+    try{ const r=await api("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:p})});
+      editorKey=p; setStatus("Connecté ("+r.role+")","ok");
+      $("btnSave").disabled=false; $("btnPub").disabled=false;
+    }catch(e){ setStatus("Échec connexion: "+e.message,"err"); }
+  };
+
+  let lastToken=null;
+  $("btnSave").onclick=async()=>{
+    if(!state.pub.slug){setStatus("Renseigne un slug (panneau ⚙)","err");return;}
+    try{ setStatus("Enregistrement…");
+      const r=await api("/api/drafts/"+state.pub.slug,{method:"PUT",headers:{"Content-Type":"application/json","x-fauna-key":editorKey},body:JSON.stringify({meta:buildMeta(),state:state})});
+      lastToken=r.token; $("btnPrev").disabled=false; setStatus("Brouillon enregistré ✓","ok");
+    }catch(e){ setStatus("Erreur: "+e.message,"err"); }
+  };
+
+  $("btnPrev").onclick=()=>{
+    if(!lastToken)return;
+    const url=API_BASE+"/preview/"+state.pub.slug+"?t="+lastToken;
+    prompt("Lien d'aperçu partageable (FR : ajoute &lang=fr) :", url);
+  };
+
+  $("btnPub").onclick=async()=>{
+    const p=prompt("Mot de passe de PUBLICATION (relecteur)"); if(!p)return;
+    if(!confirm("Publier « "+state.pub.slug+" » en ligne ? Les pages EN + FR seront mises à jour."))return;
+    try{ setStatus("Publication…");
+      const r=await api("/api/publish/"+state.pub.slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":p}});
+      setStatus("Publié ✓ "+(r.published||[]).join(", "),"ok");
+    }catch(e){ setStatus("Erreur publication: "+e.message,"err"); }
+  };
+})();
+</script>
+</body>
+</html>
