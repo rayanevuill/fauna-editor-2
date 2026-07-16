@@ -468,7 +468,12 @@ function openIconPicker(ev,cur,cb){
 function insBar(cp,pos){
   const bar=el("div","ins");const plus=document.createElement("button");plus.className="plus";plus.textContent="+";
   plus.onclick=e=>{e.stopPropagation();closeMenus();const{b,close}=floatBox(e.clientX,e.clientY+8,240);b.innerHTML='<div class="pkh">Insérer…</div>';
-    ITEM_KINDS.forEach(bt=>{const btn=el("button","pk");btn.innerHTML=`<i class="fas ${bt.icon}"></i> ${bt.label}`;btn.onclick=()=>{close();insItem(cp,pos,()=>newItem(bt.k));};b.appendChild(btn);});};
+    ITEM_KINDS.forEach(bt=>{const btn=el("button","pk");btn.innerHTML=`<i class="fas ${bt.icon}"></i> ${bt.label}`;btn.onclick=(ev)=>{close();
+      if(bt.k.indexOf("gallery")===0||bt.k==="distribution-map"){
+        // image : on ouvre directement le sélecteur, et on insère la galerie AVEC la photo choisie (1 étape)
+        openImagePicker({x:ev.clientX,y:ev.clientY+10,style:bt.k,onPick:(src)=>{insItem(cp,pos,()=>({kind:bt.k,images:[{src:src,cap:"",alt:""}],globalCap:""}));}});
+      } else { insItem(cp,pos,()=>newItem(bt.k)); }
+    };b.appendChild(btn);});};
   bar.appendChild(plus);return bar;
 }
 

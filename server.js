@@ -188,18 +188,78 @@ app.post("/api/publish/:slug", needPublish, async (req, res) => {
     if (!f) return res.status(404).json({ error: "Brouillon introuvable" });
     const { meta, state } = JSON.parse(f.content);
     const err = validMeta(meta); if (err) return res.status(400).json({ error: err });
+    const slug = meta.slug, order = meta.order.slug, family = (meta.family && meta.family.slug) || "";
+    const iucn = (state.statusCode || "").toUpperCase();
+    const files = [];   // {path, html} -> UN SEUL commit atomique
+
+    // 1) La ou les fiche(s) EN/FR/AR (SEULEMENT cette espèce)
     const langs = ["en", "fr", "ar"].filter(l => state.langs && state.langs[l] && (state.langs[l].name||"").trim());
-    const written = [];
     for (const l of langs) {
       const { path: pth, html } = P.buildPage(meta, state, l);
       if (!SAFE_PAGE.test(pth)) return res.status(400).json({ error: "chemin non autorisé : " + pth });
-      await putFile(GITHUB_BRANCH, pth, html, `publication: ${meta.slug} (${l})`);
-      written.push(pth);
+      files.push({ path: pth, html });
     }
-    // On CONSERVE l'état publié pour pouvoir rééditer la fiche à l'identique (plus de fiche vierge).
+    // chemin de la fiche EN relatif à la page d'ordre (pour le lien du menu)
+    const hrefRel = P.pagePath(meta, "en").replace(/^encyclopedia\//, "").replace(/\/{2,}/g, "/");
+
+    // 2) Liste maîtresse : marquer l'espèce EN LIGNE (statut binaire) + pastille UICN
+    const lf = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
+    const list = lf ? JSON.parse(lf.content) : JSON.parse(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8"));
+    list.menus = list.menus || {};
+    let famObj = null;
+    (list.groups || []).forEach(g => (g.families || []).forEach(F => {
+      if (F.slug === family && F.order === order) famObj = F;
+      (F.species || []).forEach(s => { if (s.slug === slug) { s.status = "published"; s.iucn = iucn; } });
+    }));
+
+    // 3) Mettre à jour UNIQUEMENT la page de menu concernée (isolé)
+    const menu = list.menus[order];
+    const touchedOrders = [];
+    if (menu) {
+      const commonEnFr = { en: (state.langs.en || {}).name || "", fr: (state.langs.fr || {}).name || "" };
+      const sci = (state.langs.en || {}).sci || (state.langs.fr || {}).sci || "";
+      if (menu.mode === "species") {
+        let cell = (menu.cells || []).find(c => c.slug === slug);
+        if (!cell) { cell = { slug, img: `../images/encyclopedia/${order}/${slug}.jpg`, alt: { en: sci, fr: sci } }; menu.cells = menu.cells || []; menu.cells.push(cell); }
+        cell.active = true; cell.iucn = iucn; cell.sci = sci; cell.common = commonEnFr; cell.hrefEN = hrefRel;
+      } else { // mode famille : activer la case famille
+        let cell = (menu.cells || []).find(c => c.slug === family);
+        if (cell) cell.active = true;
+        if (famObj) { famObj.active = true; famObj.status = "live"; }
+      }
+      touchedOrders.push(order);
+    }
+
+    // 4) Régénérer SEULEMENT la page d'ordre touchée (EN+FR), avec vérif structurelle
+    const gridRe = /<div class="species-grid">[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/;
+    for (const o of touchedOrders) {
+      for (const pre of ["", "fr/"]) {
+        const op = pre + `encyclopedia/${o}.html`;
+        const ex = await getFile(GITHUB_BRANCH, op).catch(() => null); if (!ex) continue;
+        if (!gridRe.test(ex.content)) continue;
+        const grid = MENUS.orderGrid(o, list.menus[o], pre ? "fr" : "en");
+        const patched = ex.content.replace(gridRe, grid + "\n            </div>\n        </section>");
+        const okStruct = (patched.match(/<section/g) || []).length === (patched.match(/<\/section>/g) || []).length
+          && (patched.match(/class="species-grid"/g) || []).length === 1 && patched.includes("</footer>");
+        if (okStruct) files.push({ path: op, html: patched });
+      }
+    }
+    // page famille (mode famille non hand-made) : (re)générer pour y montrer l'espèce cliquable
+    if (menu && menu.mode === "family" && famObj && !PRESERVE.has(`encyclopedia/${order}/${family}.html`)) {
+      const fam2 = JSON.parse(JSON.stringify(famObj)); fam2.active = true;
+      MENUS.generatePages({ groups: [{ families: [fam2] }], menus: list.menus }, new Set()).forEach(pg => files.push({ path: pg.path, html: pg.html }));
+    }
+
+    // 5) liste maj
+    files.push({ path: "editor/species-list.json", html: JSON.stringify(list, null, 1) });
+
+    // 6) UN commit atomique (fiche + menu concerné + liste — rien d'autre)
+    await commitFiles(files, `publication: ${slug} (en ligne)`);
+
+    // On CONSERVE l'état publié pour rééditer à l'identique, et on nettoie le brouillon.
     await putFile(DRAFTS_BRANCH, `_states/${meta.slug}.json`, JSON.stringify({ meta, state }, null, 2), `état publié: ${meta.slug}`);
     await deleteFile(DRAFTS_BRANCH, `_drafts/${meta.slug}.json`, `publié: ${meta.slug}`);
-    res.json({ ok: true, published: written, note: "Déploiement Hostinger lancé automatiquement (~2-3 min)." });
+    res.json({ ok: true, published: files.filter(x => /\.html$/.test(x.path)).map(x => x.path), note: "Fiche + menu concerné mis à jour (rien d'autre). Déploiement Hostinger (~2-3 min)." });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -321,7 +381,14 @@ app.get("/api/species-list", needEditor, async (req, res) => {
 });
 app.put("/api/species-list", needEditor, async (req, res) => {
   try {
-    const data = JSON.stringify(req.body, null, 2);
+    const incoming = req.body || {};
+    // PROTECTION : ne jamais écraser le bloc `menus` (source de vérité des pages d'ordre).
+    // Si le client n'envoie pas de menus, on conserve celui déjà en dépôt.
+    if (!incoming.menus) {
+      const cur = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
+      if (cur) { try { const j = JSON.parse(cur.content); if (j.menus) incoming.menus = j.menus; } catch (e) {} }
+    }
+    const data = JSON.stringify(incoming, null, 1);
     if (data.length > 2000000) return res.status(413).json({ error: "liste trop lourde" });
     await putFile(GITHUB_BRANCH, "editor/species-list.json", data, "maj liste des especes");
     res.json({ ok: true });

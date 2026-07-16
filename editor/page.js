@@ -29,7 +29,8 @@
 
   // Chemin relatif de la fiche pour une langue, ex: "encyclopedia/sauria/varanidae/x.html"
   function pagePath(meta, lang) {
-    return LANG_PREFIX[lang] + "encyclopedia/" + meta.order.slug + "/" + meta.family.slug + "/" + meta.slug + ".html";
+    var fam = (meta.family && meta.family.slug) ? "/" + meta.family.slug : "";
+    return LANG_PREFIX[lang] + "encyclopedia/" + meta.order.slug + fam + "/" + meta.slug + ".html";
   }
   // Préfixe "../" pour remonter à la racine du site depuis cette page
   function rootPrefix(path) {

@@ -168,7 +168,8 @@
       const alt = esc((c.alt && (c.alt[lang] || c.alt.en)) || common);
       const sci = esc(c.sci || "");
       const img = imgFix(c.img);
-      const pill = c.iucn ? `\n                    <div class="conservation-status status-${c.iucn.toLowerCase()}">${esc(c.iucn)}</div>` : "";
+      // Règle Rayane : la pastille de conservation n'apparaît QUE pour une espèce EN LIGNE (active).
+      const pill = (c.active && c.iucn) ? `\n                    <div class="conservation-status status-${c.iucn.toLowerCase()}">${esc(c.iucn)}</div>` : "";
       const cnt = (c.count != null) ? `\n                        <p class="species-count">${c.count} <span>${SP(c.count)}</span></p>` : "";
       const body =
 `<div class="species-image">
