@@ -290,6 +290,27 @@ app.get("/api/state/:slug", needEditor, async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// HTML EN LIGNE d'une fiche (EN+FR) lu depuis le dépôt = version réellement déployée.
+// Sert à ré-importer la page telle qu'elle est sur le site (y compris retouches manuelles/code),
+// pour que l'éditeur reparte TOUJOURS du site. L'import HTML->état se fait côté navigateur (importer2).
+app.get("/api/page-html/:slug", needEditor, async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    if (!/^[a-z0-9-]+$/.test(slug)) return res.status(400).json({ error: "slug invalide" });
+    const lf = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
+    const list = lf ? JSON.parse(lf.content) : JSON.parse(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8"));
+    let sp = null, fam = null;
+    (list.groups || []).forEach(g => (g.families || []).forEach(F => (F.species || []).forEach(s => { if (s.slug === slug) { sp = s; fam = F; } })));
+    if (!sp || !fam) return res.status(404).json({ error: "espèce introuvable dans la liste" });
+    const enPath = sp.path || `encyclopedia/${fam.order}/${fam.slug}/${slug}.html`;
+    if (!SAFE_PAGE.test(enPath)) return res.status(400).json({ error: "chemin non autorisé" });
+    const enF = await getFile(GITHUB_BRANCH, enPath).catch(() => null);
+    if (!enF) return res.status(404).json({ error: "page en ligne introuvable (pas encore publiée ?)" });
+    const frF = await getFile(GITHUB_BRANCH, "fr/" + enPath).catch(() => null);
+    res.json({ en: enF.content, fr: frF ? frF.content : "", orderSlug: fam.order, familySlug: fam.slug, familyName: fam.name || "", path: enPath });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 /* ============================================================================
    Formulaire de contact — POST /api/contact
    Le site statique (fauna-morocco.org) envoie le message ici en JSON ; on relaie

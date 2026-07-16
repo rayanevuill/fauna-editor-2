@@ -631,9 +631,28 @@ document.addEventListener("click",()=>{closeMenus();setTimeout(()=>{const s=wind
 function blankSection(){return {title:"",icon:"fa-info-circle",blocks:[{type:"text",text:""}],subs:[],subspecies:[]};}
 // Charge l'état réel d'une fiche existante : d'abord l'état bundlé (fiches d'avant l'outil),
 // puis l'état serveur d'une fiche déjà publiée. Renvoie {meta,state} ou null.
+// Importe la fiche TELLE QU'ELLE EST EN LIGNE (dépôt = site déployé), y compris retouches
+// manuelles/code. L'import HTML->état se fait ici (navigateur, DOMParser via importer2).
+async function loadLiveState(slug){
+  if(!API || typeof FaunaImporter2==="undefined") return null;
+  const key=needKey(); if(!key) return null;
+  try{
+    const r=await fetch(API+"/api/page-html/"+encodeURIComponent(slug),{headers:{"x-fauna-key":key}});
+    if(!r.ok) return null;
+    const d=await r.json(); if(!d.en) return null;
+    const st=FaunaImporter2.buildState(d.en, d.fr||"");
+    const stripSuffix=t=>(t||"").replace(/\s*\|\s*Fauna Morocco\s*$/i,"").trim();
+    const ex=html=>{ try{ const doc=new DOMParser().parseFromString(html,"text/html"); const md=doc.querySelector('meta[name="description"]'); return {t:stripSuffix((doc.querySelector("title")||{}).textContent||""), d:(md&&md.getAttribute("content"))||""}; }catch(e){ return {t:"",d:""}; } };
+    const en=ex(d.en), fr=d.fr?ex(d.fr):{t:"",d:""};
+    const o=ORDERS.find(x=>x.slug===d.orderSlug)||{slug:d.orderSlug,name:d.orderSlug};
+    const meta={slug:slug,order:{slug:o.slug,name:o.name},family:{slug:d.familySlug,name:d.familyName||d.familySlug},title:{en:en.t,fr:fr.t,ar:""},description:{en:en.d,fr:fr.d,ar:""}};
+    return {meta:meta, state:st, _live:true};
+  }catch(e){ return null; }
+}
 async function loadRealState(slug){
-  try{ const r=await fetch("states/"+encodeURIComponent(slug)+".json",{cache:"no-store"}); if(r.ok) return await r.json(); }catch(e){}
-  if(API && AUTH.key){ try{ const r=await fetch(API+"/api/state/"+encodeURIComponent(slug),{headers:{"x-fauna-key":AUTH.key}}); if(r.ok) return await r.json(); }catch(e){} }
+  const live=await loadLiveState(slug); if(live) return live;       // 1) la vraie page en ligne
+  try{ const r=await fetch("states/"+encodeURIComponent(slug)+".json",{cache:"no-store"}); if(r.ok) return await r.json(); }catch(e){} // 2) bundle statique
+  if(API && AUTH.key){ try{ const r=await fetch(API+"/api/state/"+encodeURIComponent(slug),{headers:{"x-fauna-key":AUTH.key}}); if(r.ok) return await r.json(); }catch(e){} } // 3) dernier état publié
   return null;
 }
 function loadStateInto(loaded){
@@ -648,7 +667,7 @@ function loadStateInto(loaded){
   const slug=(p.get("slug")||"").trim();
   if(slug){
     const loaded=await loadRealState(slug);
-    if(loadStateInto(loaded)){ toast&&toast("Fiche existante chargée."); render(); return; }
+    if(loadStateInto(loaded)){ toast&&toast(loaded._live?"Fiche importée depuis le site en ligne.":"Fiche existante chargée."); render(); return; }
   }
   if(p.get("sci")||slug){
     const sci=(p.get("sci")||"").trim();
