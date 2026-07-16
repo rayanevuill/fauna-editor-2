@@ -188,7 +188,7 @@ app.post("/api/publish/:slug", needPublish, async (req, res) => {
     if (!f) return res.status(404).json({ error: "Brouillon introuvable" });
     const { meta, state } = JSON.parse(f.content);
     const err = validMeta(meta); if (err) return res.status(400).json({ error: err });
-    const langs = ["en", "fr", "ar"].filter(l => state.langs && state.langs[l]);
+    const langs = ["en", "fr", "ar"].filter(l => state.langs && state.langs[l] && (state.langs[l].name||"").trim());
     const written = [];
     for (const l of langs) {
       const { path: pth, html } = P.buildPage(meta, state, l);
@@ -267,6 +267,45 @@ app.post("/api/contact", async (req, res) => {
     console.error("Contact:", e.message);
     res.status(500).json({ error: "Envoi impossible pour le moment." });
   }
+});
+
+
+/* ---- Upload d'image (compressée côté navigateur) ---- */
+const fs = require("fs");
+const IMG_OK = /^images\/encyclopedia\/[a-z0-9-]+\/[a-z0-9-]+\/[a-z0-9-]+\/[\w.-]+\.(jpe?g|png|webp)$/i;
+async function putBinary(branch, filepath, b64, message) {
+  const existing = await getFile(branch, filepath).catch(() => null);
+  const body = { message, content: b64, branch };
+  if (existing) body.sha = existing.sha;
+  return (await gh(`/repos/${GITHUB_REPO}/contents/${encodeURI(filepath)}`, { method: "PUT", body: JSON.stringify(body) })).json();
+}
+app.post("/api/upload", needEditor, async (req, res) => {
+  try {
+    const fp = (req.body && req.body.path) || "";
+    if (!IMG_OK.test(fp)) return res.status(400).json({ error: "chemin d'image non autorisé" });
+    const m = /^data:image\/[a-z+]+;base64,(.+)$/i.exec((req.body && req.body.data) || "");
+    if (!m) return res.status(400).json({ error: "image invalide" });
+    if (m[1].length > 9000000) return res.status(413).json({ error: "image trop lourde (max ~6 Mo)" });
+    await putBinary(GITHUB_BRANCH, fp, m[1], `image: ${fp}`);
+    res.json({ ok: true, path: fp });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+/* ---- Liste maîtresse des espèces ---- */
+app.get("/api/species-list", needEditor, async (req, res) => {
+  try {
+    const f = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
+    if (f) return res.set("Content-Type", "application/json").send(f.content);
+    res.set("Content-Type", "application/json").send(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8"));
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.put("/api/species-list", needEditor, async (req, res) => {
+  try {
+    const data = JSON.stringify(req.body, null, 2);
+    if (data.length > 2000000) return res.status(413).json({ error: "liste trop lourde" });
+    await putFile(GITHUB_BRANCH, "editor/species-list.json", data, "maj liste des especes");
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.listen(PORT, () => console.log(`Fauna editor backend écoute sur :${PORT}`));

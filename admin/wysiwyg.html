@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fauna — Éditeur WYSIWYG</title>
+<link rel="stylesheet" href="https://fauna-morocco.org/css/general.css">
+<link rel="stylesheet" href="https://fauna-morocco.org/encyclopedia/species-account.css">
+<link rel="stylesheet" href="https://fauna-morocco.org/css/reskin.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--ocre:#C06A2C;--ocre-deep:#9E5220}
+body{padding-bottom:100px}
+[data-ed]{border-radius:4px;transition:outline .12s,background .12s;min-height:1em}
+[data-ed]:hover{outline:1.5px dashed var(--ocre);outline-offset:4px;cursor:text}
+[data-ed]:focus{outline:2px solid var(--ocre);outline-offset:4px;background:rgba(192,106,44,.07)}
+[data-ed]:empty:before{content:attr(data-ph);color:#6b675e}
+.refchip{color:var(--ocre);font-weight:700;font-size:.72em;vertical-align:super;padding:0 1px;user-select:none}
+.ctl{display:inline-flex;gap:4px;margin-left:8px;vertical-align:middle}
+.ctl button{background:#1c1c1c;color:#cfc8ba;border:none;border-radius:6px;width:26px;height:24px;font-size:11px;cursor:pointer}
+.ctl button:hover{background:var(--ocre);color:#fff}
+.ins{position:relative;height:14px;display:flex;align-items:center;justify-content:center}
+.ins .plus{width:24px;height:24px;border-radius:50%;background:#1c1c1c;color:#cfc8ba;border:none;font-size:14px;cursor:pointer;opacity:.35;transition:.15s;display:flex;align-items:center;justify-content:center}
+.ins:hover .plus{opacity:1;background:var(--ocre);color:#fff}
+.add-chip{display:inline-flex;align-items:center;gap:7px;margin:10px 6px 10px 0;padding:7px 13px;border:1px dashed #3a3a3a;border-radius:22px;color:#9a9488;background:none;font:600 12px/1 'Lato';cursor:pointer}
+.add-chip:hover{border-color:var(--ocre);color:var(--ocre)}
+.imed{position:relative;display:block}
+.imed.empty{min-height:120px;border:1.5px dashed #333;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#6b675e;font-size:13px;cursor:pointer}
+.imed .tools{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(0,0,0,.45);opacity:0;transition:.15s;border-radius:8px}
+.imed:hover .tools{opacity:1}
+.itool{border:none;cursor:pointer;background:rgba(20,20,20,.92);color:#fff;font:600 11.5px/1 'Lato';padding:8px 10px;border-radius:9px;display:flex;gap:6px;align-items:center}
+.itool:hover{background:var(--ocre)}.itool.del:hover{background:#b23b3b}
+.stpick{cursor:pointer;border-bottom:1.5px dashed var(--ocre);position:relative}
+.stmenu{position:absolute;top:100%;left:0;margin-top:6px;background:#141414;border:1px solid #2c2c2c;border-radius:10px;padding:6px;min-width:230px;z-index:200;display:none;box-shadow:0 14px 40px rgba(0,0,0,.6)}
+.stmenu.show{display:block}
+.stmenu button{display:flex;align-items:center;gap:9px;width:100%;background:none;border:none;color:#e9e3d7;font:600 12.5px/1 'Lato';padding:8px 9px;border-radius:7px;cursor:pointer;text-align:left}
+.stmenu button:hover{background:#1f1f1f}
+.chip{width:30px;height:18px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font:700 10px/1 'Lato';color:#04170c;flex-shrink:0}
+.refs{margin:22px 0 10px;border-top:1px solid rgba(255,255,255,.08);padding-top:16px}
+.refs h3{font:700 14px/1 'Oswald';letter-spacing:.06em;text-transform:uppercase;color:var(--ocre);margin:0 0 12px}
+.refrow{display:flex;align-items:flex-start;gap:10px;padding:8px 6px;border-radius:8px}
+.refrow:hover{background:rgba(255,255,255,.03)}
+.refrow .num{color:var(--ocre);font-weight:700;font-size:13px;min-width:22px;padding-top:2px}
+.refrow .rtxt{flex:1;color:#cfc8ba;font-size:13px;line-height:1.5;outline:none}
+.refrow .rtxt:focus{background:rgba(192,106,44,.08);border-radius:4px}
+.refrow .rm{color:#6b675e;cursor:pointer;background:none;border:none;font-size:13px}.refrow .rm:hover{color:#b23b3b}
+.subsp{border:1px solid #2a2a2a;border-radius:12px;padding:14px;margin:12px 0;background:rgba(255,255,255,.02)}
+.subsp .sh{display:flex;align-items:center;gap:8px;font:700 13px/1 'Oswald';letter-spacing:.04em;color:var(--ocre);margin-bottom:8px}
+.globalcap{font-size:12px;color:#9a9488;font-style:italic;border:1px dashed #333;border-radius:8px;padding:8px 10px;margin-top:8px}
+.seltool{position:absolute;z-index:400;background:#141414;border:1px solid #2c2c2c;border-radius:10px;padding:5px;display:none;gap:4px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.seltool.show{display:flex}
+.seltool button{background:none;border:none;color:#e9e3d7;font:700 13px/1 'Lato';padding:7px 10px;border-radius:7px;cursor:pointer}
+.seltool button:hover{background:var(--ocre);color:#fff}
+.editbar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:1000;display:flex;align-items:center;gap:10px;background:rgba(14,14,14,.94);backdrop-filter:blur(10px);border:1px solid #2a2a2a;border-radius:16px;padding:9px 12px;box-shadow:0 12px 40px rgba(0,0,0,.6);flex-wrap:wrap;justify-content:center;max-width:94vw}
+.editbar .mode{display:flex;align-items:center;gap:7px;color:#e9e3d7;font:700 11px/1 'Oswald';letter-spacing:.1em;text-transform:uppercase;padding:0 6px}
+.editbar .mode .d{width:8px;height:8px;border-radius:50%;background:var(--ocre);box-shadow:0 0 8px var(--ocre)}
+.sepv{width:1px;height:26px;background:#2f2f2f}
+.lang{display:flex;border:1px solid #2f2f2f;border-radius:16px;overflow:hidden}
+.lang button{background:none;color:#9a9488;border:none;padding:6px 12px;font:600 12px/1 'Oswald';cursor:pointer}.lang button.on{background:var(--ocre);color:#fff}
+.eb{border:none;cursor:pointer;font:700 12px/1 'Oswald';letter-spacing:.04em;text-transform:uppercase;padding:10px 14px;border-radius:10px}
+.eb.line{background:#1c1c1c;color:#e9e3d7}.eb.line:hover{background:#252525}
+.eb.ocre{background:var(--ocre);color:#fff}.eb.ocre:hover{background:var(--ocre-deep)}
+.tag{position:fixed;top:12px;right:16px;z-index:1001;background:var(--ocre);color:#fff;font:700 11px/1 'Oswald';letter-spacing:.1em;padding:5px 12px;border-radius:20px}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:#141414;border:1px solid #2c2c2c;color:#e9e3d7;padding:10px 16px;border-radius:10px;font-size:13px;z-index:1200;display:none}
+.floatbox{position:fixed;z-index:1300;background:#141414;border:1px solid #2c2c2c;border-radius:12px;padding:7px;box-shadow:0 16px 44px rgba(0,0,0,.65);max-height:70vh;overflow:auto}
+.floatbox .pk{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;color:#e9e3d7;font:600 13px/1 'Lato';padding:9px 10px;border-radius:8px;cursor:pointer;text-align:left}
+.floatbox .pk:hover{background:#1f1f1f;color:var(--ocre)}
+.floatbox .pk i{width:18px;text-align:center;color:var(--ocre)}
+.floatbox .pk small{color:#8a857c;font-weight:400}
+.floatbox .pk.cust{border-top:1px solid #2a2a2a;margin-top:4px;color:#9a9488}
+.pkh{font:700 11px/1 'Oswald';letter-spacing:.08em;text-transform:uppercase;color:#9a9488;padding:6px 8px}
+.icongrid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;padding:4px}
+.icongrid .ig{background:#1c1c1c;border:1px solid transparent;border-radius:8px;color:#cfc8ba;height:34px;cursor:pointer;font-size:14px}
+.icongrid .ig:hover{background:#252525;color:var(--ocre)}.icongrid .ig.on{border-color:var(--ocre);color:var(--ocre)}
+.pkrow{display:flex;gap:6px;padding:6px 4px 2px}
+.pkrow input{flex:1;background:#000;border:1px solid #2f2f2f;color:#e9e3d7;border-radius:7px;padding:7px 9px;font-size:12px}
+.pkok{background:var(--ocre);color:#fff;border:none;border-radius:7px;padding:0 12px;font:700 12px/1 'Oswald';cursor:pointer}
+.dz{border:1.5px dashed #3a3a3a;border-radius:12px;padding:20px;text-align:center;color:#9a9488;font-size:12.5px;cursor:pointer;margin:4px}
+.dz.over{border-color:var(--ocre);color:var(--ocre);background:rgba(192,106,44,.06)}
+.dz i{font-size:22px;display:block;margin-bottom:8px;color:var(--ocre)}
+.dz small{color:#6b675e}
+.dz .thmb{max-width:100%;max-height:120px;border-radius:8px;margin-top:8px}
+.introslot{margin-bottom:12px}
+.introslot .lab{font:700 10px/1 'Oswald';letter-spacing:.1em;text-transform:uppercase;color:#7a756b;margin:0 0 6px;display:flex;align-items:center;gap:6px}
+.secicon{cursor:pointer}.secicon:hover{color:var(--ocre)}
+/* drawer métadonnées */
+.drawer{position:fixed;top:0;right:0;width:360px;max-width:92vw;height:100vh;background:#101010;border-left:1px solid #262626;z-index:1400;padding:22px;overflow-y:auto;transform:translateX(100%);transition:transform .22s;box-shadow:-20px 0 60px rgba(0,0,0,.5)}
+.drawer.show{transform:translateX(0)}
+.drawer h2{font:700 15px/1 'Oswald';letter-spacing:.05em;text-transform:uppercase;color:var(--ocre);margin:0 0 4px}
+.drawer .sub{color:#8a857c;font-size:12px;margin-bottom:16px}
+.drawer label{display:block;font:700 10.5px/1 'Lato';letter-spacing:.1em;text-transform:uppercase;color:#9a9488;margin:14px 0 6px}
+.drawer input,.drawer textarea,.drawer select{width:100%;background:#000;border:1px solid #2a2a2a;color:#e9e3d7;border-radius:8px;padding:9px 11px;font-size:13px;font-family:'Lato'}
+.drawer textarea{min-height:60px;resize:vertical;line-height:1.5}
+.urlprev{background:#0a0a0a;border:1px solid #262626;border-radius:8px;padding:10px 12px;font:600 12px/1.4 monospace;color:#7fdc9e;word-break:break-all;margin-top:6px}
+.drawer .x{position:absolute;top:16px;right:16px;background:none;border:none;color:#9a9488;font-size:18px;cursor:pointer}
+.drawer .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.miniwarn{color:#e0a05a;font-size:11.5px;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="tag">ÉDITEUR WYSIWYG · v1</div>
+
+<nav><a href="#" class="logo">FAUNA <b>MOROCCO</b></a><div class="nl"><a href="#" class="active">Encyclopédie</a><a href="#">À propos</a><a href="#">Contact</a><a href="#" class="db">Faire un don</a></div></nav>
+
+<div id="app"></div>
+
+<div class="seltool" id="seltool">
+  <button onmousedown="event.preventDefault()" onclick="fmt('italic')"><em>I</em></button>
+  <button onmousedown="event.preventDefault()" onclick="openCite(event)"><i class="fas fa-quote-right"></i> Citer</button>
+</div>
+
+<!-- drawer métadonnées -->
+<aside class="drawer" id="drawer">
+  <button class="x" onclick="toggleDrawer()">✕</button>
+  <h2>Réglages de la page</h2>
+  <div class="sub">Ces champs définissent l'adresse (URL) et le référencement de la fiche.</div>
+  <div id="metaform"></div>
+</aside>
+
+<div class="editbar">
+  <a class="eb line" href="dashboard.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-arrow-left"></i> Tableau de bord</a><span class="sepv"></span>
+  <span class="mode"><span class="d"></span>Édition</span><span class="sepv"></span>
+  <div class="lang" id="langsw"></div><span class="sepv"></span>
+  <button class="eb line" onclick="toggleDrawer()"><i class="fas fa-gear"></i> Réglages page</button>
+  <button class="eb line" onclick="preview()"><i class="fas fa-eye"></i> Aperçu</button>
+  <button class="eb line" onclick="exportJSON()"><i class="fas fa-code"></i> JSON</button>
+  <button class="eb line" onclick="saveDraft()"><i class="fas fa-floppy-disk"></i> Enregistrer</button>
+  <button class="eb ocre" onclick="publish()"><i class="fas fa-check"></i> Publier</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="generator.js"></script>
+<script src="page.js"></script>
+<script>
+/* ===================== DONNÉES DE RÉFÉRENCE ===================== */
+const LANGS=["fr","en","ar"];
+const REL={en:"../../../",fr:"../../../../",ar:"../../../../"};   // profondeur des fiches par langue
+const DISP="https://fauna-morocco.org/";                         // images affichées depuis le site en ligne
+let L="fr";
+const ORDERS=[{slug:"sauria",name:"Sauria"},{slug:"serpentes",name:"Serpentes"},{slug:"testudines",name:"Testudines"},{slug:"crocodylia",name:"Crocodylia"},{slug:"anura",name:"Anura"},{slug:"caudata",name:"Caudata"}];
+const FAMILIES=[
+ {slug:"varanidae",name:"Varanidae",order:"sauria"},{slug:"chamaeleonidae",name:"Chamaeleonidae",order:"sauria"},
+ {slug:"gekkonidae",name:"Gekkonidae",order:"sauria"},{slug:"lacertidae",name:"Lacertidae",order:"sauria"},{slug:"scincidae",name:"Scincidae",order:"sauria"},{slug:"agamidae",name:"Agamidae",order:"sauria"},
+ {slug:"elapidae",name:"Elapidae",order:"serpentes"},{slug:"viperidae",name:"Viperidae",order:"serpentes"},{slug:"colubridae",name:"Colubridae",order:"serpentes"},{slug:"lamprophiidae",name:"Lamprophiidae",order:"serpentes"}
+];
+const SECTION_PRESETS=[
+  {icon:"fa-info-circle",fr:"Description",en:"Description",ar:"الوصف"},
+  {icon:"fa-globe-africa",fr:"Distribution",en:"Distribution",ar:"الانتشار"},
+  {icon:"fa-tree",fr:"Habitat",en:"Habitat",ar:"الموطن"},
+  {icon:"fa-leaf",fr:"Histoire naturelle",en:"Natural History",ar:"التاريخ الطبيعي"},
+  {icon:"fa-shield-alt",fr:"Conservation",en:"Conservation",ar:"الحفظ"}
+];
+const SUB_PRESETS=[
+  {icon:"fa-utensils",fr:"Régime alimentaire",en:"Diet"},{icon:"fa-venus-mars",fr:"Reproduction",en:"Reproduction"},
+  {icon:"fa-cogs",fr:"Comportement",en:"Behavior"},{icon:"fa-hourglass-half",fr:"Longévité",en:"Lifespan"},
+  {icon:"fa-exclamation-triangle",fr:"Défense",en:"Defense"},{icon:"fa-pause",fr:"Hibernation",en:"Hibernation"},
+  {icon:"fa-eye",fr:"Vision",en:"Vision"},{icon:"fa-mask",fr:"Camouflage",en:"Camouflage"},
+  {icon:"fa-skull-crossbones",fr:"Venin",en:"Venom"},{icon:"fa-bolt",fr:"Langue",en:"Tongue"}
+];
+const ICONS=["fa-info-circle","fa-globe-africa","fa-tree","fa-leaf","fa-shield-alt","fa-book","fa-utensils","fa-venus-mars","fa-cogs","fa-hourglass-half","fa-exclamation-triangle","fa-pause","fa-eye","fa-mask","fa-skull-crossbones","fa-bolt","fa-dragon","fa-paw","fa-fish","fa-frog","fa-feather","fa-water","fa-mountain","fa-sun","fa-moon","fa-map","fa-ruler","fa-heart","fa-star","fa-clock","fa-temperature-half","fa-circle-info"];
+const BLOCK_TYPES=[
+  {t:"text",icon:"fa-paragraph",label:"Paragraphe"},
+  {t:"gallery-16-9",icon:"fa-image",label:"Galerie paysage (16:9)"},
+  {t:"gallery-2-3",icon:"fa-image",label:"Galerie portrait (2:3)"},
+  {t:"gallery-5-4",icon:"fa-images",label:"Diaporama (défile)"},
+  {t:"gallery-full-width",icon:"fa-panorama",label:"Image pleine largeur"},
+  {t:"distribution-map",icon:"fa-map-location-dot",label:"Carte de répartition"}
+];
+const SINGLE={"gallery-full-width":1,"distribution-map":1};
+
+/* ===================== STATE ===================== */
+function blankLang(){return{name:"",sci:"",intro:"",introImg:"",introMap:"",sections:[]};}
+let meta={slug:"",order:{slug:"sauria",name:"Sauria"},family:{slug:"varanidae",name:"Varanidae"},title:{en:"",fr:"",ar:""},description:{en:"",fr:"",ar:""}};
+let state={
+  statusCode:"LC", trendCode:"decreasing",
+  refs:[{key:"r1",text:"Geniez P. (2018). Serpents et lézards d'Afrique du Nord. Delachaux et Niestlé."}],
+  langs:{
+    fr:{name:"Varan du désert",sci:"Varanus griseus",intro:"Plus grand lézard du Maroc, le varan du désert est un prédateur au sommet de la chaîne{{r1}}.",introImg:"images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-intro.jpg",introMap:"images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-map-intro.jpg",
+      sections:[{title:"Description",icon:"fa-info-circle",blocks:[{type:"text",text:"Le varan du désert (*Varanus griseus*) est le plus grand lézard saharien{{r1}}. Il peut dépasser un mètre."},{type:"gallery-16-9",images:[{src:"images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-1.jpg",cap:"Posture détendue.",alt:"Varan détendu"}]}],subs:[{title:"Comportement",icon:"fa-cogs",text:"Espèce nocturne, s'enfouit dans le sable."}],subspecies:[]}]},
+    en:{name:"Desert Monitor",sci:"Varanus griseus",intro:"The largest lizard in Morocco, an apex predator{{r1}}.",introImg:"images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-intro.jpg",introMap:"images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-map-intro.jpg",
+      sections:[{title:"Description",icon:"fa-info-circle",blocks:[{type:"text",text:"The desert monitor (*Varanus griseus*) is the largest Saharan lizard{{r1}}."},{type:"gallery-16-9",images:[{src:"images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-1.jpg",cap:"Relaxed posture.",alt:"Relaxed monitor"}]}],subs:[{title:"Behavior",icon:"fa-cogs",text:"Nocturnal, buries in sand."}],subspecies:[]}]}
+  }
+};
+
+/* ===================== helpers texte <-> DOM ===================== */
+const G=window.FaunaGenerator, P=window.FaunaPage;
+function refNum(key){const i=state.refs.findIndex(r=>r.key===key);return i<0?"?":i+1;}
+function textToHTML(t){
+  let h=(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  h=h.replace(/\*([^*\n]+)\*/g,"<em>$1</em>");
+  h=h.replace(/\{\{([^}]+)\}\}/g,(m,k)=>`<sup class="refchip" contenteditable="false" data-key="${k.trim()}">${refNum(k.trim())}</sup>`);
+  return h;
+}
+function htmlToText(el){
+  let out="";el.childNodes.forEach(n=>{
+    if(n.nodeType===3)out+=n.nodeValue;
+    else if(n.nodeName==="EM"||n.nodeName==="I")out+="*"+n.textContent+"*";
+    else if(n.classList&&n.classList.contains("refchip"))out+="{{"+n.dataset.key+"}}";
+    else if(n.nodeName==="BR")out+="\n";
+    else out+=n.textContent;
+  });return out.trim();
+}
+/* Aperçu local des images choisies avant upload réel (branché serveur plus tard) */
+const previewMap={}, pendingUploads={};
+function disp(p){return p?(previewMap[p]||(DISP+p)):"";}
+function folderFor(){return `images/encyclopedia/${meta.order.slug}/${meta.family.slug}/${meta.slug||"slug"}/`;}
+function labelOf(t){return({"gallery-16-9":"Paysage 16:9","gallery-2-3":"Portrait 2:3","gallery-5-4":"Diaporama","gallery-full-width":"Pleine largeur","distribution-map":"Carte de répartition"})[t]||"Image";}
+function dropZone(folder,onFile){
+  const dz=el("div","dz");dz.innerHTML='<i class="fas fa-cloud-arrow-up"></i><div>Glisse une image ici<br><small>ou clique pour choisir un fichier</small></div>';
+  const inp=document.createElement("input");inp.type="file";inp.accept="image/*";inp.style.display="none";dz.appendChild(inp);
+  dz.onclick=()=>inp.click();
+  inp.onchange=()=>{if(inp.files[0])handle(inp.files[0]);};
+  dz.ondragover=e=>{e.preventDefault();dz.classList.add("over");};
+  dz.ondragleave=()=>dz.classList.remove("over");
+  dz.ondrop=e=>{e.preventDefault();dz.classList.remove("over");if(e.dataTransfer.files[0])handle(e.dataTransfer.files[0]);};
+  function handle(file){
+    const name=file.name.toLowerCase().replace(/[^a-z0-9.]+/g,"-").replace(/-+/g,"-").replace(/^-|-(?=\.)/g,"");
+    const path=folder+name;previewMap[path]=URL.createObjectURL(file);pendingUploads[path]=file;onFile(path,file);uploadImage(path,file);
+  }
+  return dz;
+}
+function openImagePicker(opts){
+  const{b,close}=floatBox(opts.x!=null?opts.x:innerWidth/2-170,opts.y!=null?opts.y:120,340);
+  let style=opts.style||null;
+  function paintStyles(){
+    b.innerHTML='<div class="pkh">Choisis le format de l\'image</div>';
+    const grid=el("div");grid.style.cssText="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px";
+    [["gallery-16-9","fa-image","Paysage 16:9"],["gallery-2-3","fa-image","Portrait 2:3"],["gallery-5-4","fa-images","Diaporama"],["gallery-full-width","fa-panorama","Pleine largeur"],["distribution-map","fa-map-location-dot","Carte"]].forEach(([t,ic,l])=>{const btn=el("button","pk");btn.style.cssText="justify-content:center;background:#1c1c1c";btn.innerHTML=`<i class="fas ${ic}"></i> ${l}`;btn.onclick=()=>{style=t;paintDrop();};grid.appendChild(btn);});
+    b.appendChild(grid);
+  }
+  function paintDrop(){
+    b.innerHTML='<div class="pkh">'+(style?labelOf(style):"Ajouter une image")+'</div>';
+    if(opts.chooseStyle){const back=el("button","pk");back.innerHTML='<i class="fas fa-arrow-left"></i> changer de style';back.onclick=paintStyles;b.appendChild(back);}
+    b.appendChild(dropZone(folderFor(),(path)=>{close();opts.onPick(path,style);}));
+    const or=el("div","pkh");or.textContent="ou un chemin déjà en ligne";b.appendChild(or);
+    const row=el("div","pkrow");const inp=document.createElement("input");inp.placeholder=folderFor()+"photo.jpg";inp.value=opts.currentSrc||"";
+    const ok=el("button","pkok");ok.textContent="OK";ok.onclick=()=>{let v=inp.value.trim().replace(/^\.\.\//,"").replace(/^\/+/,"");if(v){close();opts.onPick(v,style);}};
+    inp.onkeydown=e=>{if(e.key==="Enter")ok.click();};row.appendChild(inp);row.appendChild(ok);b.appendChild(row);
+    const note=el("div","pkh");note.style.color="#6b675e";note.textContent="La photo sera envoyée au serveur à la publication.";b.appendChild(note);
+  }
+  if(opts.chooseStyle)paintStyles();else paintDrop();
+}
+function addImageBlock(si,style,src){eachLang(c=>{const b=newBlock(style);b.images.push({src,cap:"",alt:""});c.sections[si].blocks.push(b);});render();}
+
+/* ===================== rendu ===================== */
+const app=document.getElementById("app");
+function el(t,cls){const e=document.createElement(t);if(cls)e.className=cls;return e;}
+function chip(txt,fn){const b=document.createElement("button");b.className="add-chip";b.innerHTML=txt;b.onclick=fn;return b;}
+function centerWrap(n){const d=el("div");d.style.textAlign="center";d.appendChild(n);return d;}
+function mini(t,fn){const b=document.createElement("button");b.textContent=t;b.onclick=fn;return b;}
+
+function render(){
+  const c=state.langs[L];app.innerHTML="";
+  const sec=el("section","species-section");const cont=el("div","container");sec.appendChild(cont);
+  // titre
+  const th=el("div","species-title-header");const nm=el("div","species-names");
+  nm.appendChild(edEl("h1",c,"name","Nom commun"));
+  const sciP=el("p","scientific-name");sciP.appendChild(edEl("em",c,"sci","Nom scientifique"));nm.appendChild(sciP);
+  th.appendChild(nm);cont.appendChild(th);
+  // statut
+  cont.appendChild(statusBand());
+  // intro : texte + 2 images (photo + carte)
+  const isp=el("div","intro-split");
+  const it=el("div","intro-text");const ip=document.createElement("p");ip.appendChild(edText(c,"intro","Introduction…"));it.appendChild(ip);isp.appendChild(it);
+  const icc=el("div","intro-image-container");icc.style.cssText="display:block;position:static";
+  icc.appendChild(introImageEl(c,"introImg","Photo de l'espèce"));
+  icc.appendChild(introImageEl(c,"introMap","Carte de répartition (optionnelle)"));
+  isp.appendChild(icc);cont.appendChild(isp);
+  // sections
+  const accW=el("div","accordion-container");
+  c.sections.forEach((s,si)=>accW.appendChild(sectionEl(s,si)));
+  cont.appendChild(accW);
+  cont.appendChild(centerWrap(chip("＋ Ajouter une section",(e)=>openPickMenu(e,SECTION_PRESETS,addSectionPreset,()=>addSectionCustom(e)))));
+  // références
+  cont.appendChild(refsEl());
+  app.appendChild(sec);
+  app.setAttribute("dir",L==="ar"?"rtl":"ltr");
+  renderLangSwitch();renderMeta();
+}
+
+function edEl(tag,obj,key,ph){const e=document.createElement(tag);e.setAttribute("contenteditable","true");e.dataset.ed="1";e.dataset.ph=ph;e.textContent=obj[key]||"";e.oninput=()=>obj[key]=e.textContent;return e;}
+function edText(obj,key,ph){const p=document.createElement("span");p.setAttribute("contenteditable","true");p.dataset.ed="1";p.dataset.ph=ph;p.innerHTML=textToHTML(obj[key]);p.oninput=()=>obj[key]=htmlToText(p);bindSel(p);return p;}
+
+function statusBand(){
+  const SL={en:"Conservation status:",fr:"Statut de conservation :",ar:"حالة الحفظ:"};
+  const TL={en:"Population trend:",fr:"Tendance de population :",ar:"اتجاه التعداد:"};
+  const band=el("div","conservation-status-band");
+  band.appendChild(stItem(SL[L]||SL.en,G.IUCN,state.statusCode,code=>{state.statusCode=code;render();}));
+  band.appendChild(stItem(TL[L]||TL.en,G.TREND,state.trendCode,code=>{state.trendCode=code;render();}));
+  return band;
+}
+function stItem(label,list,cur,onPick){
+  const it=el("div","status-item");it.innerHTML=`<span class="status-label">${label}</span>`;
+  const val=el("span","status-value");const pick=el("span","stpick");
+  const curObj=list.find(x=>x.c===cur)||list[0];pick.textContent=(curObj[L]||curObj.en)+" ";
+  const menu=el("span","stmenu");
+  list.forEach(x=>{const b=document.createElement("button");b.innerHTML=`<span class="chip" style="background:${iucnColor(x.c)}">${x.c}</span> ${x[L]||x.en}`;b.onclick=e=>{e.stopPropagation();onPick(x.c);};menu.appendChild(b);});
+  pick.appendChild(menu);pick.onclick=e=>{e.stopPropagation();closeMenus();menu.classList.add("show");};
+  val.appendChild(pick);it.appendChild(val);return it;
+}
+function iucnColor(c){return{EX:"#000",EW:"#3a1d6e",CR:"#f44336",EN:"#ff9800",VU:"#ffc107",NT:"#cddc39",LC:"#4caf50",DD:"#9e9e9e",NE:"#bdbdbd"}[c]||"#4caf50";}
+
+/* image d'intro (photo/carte) */
+function introImageEl(c,key,label){
+  const slot=el("div","introslot");
+  const lab=el("div","lab");lab.innerHTML=(key==="introMap"?'<i class="fas fa-map"></i> ':'<i class="fas fa-image"></i> ')+label;slot.appendChild(lab);
+  if(!c[key]){slot.appendChild(dropZone(folderFor(),(path)=>{eachLang(x=>x[key]=path);render();}));return slot;}
+  const wrap=el("span","imed");const img=document.createElement("img");img.src=disp(c[key]);img.alt="";img.style.cssText="position:static;width:100%;max-height:240px;object-fit:cover;border-radius:10px;display:block";
+  const tools=el("span","tools");
+  tools.appendChild(itool("fa-arrows-rotate","Remplacer",(e)=>openImagePicker({x:e.clientX,y:e.clientY,currentSrc:c[key],onPick:v=>{eachLang(x=>x[key]=v);render();}})));
+  tools.appendChild(itool("fa-trash","",()=>{eachLang(x=>x[key]="");render();},"del"));
+  wrap.appendChild(img);wrap.appendChild(tools);slot.appendChild(wrap);return slot;
+}
+function itool(icon,label,fn,cls){const b=document.createElement("button");b.className="itool "+(cls||"");b.innerHTML=`<i class="fas ${icon}"></i>${label?" "+label:""}`;b.onclick=fn;return b;}
+
+
+/* ===================== SECTIONS ===================== */
+function sectionEl(s,si){
+  const item=el("div","accordion-item");
+  const head=el("button","accordion-header active");const hc=el("div","accordion-header-content");
+  const icon=document.createElement("i");icon.className="fas secicon "+(s.icon||"fa-leaf");icon.title="Changer l'icône";icon.onclick=e=>{e.stopPropagation();setSectionIcon(si,e);};hc.appendChild(icon);
+  const title=document.createElement("span");title.setAttribute("contenteditable","true");title.dataset.ed="1";title.dataset.ph="Titre";title.textContent=s.title||"";title.oninput=()=>s.title=title.textContent;title.onclick=e=>e.stopPropagation();hc.appendChild(title);
+  const ctl=el("span","ctl");
+  ctl.appendChild(mini("↑",e=>{e.stopPropagation();moveSection(si,-1);}));
+  ctl.appendChild(mini("↓",e=>{e.stopPropagation();moveSection(si,1);}));
+  ctl.appendChild(mini("✕",e=>{e.stopPropagation();if(confirm("Supprimer la section ?"))removeSection(si);}));
+  hc.appendChild(ctl);head.appendChild(hc);head.insertAdjacentHTML("beforeend",'<i class="fas fa-chevron-down accordion-arrow"></i>');item.appendChild(head);
+  const content=el("div","accordion-content active");const body=el("div","accordion-body");
+  body.appendChild(insBar(si,0));
+  (s.blocks||[]).forEach((b,bi)=>{body.appendChild(blockEl(b,si,bi));body.appendChild(insBar(si,bi+1));});
+  (s.subs||[]).forEach((su,ki)=>body.appendChild(subEl(su,si,ki)));
+  (s.subspecies||[]).forEach((sp,pi)=>body.appendChild(subspEl(sp,si,pi)));
+  const imgChip=chip('<i class="fas fa-image"></i> Ajouter une image (choisir le format)',(e)=>openImagePicker({x:e.clientX,y:e.clientY+10,chooseStyle:true,onPick:(src,style)=>addImageBlock(si,style,src)}));
+  imgChip.style.cssText="border-color:var(--ocre);color:#e0b487;font-weight:700;margin:12px 6px 6px 0";
+  body.appendChild(imgChip);
+  body.appendChild(chip("＋ Sous-section",(e)=>openPickMenu(e,SUB_PRESETS,p=>addSubPreset(si,p),()=>addSubCustom(si,e))));
+  body.appendChild(chip("＋ Sous-espèce",()=>addSubspecies(si)));
+  content.appendChild(body);item.appendChild(content);return item;
+}
+
+/* ===================== BLOCS ===================== */
+function blockEl(b,si,bi){
+  const t=b.type||"text";
+  if(t==="text"){
+    const p=document.createElement("p");
+    const sp=document.createElement("span");sp.setAttribute("contenteditable","true");sp.dataset.ed="1";sp.dataset.ph="Texte…";sp.innerHTML=textToHTML(b.text);sp.oninput=()=>b.text=htmlToText(sp);bindSel(sp);p.appendChild(sp);
+    const ctl=el("span","ctl");ctl.appendChild(mini("✕",()=>{eachLang(c=>c.sections[si].blocks.splice(bi,1));render();}));p.appendChild(ctl);
+    return p;
+  }
+  // galeries / carte
+  const wrap=el("div");
+  const label=el("div");label.style.cssText="font:700 10px/1 'Oswald';letter-spacing:.1em;text-transform:uppercase;color:#7a756b;margin:4px 0";
+  label.innerHTML=(BLOCK_TYPES.find(x=>x.t===t)||{}).label||t;
+  const rm=mini("✕",()=>{eachLang(c=>c.sections[si].blocks.splice(bi,1));render();});rm.style.marginLeft="8px";label.appendChild(rm);wrap.appendChild(label);
+  const grid=el("div",t+"-grid");grid.style.display="grid";grid.style.gridTemplateColumns=SINGLE[t]?"1fr":"1fr 1fr";grid.style.gap="8px";
+  (b.images||[]).forEach((im,ii)=>grid.appendChild(imageCard(im,t,()=>{eachLang(c=>c.sections[si].blocks[bi].images[ii].src=im.src);},()=>{eachLang(c=>c.sections[si].blocks[bi].images.splice(ii,1));render();})));
+  wrap.appendChild(grid);
+  if(!SINGLE[t]||!(b.images||[]).length)
+    wrap.appendChild(chip("＋ Photo de plus (même format)",(e)=>openImagePicker({x:e.clientX,y:e.clientY+10,onPick:v=>{eachLang(c=>c.sections[si].blocks[bi].images.push({src:v,cap:"",alt:""}));render();}})));
+  if(t==="gallery-5-4"){wrap.appendChild(edGlobalCap(b));}
+  return wrap;
+}
+function imageCard(im,t,onSrc,onDel){
+  const it=el("div",t+"-item");
+  const w=el("span","imed");const img=document.createElement("img");img.className=t+"-image";img.src=disp(im.src);img.style.width="100%";
+  const tools=el("span","tools");
+  tools.appendChild(itool("fa-arrows-rotate","",(e)=>openImagePicker({x:e.clientX,y:e.clientY,currentSrc:im.src,onPick:v=>{im.src=v;onSrc();render();}})));
+  tools.appendChild(itool("fa-tag","Alt",()=>{const a=prompt("Texte alternatif (description pour l'accessibilité/SEO) :",im.alt||"");if(a!==null){im.alt=a;}}));
+  tools.appendChild(itool("fa-trash","",onDel,"del"));
+  w.appendChild(img);w.appendChild(tools);it.appendChild(w);
+  const cap=el("div",t+"-caption");const cs=document.createElement("span");cs.setAttribute("contenteditable","true");cs.dataset.ed="1";cs.dataset.ph="Légende…";cs.textContent=im.cap||"";cs.oninput=()=>im.cap=cs.textContent;cap.appendChild(cs);it.appendChild(cap);
+  return it;
+}
+function edGlobalCap(b){const d=el("div","globalcap");const s=document.createElement("span");s.setAttribute("contenteditable","true");s.dataset.ed="1";s.dataset.ph="Légende globale du diaporama (optionnelle)…";s.textContent=b.globalCap||"";s.oninput=()=>b.globalCap=s.textContent;d.appendChild(s);return d;}
+
+/* ===================== SOUS-SECTIONS ===================== */
+function subEl(su,si,ki){
+  const d=el("div","sub-section");
+  const h=el("button","sub-section-header");h.innerHTML='<i class="fas fa-chevron-down sub-section-arrow"></i>';
+  const hc=el("div","sub-section-header-content");const ic=document.createElement("i");ic.className="fas secicon "+(su.icon||"fa-cogs");ic.onclick=e=>{e.stopPropagation();openIconPicker(e,su.icon,icon=>{eachLang(c=>c.sections[si].subs[ki].icon=icon);render();});};hc.appendChild(ic);
+  const t=document.createElement("span");t.setAttribute("contenteditable","true");t.dataset.ed="1";t.dataset.ph="Titre";t.textContent=su.title||"";t.oninput=()=>su.title=t.textContent;t.onclick=e=>e.stopPropagation();hc.appendChild(t);
+  const ctl=el("span","ctl");ctl.appendChild(mini("✕",e=>{e.stopPropagation();eachLang(c=>c.sections[si].subs.splice(ki,1));render();}));hc.appendChild(ctl);
+  h.appendChild(hc);h.insertAdjacentHTML("beforeend",'<i class="fas fa-chevron-down sub-section-arrow"></i>');d.appendChild(h);
+  const cont=el("div","sub-section-content");const body=el("div","sub-section-body");
+  const p=document.createElement("p");const sp=document.createElement("span");sp.setAttribute("contenteditable","true");sp.dataset.ed="1";sp.dataset.ph="Texte…";sp.innerHTML=textToHTML(su.text);sp.oninput=()=>su.text=htmlToText(sp);bindSel(sp);p.appendChild(sp);body.appendChild(p);
+  cont.appendChild(body);d.appendChild(cont);return d;
+}
+
+/* ===================== SOUS-ESPÈCES ===================== */
+function subspEl(sp,si,pi){
+  const box=el("div","subsp");
+  const sh=el("div","sh");sh.innerHTML='<i class="fas fa-sitemap"></i>';
+  const t=document.createElement("span");t.setAttribute("contenteditable","true");t.dataset.ed="1";t.dataset.ph="Nom de la sous-espèce";t.style.color="#e9e3d7";t.textContent=sp.title||"";t.oninput=()=>sp.title=t.textContent;sh.appendChild(t);
+  const rm=mini("✕",()=>{eachLang(c=>c.sections[si].subspecies.splice(pi,1));render();});rm.style.marginLeft="auto";sh.appendChild(rm);box.appendChild(sh);
+  const p=document.createElement("p");const spx=document.createElement("span");spx.setAttribute("contenteditable","true");spx.dataset.ed="1";spx.dataset.ph="Texte…";spx.innerHTML=textToHTML(sp.text);spx.oninput=()=>sp.text=htmlToText(spx);bindSel(spx);p.appendChild(spx);box.appendChild(p);
+  const grid=el("div");grid.style.cssText="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px";
+  (sp.images||[]).forEach((im,ii)=>grid.appendChild(imageCard(im,"gallery-5-4",()=>{eachLang(c=>c.sections[si].subspecies[pi].images[ii].src=im.src);},()=>{eachLang(c=>c.sections[si].subspecies[pi].images.splice(ii,1));render();})));
+  box.appendChild(grid);
+  box.appendChild(chip("＋ Photo",(e)=>openImagePicker({x:e.clientX,y:e.clientY+10,onPick:v=>{eachLang(c=>c.sections[si].subspecies[pi].images.push({src:v,cap:"",alt:""}));render();}})));
+  box.appendChild(edGlobalCap(sp));
+  return box;
+}
+
+/* ===================== RÉFÉRENCES ===================== */
+function refsEl(){
+  const H={fr:"Références",en:"References",ar:"المراجع"};
+  const box=el("div","references-section");box.style.marginTop="1.6rem";
+  const h=document.createElement("h3");h.textContent=H[L]||H.en;h.style.cssText="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.04em;color:#C06A2C;font-size:1.05rem;margin:0 0 .6rem";box.appendChild(h);
+  const ol=el("ol","references-list");
+  state.refs.forEach((r,i)=>{
+    const li=document.createElement("li");
+    const t=document.createElement("span");t.setAttribute("contenteditable","true");t.dataset.ed="1";t.textContent=r.text;t.oninput=()=>r.text=t.textContent;t.style.outline="none";
+    const rm=document.createElement("button");rm.textContent="✕";rm.title="Retirer la référence";rm.style.cssText="background:none;border:none;color:#c52412;cursor:pointer;margin-left:8px;font-size:12px";rm.onclick=()=>{state.refs.splice(i,1);render();};
+    li.appendChild(t);li.appendChild(rm);ol.appendChild(li);
+  });
+  box.appendChild(ol);
+  const add=document.createElement("button");add.textContent="＋ Ajouter une référence";add.style.cssText="background:none;border:1px dashed #C06A2C;color:#C06A2C;border-radius:20px;padding:6px 13px;font:600 12px/1 'Lato',sans-serif;cursor:pointer;margin-top:.8rem";add.onclick=()=>{state.refs.push({key:"r"+(Date.now()%100000),text:"Nouvelle référence…"});render();};
+  box.appendChild(add);
+  return box;
+}
+
+/* ===================== MENUS PRÉRÉGLÉS + ICÔNES ===================== */
+function floatBox(x,y,w){const b=el("div","floatbox");b.style.left=Math.min(x,innerWidth-(w+20))+"px";b.style.top=Math.min(y,innerHeight-70)+"px";b.style.width=w+"px";document.body.appendChild(b);const close=()=>b.remove();setTimeout(()=>document.addEventListener("mousedown",function h(e){if(!b.contains(e.target)){close();document.removeEventListener("mousedown",h);}}),0);return{b,close};}
+function openPickMenu(ev,presets,onPreset,onCustom){
+  const{b,close}=floatBox(ev.clientX,ev.clientY+10,250);b.innerHTML='<div class="pkh">Modèles</div>';
+  presets.forEach(p=>{const btn=el("button","pk");btn.innerHTML=`<i class="fas ${p.icon}"></i> ${p[L]||p.en}`;btn.onclick=()=>{close();onPreset(p);};b.appendChild(btn);});
+  const cu=el("button","pk cust");cu.innerHTML='<i class="fas fa-plus"></i> Personnalisée (choisir l\'icône)…';cu.onclick=()=>{close();onCustom();};b.appendChild(cu);
+}
+function openIconPicker(ev,cur,cb){
+  const{b,close}=floatBox(ev?ev.clientX:innerWidth/2-130,ev?ev.clientY+10:120,264);b.innerHTML='<div class="pkh">Choisir une icône</div>';
+  const grid=el("div","icongrid");
+  ICONS.forEach(ic=>{const g=el("button","ig"+(ic===cur?" on":""));g.innerHTML=`<i class="fas ${ic}"></i>`;g.title=ic;g.onclick=()=>{close();cb(ic);};grid.appendChild(g);});
+  b.appendChild(grid);
+  const row=el("div","pkrow");const inp=document.createElement("input");inp.placeholder="classe FontAwesome : fa-dragon";inp.value=cur||"";
+  const ok=el("button","pkok");ok.textContent="OK";ok.onclick=()=>{let v=inp.value.trim().replace(/^fa[srlb]?\s+/,"").replace(/^fa-/,"");if(v){close();cb("fa-"+v);}};
+  inp.onkeydown=e=>{if(e.key==="Enter")ok.click();};row.appendChild(inp);row.appendChild(ok);b.appendChild(row);
+}
+function insBar(si,pos){
+  const bar=el("div","ins");const plus=document.createElement("button");plus.className="plus";plus.textContent="+";
+  plus.onclick=e=>{e.stopPropagation();closeMenus();const{b,close}=floatBox(e.clientX,e.clientY+8,240);b.innerHTML='<div class="pkh">Insérer un bloc</div>';
+    BLOCK_TYPES.forEach(bt=>{const btn=el("button","pk");btn.innerHTML=`<i class="fas ${bt.icon}"></i> ${bt.label}`;btn.onclick=()=>{close();insertBlock(si,pos,bt.t);};b.appendChild(btn);});};
+  bar.appendChild(plus);return bar;
+}
+
+/* ===================== OPÉRATIONS (miroir multi-langue) ===================== */
+function eachLang(fn){LANGS.forEach(l=>{if(state.langs[l])fn(state.langs[l],l);});}
+function newBlock(t){return t==="text"?{type:"text",text:""}:{type:t,images:[],globalCap:""};}
+function insertBlock(si,pos,t){eachLang(c=>c.sections[si].blocks.splice(pos,0,newBlock(t)));render();}
+function addSectionPreset(p){eachLang((c,l)=>c.sections.push({title:p[l]||p.en,icon:p.icon,blocks:[{type:"text",text:""}],subs:[],subspecies:[]}));render();}
+function addSectionCustom(ev){openIconPicker(ev,"fa-leaf",icon=>{const t=prompt("Titre de la section :","Nouvelle section");if(t===null)return;eachLang(c=>c.sections.push({title:t,icon:icon,blocks:[{type:"text",text:""}],subs:[],subspecies:[]}));render();});}
+function removeSection(si){eachLang(c=>c.sections.splice(si,1));render();}
+function moveSection(si,dir){const j=si+dir;if(j<0)return;eachLang(c=>{if(j>=c.sections.length)return;const[x]=c.sections.splice(si,1);c.sections.splice(j,0,x);});render();}
+function addSubPreset(si,p){eachLang((c,l)=>c.sections[si].subs.push({title:p[l]||p.en,icon:p.icon,text:""}));render();}
+function addSubCustom(si,ev){openIconPicker(ev,"fa-cogs",icon=>{const t=prompt("Titre de la sous-section :","Sous-section");if(t===null)return;eachLang(c=>c.sections[si].subs.push({title:t,icon:icon,text:""}));render();});}
+function addSubspecies(si){eachLang(c=>c.sections[si].subspecies.push({title:"Sous-espèce",text:"",images:[],globalCap:""}));render();}
+function setSectionIcon(si,ev){openIconPicker(ev,state.langs[L].sections[si].icon,icon=>{eachLang(c=>c.sections[si].icon=icon);render();});}
+
+/* ===================== SÉLECTION : format + citer ===================== */
+let lastRange=null;
+function bindSel(elm){elm.addEventListener("mouseup",showSel);elm.addEventListener("keyup",showSel);}
+function showSel(){const sel=window.getSelection();const st=document.getElementById("seltool");if(!sel.rangeCount||sel.isCollapsed){st.classList.remove("show");return;}lastRange=sel.getRangeAt(0);const r=lastRange.getBoundingClientRect();st.style.left=(r.left+r.width/2-52+scrollX)+"px";st.style.top=(r.top-46+scrollY)+"px";st.classList.add("show");}
+function fmt(cmd){document.execCommand(cmd,false,null);const a=document.activeElement;if(a&&a.dataset&&a.dataset.ed)a.dispatchEvent(new Event("input"));}
+function openCite(ev){
+  ev.stopPropagation();
+  if(!state.refs.length){alert("Ajoute d'abord une référence en bas de page.");return;}
+  const st=document.getElementById("seltool");const r=st.getBoundingClientRect();
+  const{b,close}=floatBox(r.left,r.bottom+6,300);b.innerHTML='<div class="pkh">Insérer un renvoi vers…</div>';
+  state.refs.forEach((rf,i)=>{const btn=el("button","pk");btn.innerHTML=`<i class="fas fa-book"></i> <b>${i+1}.</b> <small>${rf.text.replace(/<[^>]+>/g,"").slice(0,44)}</small>`;btn.onmousedown=e=>e.preventDefault();btn.onclick=()=>{close();insertCite(rf.key,i+1);};b.appendChild(btn);});
+}
+function insertCite(key,n){
+  const sel=window.getSelection();if(lastRange){sel.removeAllRanges();sel.addRange(lastRange);}
+  const chipEl=document.createElement("sup");chipEl.className="refchip";chipEl.contentEditable="false";chipEl.dataset.key=key;chipEl.textContent=n;
+  if(lastRange){lastRange.collapse(false);lastRange.insertNode(chipEl);const host=chipEl.closest("[data-ed]");if(host)host.dispatchEvent(new Event("input"));}
+  document.getElementById("seltool").classList.remove("show");
+}
+
+/* ===================== MÉTADONNÉES ===================== */
+function pagePath(){return `encyclopedia/${meta.order.slug||"?"}/${meta.family.slug||"?"}/${meta.slug||"?"}.html`;}
+function renderMeta(){
+  const f=document.getElementById("metaform");if(!f)return;f.innerHTML="";
+  const url=el("div");url.innerHTML='<label>Adresse de la page (URL)</label>';const up=el("div","urlprev");up.textContent="/"+pagePath();url.appendChild(up);f.appendChild(url);
+  // slug
+  f.appendChild(field("Slug (identifiant dans l'URL)",inputBind(()=>meta.slug,v=>meta.slug=v,"cerastes-cerastes",()=>{const s=el("button","pkok");})));
+  const slugRow=f.lastChild.querySelector("input");
+  const autoBtn=document.createElement("button");autoBtn.className="add-chip";autoBtn.textContent="⤺ depuis le nom scientifique";autoBtn.onclick=()=>{meta.slug=G.slugify(state.langs.en.sci||state.langs.fr.sci);renderMeta();};f.lastChild.appendChild(autoBtn);
+  // ordre
+  f.appendChild(field("Ordre",selectBind(ORDERS,()=>meta.order.slug,(slug,name)=>{meta.order={slug,name};renderMeta();},"＋ Autre ordre…",()=>{const slug=prompt("Slug de l'ordre (ex. testudines) :","");if(!slug)return;const name=prompt("Nom affiché :",slug.charAt(0).toUpperCase()+slug.slice(1));meta.order={slug:slug.toLowerCase(),name:name||slug};renderMeta();})));
+  // famille
+  const fams=FAMILIES.filter(x=>x.order===meta.order.slug);
+  f.appendChild(field("Famille",selectBind(fams,()=>meta.family.slug,(slug,name)=>{meta.family={slug,name};renderMeta();},"＋ Autre famille…",()=>{const slug=prompt("Slug de la famille (ex. viperidae) :","");if(!slug)return;const name=prompt("Nom affiché :",slug.charAt(0).toUpperCase()+slug.slice(1));meta.family={slug:slug.toLowerCase(),name:name||slug};renderMeta();})));
+  // SEO
+  const seo=el("div");seo.innerHTML='<label>Titre SEO (FR)</label>';seo.appendChild(inputBind(()=>meta.title.fr,v=>meta.title.fr=v,(state.langs.fr.name||"")+" — "+(state.langs.fr.sci||"")));f.appendChild(seo);
+  const seoE=el("div");seoE.innerHTML='<label>Titre SEO (EN)</label>';seoE.appendChild(inputBind(()=>meta.title.en,v=>meta.title.en=v,(state.langs.en.name||"")+" — "+(state.langs.en.sci||"")));f.appendChild(seoE);
+  const d1=el("div");d1.innerHTML='<label>Description SEO (FR)</label>';const ta1=document.createElement("textarea");ta1.value=meta.description.fr;ta1.oninput=()=>meta.description.fr=ta1.value;d1.appendChild(ta1);f.appendChild(d1);
+  const d2=el("div");d2.innerHTML='<label>Description SEO (EN)</label>';const ta2=document.createElement("textarea");ta2.value=meta.description.en;ta2.oninput=()=>meta.description.en=ta2.value;d2.appendChild(ta2);f.appendChild(d2);
+  const seoA=el("div");seoA.innerHTML='<label>Titre SEO (AR)</label>';seoA.appendChild(inputBind(()=>meta.title.ar,v=>meta.title.ar=v,(state.langs.ar&&state.langs.ar.name)||""));f.appendChild(seoA);
+  const d3=el("div");d3.innerHTML='<label>Description SEO (AR)</label>';const ta3=document.createElement("textarea");ta3.value=meta.description.ar||"";ta3.oninput=()=>meta.description.ar=ta3.value;d3.appendChild(ta3);f.appendChild(d3);
+  const warn=el("div","miniwarn");warn.innerHTML="⚠︎ L'ordre et la famille doivent déjà exister sur le site (pages <code>"+meta.order.slug+".html</code> et <code>"+meta.family.slug+".html</code>) pour que le fil d'Ariane fonctionne.";f.appendChild(warn);
+}
+function field(label,node){const d=el("div");d.innerHTML=`<label>${label}</label>`;d.appendChild(node);return d;}
+function inputBind(get,set,ph){const i=document.createElement("input");i.value=get()||"";i.placeholder=ph||"";i.oninput=()=>{set(i.value);const up=document.querySelector("#metaform .urlprev");if(up)up.textContent="/"+pagePath();};return i;}
+function selectBind(list,getSlug,onPick,customLabel,onCustom){
+  const s=document.createElement("select");
+  list.forEach(o=>{const op=document.createElement("option");op.value=o.slug;op.textContent=o.name;if(o.slug===getSlug())op.selected=true;s.appendChild(op);});
+  const cu=document.createElement("option");cu.value="__custom";cu.textContent=customLabel;s.appendChild(cu);
+  s.onchange=()=>{if(s.value==="__custom"){onCustom();}else{const o=list.find(x=>x.slug===s.value);onPick(o.slug,o.name);}};
+  return s;
+}
+function toggleDrawer(){document.getElementById("drawer").classList.toggle("show");renderMeta();}
+
+/* ===================== NOUVELLE PAGE ===================== */
+function newPage(){
+  if(!confirm("Nouvelle fiche vierge ? Le contenu actuel non enregistré sera perdu."))return;
+  meta={slug:"",order:{slug:"sauria",name:"Sauria"},family:{slug:"varanidae",name:"Varanidae"},title:{en:"",fr:""},description:{en:"",fr:""}};
+  state={statusCode:"LC",trendCode:"decreasing",refs:[],langs:{fr:blankLang(),en:blankLang()}};
+  eachLang((c,l)=>c.sections.push({title:l==="fr"?"Description":"Description",icon:"fa-info-circle",blocks:[{type:"text",text:""}],subs:[],subspecies:[]}));
+  render();document.getElementById("drawer").classList.add("show");
+}
+
+/* ===================== SORTIE (aperçu / JSON) ===================== */
+function buildStateRel(rel){   // pour l'aperçu : affiche les nouvelles images (blob) sinon chemin absolu
+  const cl=JSON.parse(JSON.stringify(state));
+  LANGS.forEach(l=>{const c=cl.langs[l];if(!c)return;
+    const P=x=>x?(previewMap[x]||(rel+x)):"";
+    c.introImg=P(c.introImg);c.introMap=P(c.introMap);
+    (c.sections||[]).forEach(s=>{
+      (s.blocks||[]).forEach(b=>(b.images||[]).forEach(im=>{if(im.src)im.src=P(im.src);}));
+      (s.subspecies||[]).forEach(su=>(su.images||[]).forEach(im=>{if(im.src)im.src=P(im.src);}));
+    });
+  });return cl;
+}
+function buildPublishState(){   // pour publier : chemins préfixés selon la profondeur de chaque langue
+  const cl=JSON.parse(JSON.stringify(state));
+  LANGS.forEach(l=>{const c=cl.langs[l];if(!c)return;const rel=REL[l];const P=x=>x?(rel+x):"";
+    c.introImg=P(c.introImg);c.introMap=P(c.introMap);
+    (c.sections||[]).forEach(s=>{
+      (s.blocks||[]).forEach(b=>(b.images||[]).forEach(im=>{if(im.src)im.src=P(im.src);}));
+      (s.subspecies||[]).forEach(su=>(su.images||[]).forEach(im=>{if(im.src)im.src=P(im.src);}));
+    });
+  });return cl;
+}
+function buildMeta(){
+  const en=state.langs.en,fr=state.langs.fr,ar=state.langs.ar||{};
+  return {slug:meta.slug||G.slugify(en.sci||fr.sci),
+    order:{slug:meta.order.slug,en:meta.order.name,fr:meta.order.name,ar:meta.order.name},
+    family:{slug:meta.family.slug,en:meta.family.name,fr:meta.family.name,ar:meta.family.name},
+    common:{en:en.name,fr:fr.name,ar:ar.name||en.name},
+    title:{en:meta.title.en||en.name,fr:meta.title.fr||fr.name,ar:meta.title.ar||ar.name||en.name},
+    description:{en:meta.description.en,fr:meta.description.fr,ar:meta.description.ar||""},
+    scientific:en.sci||fr.sci,
+    statusEN:(G.IUCN.find(x=>x.c===state.statusCode)||{}).en||"",
+    introImg:en.introImg||fr.introImg||""};
+}
+function preview(){
+  const S="https://fauna-morocco.org/";
+  const ps=buildStateRel(S);
+  const body=G.generateBody(ps,L,{});
+  const w=window.open("","_blank");
+  w.document.write(`<!doctype html><html lang="${L}" dir="${L==='ar'?'rtl':'ltr'}"><head><meta charset="utf-8"><link rel="stylesheet" href="${S}css/general.css"><link rel="stylesheet" href="${S}encyclopedia/species-account.css"><link rel="stylesheet" href="${S}css/reskin.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head><body>${body}<script src="${S}encyclopedia/species-account.js"><\/script></body></html>`);
+  w.document.close();
+}
+function exportJSON(){const w=window.open("","_blank");w.document.write("<pre style='color:#7fdc9e;background:#111;padding:16px;font:12px monospace'>"+JSON.stringify({meta:buildMeta(),state:state},null,2).replace(/</g,"&lt;")+"</pre>");w.document.close();}
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.style.display="block";clearTimeout(t._t);t._t=setTimeout(()=>t.style.display="none",2600);}
+
+/* ===================== connexion serveur (enregistrer / publier / upload) ===================== */
+const API=(location.origin&&location.origin!=="null")?location.origin:"";
+let AUTH={key:(typeof sessionStorage!=="undefined"&&sessionStorage.getItem("fauna_key"))||"",pub:""};
+function needKey(){if(!AUTH.key){AUTH.key=(prompt("Mot de passe d'édition :")||"").trim();if(AUTH.key&&typeof sessionStorage!=="undefined")sessionStorage.setItem("fauna_key",AUTH.key);}return AUTH.key;}
+async function saveDraft(silent){
+  const m=buildMeta();
+  if(!m.slug||!m.order.slug||!m.family.slug){alert("Renseigne le slug, l'ordre et la famille dans « Réglages page » avant d'enregistrer.");return null;}
+  if(!API){toast("Enregistrement disponible une fois l'outil en ligne.");return null;}
+  const key=needKey();if(!key)return null;
+  try{
+    const r=await fetch(API+"/api/drafts/"+m.slug,{method:"PUT",headers:{"Content-Type":"application/json","x-fauna-key":key},body:JSON.stringify({meta:m,state:buildPublishState()})});
+    if(r.status===401){AUTH.key="";if(typeof sessionStorage!=="undefined")sessionStorage.removeItem("fauna_key");toast("Mot de passe d'édition refusé.");return null;}
+    if(!r.ok){const e=await r.json().catch(()=>({}));toast("Erreur : "+(e.error||r.status));return null;}
+    if(!silent)toast("Brouillon enregistré.");return {slug:m.slug};
+  }catch(e){toast("Serveur injoignable.");return null;}
+}
+async function publish(){
+  const d=await saveDraft(true);if(!d)return;
+  if(!AUTH.pub)AUTH.pub=(prompt("Mot de passe de publication :")||"").trim();if(!AUTH.pub)return;
+  try{
+    const r=await fetch(API+"/api/publish/"+d.slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":AUTH.pub}});
+    if(r.status===401){AUTH.pub="";toast("Mot de passe de publication refusé.");return;}
+    if(!r.ok){const e=await r.json().catch(()=>({}));toast("Erreur publication : "+(e.error||r.status));return;}
+    toast("Publié ! Mise en ligne dans ~2-3 min.");
+  }catch(e){toast("Serveur injoignable.");}
+}
+function compress(file){return new Promise(res=>{const img=new Image();img.onload=()=>{const max=1600;let w=img.width,h=img.height;if(w>max){h=Math.round(h*max/w);w=max;}const c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);res(c.toDataURL("image/jpeg",0.82));};img.onerror=()=>res(null);img.src=URL.createObjectURL(file);});}
+async function uploadImage(path,file){
+  if(!API)return;const key=needKey();if(!key)return;
+  const data=await compress(file);if(!data)return;
+  try{const r=await fetch(API+"/api/upload",{method:"POST",headers:{"Content-Type":"application/json","x-fauna-key":key},body:JSON.stringify({path,data})});
+    if(r.ok){delete pendingUploads[path];toast("Image envoyée.");}else{toast("Image gardée pour la publication.");}
+  }catch(e){/* reste dans pendingUploads */}
+}
+
+/* ===================== langue / divers ===================== */
+function renderLangSwitch(){const sw=document.getElementById("langsw");sw.innerHTML="";LANGS.forEach(l=>{const b=document.createElement("button");b.textContent=l.toUpperCase();if(l===L)b.className="on";b.onclick=()=>{L=l;render();};sw.appendChild(b);});}
+function closeMenus(){document.querySelectorAll(".stmenu.show").forEach(m=>m.classList.remove("show"));}
+document.addEventListener("click",()=>{closeMenus();setTimeout(()=>{const s=window.getSelection();if(s.isCollapsed)document.getElementById("seltool").classList.remove("show");},10);});
+
+/* ===================== init : pré-remplissage depuis le tableau de bord, ou fiche d'exemple ===================== */
+function blankSection(){return {title:"",icon:"fa-info-circle",blocks:[{type:"text",text:""}],subs:[],subspecies:[]};}
+(function init(){
+  const p=new URLSearchParams(location.search);
+  if(p.get("sci")||p.get("slug")){
+    const sci=(p.get("sci")||"").trim(), slug=(p.get("slug")||"").trim();
+    const order=p.get("order")||"sauria", family=p.get("family")||"";
+    const o=ORDERS.find(x=>x.slug===order)||{slug:order,name:order.charAt(0).toUpperCase()+order.slice(1)};
+    const fa=FAMILIES.find(x=>x.slug===family)||{slug:family,name:family.charAt(0).toUpperCase()+family.slice(1)};
+    meta={slug:slug,order:{slug:o.slug,name:o.name},family:{slug:fa.slug,name:fa.name},title:{en:"",fr:"",ar:""},description:{en:"",fr:"",ar:""}};
+    state={statusCode:"LC",trendCode:"decreasing",refs:[],langs:{}};
+    LANGS.forEach(l=>{const c=blankLang();c.sci=sci;state.langs[l]=c;});
+    SECTION_PRESETS.forEach(p=>LANGS.forEach(l=>state.langs[l].sections.push({title:p[l]||p.en,icon:p.icon,blocks:[{type:"text",text:""}],subs:[],subspecies:[]})));
+  } else {
+    // s'assurer que toutes les langues existent (structure identique)
+    LANGS.forEach(l=>{ if(!state.langs[l]){ const b=JSON.parse(JSON.stringify(state.langs.fr)); b.name="";b.intro=""; (b.sections||[]).forEach(s=>{s.title="";(s.blocks||[]).forEach(bl=>{if(bl.type==="text")bl.text="";(bl.images||[]).forEach(im=>im.cap="");});(s.subs||[]).forEach(su=>{su.title="";su.text="";});(s.subspecies||[]).forEach(sp=>{sp.title="";sp.text="";});}); state.langs[l]=b; } });
+  }
+})();
+render();
+</script>
+</body>
+</html>
