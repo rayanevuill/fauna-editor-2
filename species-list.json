@@ -18,11 +18,19 @@
               "slug": "emys-orbicularis",
               "status": "todo",
               "order": "testudines",
-              "family": "emydidae"
+              "family": "emydidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "geoemydidae",
@@ -34,11 +42,19 @@
               "slug": "mauremys-leprosa",
               "status": "todo",
               "order": "testudines",
-              "family": "geoemydidae"
+              "family": "geoemydidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "testudinidae",
@@ -50,17 +66,29 @@
               "slug": "testudo-graeca",
               "status": "todo",
               "order": "testudines",
-              "family": "testudinidae"
+              "family": "testudinidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         }
       ],
       "displayLevel": "species",
       "count": 3,
       "published": 0,
-      "status": "soon"
+      "status": "soon",
+      "common": {
+        "en": "",
+        "fr": ""
+      }
     },
     {
       "slug": "lezards",
@@ -77,60 +105,96 @@
               "slug": "agama-bibroni",
               "status": "todo",
               "order": "sauria",
-              "family": "agamidae"
+              "family": "agamidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Agama boueti",
               "slug": "agama-boueti",
               "status": "todo",
               "order": "sauria",
-              "family": "agamidae"
+              "family": "agamidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Agama boulengeri",
               "slug": "agama-boulengeri",
               "status": "todo",
               "order": "sauria",
-              "family": "agamidae"
+              "family": "agamidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Trapelus boehmei",
               "slug": "trapelus-boehmei",
               "status": "todo",
               "order": "sauria",
-              "family": "agamidae"
+              "family": "agamidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Trapelus cf. asperus",
               "slug": "trapelus-cf",
               "status": "todo",
               "order": "sauria",
-              "family": "agamidae"
+              "family": "agamidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Uromastyx dispar",
               "slug": "uromastyx-dispar",
               "status": "todo",
               "order": "sauria",
-              "family": "agamidae"
+              "family": "agamidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Uromastyx nigriventris",
               "slug": "uromastyx-nigriventris",
               "status": "todo",
               "order": "sauria",
-              "family": "agamidae"
+              "family": "agamidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Uromastyx occidentalis",
               "slug": "uromastyx-occidentalis",
               "status": "todo",
               "order": "sauria",
-              "family": "agamidae"
+              "family": "agamidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "amphisbaenia",
@@ -142,25 +206,41 @@
               "slug": "blanus-mettetali",
               "status": "todo",
               "order": "sauria",
-              "family": "amphisbaenia"
+              "family": "amphisbaenia",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Blanus tingitanus",
               "slug": "blanus-tingitanus",
               "status": "todo",
               "order": "sauria",
-              "family": "amphisbaenia"
+              "family": "amphisbaenia",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Trogonophis wiegmanni",
               "slug": "trogonophis-wiegmanni",
               "status": "todo",
               "order": "sauria",
-              "family": "amphisbaenia"
+              "family": "amphisbaenia",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "anguidae",
@@ -172,11 +252,19 @@
               "slug": "hyalosaurus-koellikeri",
               "status": "todo",
               "order": "sauria",
-              "family": "anguidae"
+              "family": "anguidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "chamaeleonidae",
@@ -189,11 +277,19 @@
               "status": "published",
               "path": "encyclopedia/sauria/chamaeleonidae/chamaeleo-chamaeleon.html",
               "order": "sauria",
-              "family": "chamaeleonidae"
+              "family": "chamaeleonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "live"
+          "status": "live",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "gekkonidae",
@@ -205,60 +301,96 @@
               "slug": "hemidactylus-angulatus",
               "status": "todo",
               "order": "sauria",
-              "family": "gekkonidae"
+              "family": "gekkonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Hemidactylus turcicus",
               "slug": "hemidactylus-turcicus",
               "status": "todo",
               "order": "sauria",
-              "family": "gekkonidae"
+              "family": "gekkonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Stenodactylus mauritanicus",
               "slug": "stenodactylus-mauritanicus",
               "status": "todo",
               "order": "sauria",
-              "family": "gekkonidae"
+              "family": "gekkonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Stenodactylus petrii",
               "slug": "stenodactylus-petrii",
               "status": "todo",
               "order": "sauria",
-              "family": "gekkonidae"
+              "family": "gekkonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Stenodactylus sthenodactylus",
               "slug": "stenodactylus-sthenodactylus",
               "status": "todo",
               "order": "sauria",
-              "family": "gekkonidae"
+              "family": "gekkonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Tarentola mauritanica",
               "slug": "tarentola-mauritanica",
               "status": "todo",
               "order": "sauria",
-              "family": "gekkonidae"
+              "family": "gekkonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Tropicolotes tripolitanus",
               "slug": "tropicolotes-tripolitanus",
               "status": "todo",
               "order": "sauria",
-              "family": "gekkonidae"
+              "family": "gekkonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Tropiocolotes algericus",
               "slug": "tropiocolotes-algericus",
               "status": "todo",
               "order": "sauria",
-              "family": "gekkonidae"
+              "family": "gekkonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "lacaertidae",
@@ -270,172 +402,272 @@
               "slug": "acanthodactylus-aureus",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Acanthodactylus boskianus",
               "slug": "acanthodactylus-boskianus",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Acanthodactylus busacki",
               "slug": "acanthodactylus-busacki",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Acanthodactylus dumerilii",
               "slug": "acanthodactylus-dumerilii",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Acanthodactylus erythrurus",
               "slug": "acanthodactylus-erythrurus",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Acanthodactylus lacrymae",
               "slug": "acanthodactylus-lacrymae",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Acanthodactylus longipes",
               "slug": "acanthodactylus-longipes",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Acanthodactylus maculatus",
               "slug": "acanthodactylus-maculatus",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Acanthodactylus margaritae",
               "slug": "acanthodactylus-margaritae",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Acanthodactylus montanus",
               "slug": "acanthodactylus-montanus",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Acanthodactylus taghitensis",
               "slug": "acanthodactylus-taghitensis",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Atlantolacerta andreanskyi",
               "slug": "atlantolacerta-andreanskyi",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Mesalina guttulata",
               "slug": "mesalina-guttulata",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Mesalina olivieri",
               "slug": "mesalina-olivieri",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Mesalina pasteuri",
               "slug": "mesalina-pasteuri",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Mesalina rubropunctata",
               "slug": "mesalina-rubropunctata",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Mesalina simoni",
               "slug": "mesalina-simoni",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Ophisops occidentalis",
               "slug": "ophisops-occidentalis",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Podarcis vaucheri",
               "slug": "podarcis-vaucheri",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Psammodromus algirus",
               "slug": "psammodromus-algirus",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Psammodromus blanci",
               "slug": "psammodromus-blanci",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Psammodromus microdactylus",
               "slug": "psammodromus-microdactylus",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Scelarcis perspicillata",
               "slug": "scelarcis-perspicillata",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Timon tangitanus",
               "slug": "timon-tangitanus",
               "status": "todo",
               "order": "sauria",
-              "family": "lacaertidae"
+              "family": "lacaertidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": true,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "phyllodactylidae",
@@ -447,53 +679,85 @@
               "slug": "ptyodactylus-oudrii",
               "status": "todo",
               "order": "sauria",
-              "family": "phyllodactylidae"
+              "family": "phyllodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Tarentola annularis",
               "slug": "tarentola-annularis",
               "status": "todo",
               "order": "sauria",
-              "family": "phyllodactylidae"
+              "family": "phyllodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Tarentola boehmei",
               "slug": "tarentola-boehmei",
               "status": "todo",
               "order": "sauria",
-              "family": "phyllodactylidae"
+              "family": "phyllodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Tarentola chazaliae",
               "slug": "tarentola-chazaliae",
               "status": "todo",
               "order": "sauria",
-              "family": "phyllodactylidae"
+              "family": "phyllodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Tarentola deserti",
               "slug": "tarentola-deserti",
               "status": "todo",
               "order": "sauria",
-              "family": "phyllodactylidae"
+              "family": "phyllodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Tarentola hogarensis",
               "slug": "tarentola-hogarensis",
               "status": "todo",
               "order": "sauria",
-              "family": "phyllodactylidae"
+              "family": "phyllodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Tarentola parvicarinata",
               "slug": "tarentola-parvicarinata",
               "status": "todo",
               "order": "sauria",
-              "family": "phyllodactylidae"
+              "family": "phyllodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "scincidae",
@@ -505,130 +769,206 @@
               "slug": "chalcides-boulengeri",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides colosii",
               "slug": "chalcides-colosii",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides delislei",
               "slug": "chalcides-delislei",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides ebneri",
               "slug": "chalcides-ebneri",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides lanzai",
               "slug": "chalcides-lanzai",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides manueli",
               "slug": "chalcides-manueli",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides mauritanicus",
               "slug": "chalcides-mauritanicus",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides minutus",
               "slug": "chalcides-minutus",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides mionecton",
               "slug": "chalcides-mionecton",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides montanus",
               "slug": "chalcides-montanus",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides ocellatus",
               "slug": "chalcides-ocellatus",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides parallelus",
               "slug": "chalcides-parallelus",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides polypelis",
               "slug": "chalcides-polypelis",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides pseudostriatus",
               "slug": "chalcides-pseudostriatus",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Chalcides sphenopsiformis",
               "slug": "chalcides-sphenopsiformis",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Eumeces algeriensis",
               "slug": "eumeces-algeriensis",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Scincus albifasciatus",
               "slug": "scincus-albifasciatus",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Scincus scincus",
               "slug": "scincus-scincus",
               "status": "todo",
               "order": "sauria",
-              "family": "scincidae"
+              "family": "scincidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": true,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "sphaerodactylidae",
@@ -640,67 +980,107 @@
               "slug": "quedenfeldtia-moerens",
               "status": "todo",
               "order": "sauria",
-              "family": "sphaerodactylidae"
+              "family": "sphaerodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Quedenfeldtia trachyblepharus",
               "slug": "quedenfeldtia-trachyblepharus",
               "status": "todo",
               "order": "sauria",
-              "family": "sphaerodactylidae"
+              "family": "sphaerodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Saurodactylus brosseti",
               "slug": "saurodactylus-brosseti",
               "status": "todo",
               "order": "sauria",
-              "family": "sphaerodactylidae"
+              "family": "sphaerodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Saurodactylus elmoudenii",
               "slug": "saurodactylus-elmoudenii",
               "status": "todo",
               "order": "sauria",
-              "family": "sphaerodactylidae"
+              "family": "sphaerodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Saurodactylus fasciatus",
               "slug": "saurodactylus-fasciatus",
               "status": "todo",
               "order": "sauria",
-              "family": "sphaerodactylidae"
+              "family": "sphaerodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Saurodactylus harrisii",
               "slug": "saurodactylus-harrisii",
               "status": "todo",
               "order": "sauria",
-              "family": "sphaerodactylidae"
+              "family": "sphaerodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Saurodactylus mauritanicus",
               "slug": "saurodactylus-mauritanicus",
               "status": "todo",
               "order": "sauria",
-              "family": "sphaerodactylidae"
+              "family": "sphaerodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Saurodactylus slimanii",
               "slug": "saurodactylus-slimanii",
               "status": "todo",
               "order": "sauria",
-              "family": "sphaerodactylidae"
+              "family": "sphaerodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Saurodactylus splendidus",
               "slug": "saurodactylus-splendidus",
               "status": "todo",
               "order": "sauria",
-              "family": "sphaerodactylidae"
+              "family": "sphaerodactylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "varanidae",
@@ -713,17 +1093,29 @@
               "status": "published",
               "path": "encyclopedia/sauria/varanidae/varanus-griseus.html",
               "order": "sauria",
-              "family": "varanidae"
+              "family": "varanidae",
+              "common": {
+                "en": "Desert Monitor",
+                "fr": "Varan du désert"
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "live"
+          "status": "live",
+          "common": {
+            "en": "Monitor Lizards",
+            "fr": "Varans"
+          }
         }
       ],
       "displayLevel": "family",
       "count": 80,
       "published": 2,
-      "status": "live"
+      "status": "live",
+      "common": {
+        "en": "",
+        "fr": ""
+      }
     },
     {
       "slug": "serpents",
@@ -740,11 +1132,19 @@
               "slug": "eryx-jaculus",
               "status": "todo",
               "order": "serpentes",
-              "family": "boidae"
+              "family": "boidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "colubridae",
@@ -756,81 +1156,129 @@
               "slug": "coronella-girondica",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Dasypeltis sahelensis",
               "slug": "dasypeltis-sahelensis",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Hemmorhois algirus",
               "slug": "hemmorhois-algirus",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Hemmorhois hippocrepis",
               "slug": "hemmorhois-hippocrepis",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Lytorhynchus diadema",
               "slug": "lytorhynchus-diadema",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Macroprotodon abubakeri",
               "slug": "macroprotodon-abubakeri",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Macroprotodon brevis",
               "slug": "macroprotodon-brevis",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Natrix astreptophora",
               "slug": "natrix-astreptophora",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Spalerosophis diadema",
               "slug": "spalerosophis-diadema",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Spalerosophis dolichospilus",
               "slug": "spalerosophis-dolichospilus",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Telescopus tripolitanus",
               "slug": "telescopus-tripolitanus",
               "status": "todo",
               "order": "serpentes",
-              "family": "colubridae"
+              "family": "colubridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": true,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "elapidae",
@@ -843,11 +1291,19 @@
               "status": "published",
               "path": "encyclopedia/serpentes/elapidae/naja-haje.html",
               "order": "serpentes",
-              "family": "elapidae"
+              "family": "elapidae",
+              "common": {
+                "en": "North African Cobra",
+                "fr": "Cobra d'Afrique du Nord"
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "live"
+          "status": "live",
+          "common": {
+            "en": "Cobras",
+            "fr": "Cobras"
+          }
         },
         {
           "slug": "lamprophiidae",
@@ -859,11 +1315,19 @@
               "slug": "boaedon-fuliginosus",
               "status": "todo",
               "order": "serpentes",
-              "family": "lamprophiidae"
+              "family": "lamprophiidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "leptotyphlopidae",
@@ -875,11 +1339,19 @@
               "slug": "myriopholis-algeriensis",
               "status": "todo",
               "order": "serpentes",
-              "family": "leptotyphlopidae"
+              "family": "leptotyphlopidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "natricidae",
@@ -891,11 +1363,19 @@
               "slug": "natrix-maura",
               "status": "todo",
               "order": "serpentes",
-              "family": "natricidae"
+              "family": "natricidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "psammophiidae",
@@ -907,32 +1387,52 @@
               "slug": "malpolon-insignitus",
               "status": "todo",
               "order": "serpentes",
-              "family": "psammophiidae"
+              "family": "psammophiidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Malpolon moilensis",
               "slug": "malpolon-moilensis",
               "status": "todo",
               "order": "serpentes",
-              "family": "psammophiidae"
+              "family": "psammophiidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Malpolon monspessulanus",
               "slug": "malpolon-monspessulanus",
               "status": "todo",
               "order": "serpentes",
-              "family": "psammophiidae"
+              "family": "psammophiidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Psammophis schokari",
               "slug": "psammophis-schokari",
               "status": "todo",
               "order": "serpentes",
-              "family": "psammophiidae"
+              "family": "psammophiidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "viperidae",
@@ -944,14 +1444,22 @@
               "slug": "bitis-arietans",
               "status": "todo",
               "order": "serpentes",
-              "family": "viperidae"
+              "family": "viperidae",
+              "common": {
+                "en": "Puff Adder",
+                "fr": "Vipère heurtante"
+              }
             },
             {
               "scientific": "Cerastes cerastes",
               "slug": "cerastes-cerastes",
               "status": "todo",
               "order": "serpentes",
-              "family": "viperidae"
+              "family": "viperidae",
+              "common": {
+                "en": "Desert Horned Viper",
+                "fr": "Vipère à Cornes"
+              }
             },
             {
               "scientific": "Cerastes vipera",
@@ -959,38 +1467,62 @@
               "status": "published",
               "path": "encyclopedia/serpentes/viperidae/cerastes-vipera.html",
               "order": "serpentes",
-              "family": "viperidae"
+              "family": "viperidae",
+              "common": {
+                "en": "Sahara Sand Viper",
+                "fr": "Vipère des sables"
+              }
             },
             {
               "scientific": "Daboia mauritanica",
               "slug": "daboia-mauritanica",
               "status": "todo",
               "order": "serpentes",
-              "family": "viperidae"
+              "family": "viperidae",
+              "common": {
+                "en": "Moorish Viper",
+                "fr": "Vipère de Maurétanie"
+              }
             },
             {
               "scientific": "Echis leucogaster",
               "slug": "echis-leucogaster",
               "status": "todo",
               "order": "serpentes",
-              "family": "viperidae"
+              "family": "viperidae",
+              "common": {
+                "en": "Saw-scaled Carpet Viper",
+                "fr": "Échide à ventre blanc"
+              }
             },
             {
               "scientific": "Vipera monticola",
               "slug": "vipera-monticola",
               "status": "todo",
               "order": "serpentes",
-              "family": "viperidae"
+              "family": "viperidae",
+              "common": {
+                "en": "Atlas Dwarf Viper",
+                "fr": "Vipère de l'Atlas"
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "live"
+          "status": "live",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         }
       ],
       "displayLevel": "family",
       "count": 26,
       "published": 2,
-      "status": "live"
+      "status": "live",
+      "common": {
+        "en": "",
+        "fr": ""
+      }
     },
     {
       "slug": "amphibiens",
@@ -1007,25 +1539,41 @@
               "slug": "alytes-maurus",
               "status": "todo",
               "order": "anura",
-              "family": "alytidae"
+              "family": "alytidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Discoglossus pictus",
               "slug": "discoglossus-pictus",
               "status": "todo",
               "order": "anura",
-              "family": "alytidae"
+              "family": "alytidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Discoglossus scovazzi",
               "slug": "discoglossus-scovazzi",
               "status": "todo",
               "order": "anura",
-              "family": "alytidae"
+              "family": "alytidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "bufonidae",
@@ -1037,39 +1585,63 @@
               "slug": "barbarophryne-brongersmai",
               "status": "todo",
               "order": "anura",
-              "family": "bufonidae"
+              "family": "bufonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Bufo spinosus",
               "slug": "bufo-spinosus",
               "status": "todo",
               "order": "anura",
-              "family": "bufonidae"
+              "family": "bufonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Bufotes boulengeri",
               "slug": "bufotes-boulengeri",
               "status": "todo",
               "order": "anura",
-              "family": "bufonidae"
+              "family": "bufonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Sclerophrys mauritanica",
               "slug": "sclerophrys-mauritanica",
               "status": "todo",
               "order": "anura",
-              "family": "bufonidae"
+              "family": "bufonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Sclerophrys xeros",
               "slug": "sclerophrys-xeros",
               "status": "todo",
               "order": "anura",
-              "family": "bufonidae"
+              "family": "bufonidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "dicroglossidae",
@@ -1081,11 +1653,19 @@
               "slug": "hoplobatrachus-occipitalis",
               "status": "todo",
               "order": "anura",
-              "family": "dicroglossidae"
+              "family": "dicroglossidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "hylidae",
@@ -1097,11 +1677,19 @@
               "slug": "hyla-meridionalis",
               "status": "todo",
               "order": "anura",
-              "family": "hylidae"
+              "family": "hylidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "pelobatidae",
@@ -1113,11 +1701,19 @@
               "slug": "pelobates-varaldii",
               "status": "todo",
               "order": "anura",
-              "family": "pelobatidae"
+              "family": "pelobatidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "ranidae",
@@ -1129,11 +1725,19 @@
               "slug": "pelophylax-saharicus",
               "status": "todo",
               "order": "anura",
-              "family": "ranidae"
+              "family": "ranidae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         },
         {
           "slug": "urodela-salamandridae",
@@ -1145,24 +1749,40 @@
               "slug": "pleurodeles-waltl",
               "status": "todo",
               "order": "caudata",
-              "family": "urodela-salamandridae"
+              "family": "urodela-salamandridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             },
             {
               "scientific": "Salamandra algira",
               "slug": "salamandra-algira",
               "status": "todo",
               "order": "caudata",
-              "family": "urodela-salamandridae"
+              "family": "urodela-salamandridae",
+              "common": {
+                "en": "",
+                "fr": ""
+              }
             }
           ],
           "groupByGenus": false,
-          "status": "soon"
+          "status": "soon",
+          "common": {
+            "en": "",
+            "fr": ""
+          }
         }
       ],
       "displayLevel": "family",
       "count": 14,
       "published": 0,
-      "status": "soon"
+      "status": "soon",
+      "common": {
+        "en": "",
+        "fr": ""
+      }
     }
   ]
 }
