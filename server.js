@@ -454,7 +454,9 @@ app.post("/api/landing-toggle/:order", needPublish, async (req, res) => {
     const ref = await getFile(GITHUB_BRANCH, "encyclopedia.html").catch(() => null);
     if (!ref) return res.status(500).json({ error: "accueil introuvable" });
     const currentlyOnline = new RegExp('<a href="[^"]*' + order + '\\.html" class="species-item">[\\s\\S]*?images/encyclopedia/' + order + '\\.jpg').test(ref.content);
-    const online = !currentlyOnline;
+    // état explicite si fourni (afficher/masquer au choix), sinon on inverse l'état actuel
+    const online = (req.body && typeof req.body.online === "boolean") ? req.body.online : !currentlyOnline;
+    if (online === currentlyOnline) return res.json({ ok: true, online: online, note: `« ${order} » était déjà ${online ? "en ligne" : "masqué"} sur l'accueil.` });
     const files = [];
     for (const p of ["encyclopedia.html", "fr/encyclopedia.html"]) {
       const ex = await getFile(GITHUB_BRANCH, p).catch(() => null); if (!ex) continue;
@@ -479,8 +481,10 @@ app.post("/api/menu-toggle/:order/:slug", needPublish, async (req, res) => {
     if (!menu) return res.status(404).json({ error: "page d'ordre inconnue" });
     const cell = (menu.cells || []).find(c => c.slug === slug);
     if (!cell) return res.status(404).json({ error: "case introuvable dans ce menu" });
-    cell.active = !cell.active; // BASCULE
-    const newState = cell.active;
+    // état explicite si fourni, sinon on inverse
+    const newState = (req.body && typeof req.body.active === "boolean") ? req.body.active : !cell.active;
+    if (newState === cell.active) return res.json({ ok: true, active: newState, note: `« ${slug} » était déjà ${newState ? "cliquable" : "coming soon"}.` });
+    cell.active = newState;
     const files = [];
     const gridRe = /<div class="species-grid">[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/;
     for (const pre of ["", "fr/"]) {
@@ -503,6 +507,68 @@ app.post("/api/menu-toggle/:order/:slug", needPublish, async (req, res) => {
     if (files.length < 2) return res.status(500).json({ error: "aucune page d'ordre à mettre à jour" });
     await commitFiles(files, `menu ${order}: ${slug} ${newState ? "cliquable" : "coming soon"}`);
     res.json({ ok: true, active: newState, note: `« ${slug} » est maintenant ${newState ? "CLIQUABLE" : "COMING SOON"} sur la page ${order}. Déploiement ~2-3 min.` });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// DÉPUBLIER une espèce : la retire du menu (coming-soon), remet son statut à "todo".
+// La fiche HTML reste (non liée) — réversible. Isolé : ne touche que sa page d'ordre (+ page-famille).
+app.post("/api/unpublish/:slug", needPublish, async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    if (!/^[a-z0-9-]+$/.test(slug)) return res.status(400).json({ error: "slug invalide" });
+    const lf = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
+    const list = lf ? JSON.parse(lf.content) : JSON.parse(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8"));
+    let sp = null, famObj = null, order = null;
+    (list.groups || []).forEach(g => (g.families || []).forEach(F => (F.species || []).forEach(s => { if (s.slug === slug) { sp = s; famObj = F; order = F.order; } })));
+    if (!sp) return res.status(404).json({ error: "espèce introuvable dans la liste" });
+    sp.status = "todo"; delete sp.iucn;
+    const menu = (list.menus || {})[order];
+    const files = [];
+    const gridRe = /<div class="species-grid">[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/;
+    if (menu) {
+      if (menu.mode === "species") {
+        const cell = (menu.cells || []).find(c => c.slug === slug);
+        if (cell) { cell.active = false; delete cell.iucn; }
+      } else {
+        const stillPub = (famObj.species || []).some(s => s.status === "published");
+        const cell = (menu.cells || []).find(c => c.slug === famObj.slug);
+        if (cell && !stillPub) cell.active = false;
+        if (!PRESERVE.has(`encyclopedia/${order}/${famObj.slug}.html`)) {
+          const fam2 = JSON.parse(JSON.stringify(famObj)); fam2.active = true;
+          MENUS.generatePages({ groups: [{ families: [fam2] }], menus: list.menus }, new Set()).forEach(pg => files.push({ path: pg.path, html: pg.html }));
+        }
+      }
+      for (const pre of ["", "fr/"]) {
+        const op = pre + `encyclopedia/${order}.html`;
+        const ex = await getFile(GITHUB_BRANCH, op).catch(() => null); if (!ex || !gridRe.test(ex.content)) continue;
+        const grid = MENUS.orderGrid(order, menu, pre ? "fr" : "en");
+        const patched = ex.content.replace(gridRe, grid + "\n            </div>\n        </section>");
+        const ok = (patched.match(/<section/g) || []).length === (patched.match(/<\/section>/g) || []).length && (patched.match(/class="species-grid"/g) || []).length === 1 && patched.includes("</footer>");
+        if (ok) files.push({ path: op, html: patched });
+      }
+    }
+    files.push({ path: "editor/species-list.json", html: JSON.stringify(list, null, 1) });
+    await commitFiles(files, `dépublication: ${slug}`);
+    res.json({ ok: true, note: `« ${slug} » retiré de la publication (coming soon). La fiche reste mais n'est plus liée. Déploiement ~2-3 min.` });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ÉTAT du site (pour que le dashboard affiche ce qui est en ligne / masqué à chaque niveau).
+app.get("/api/site-state", needEditor, async (req, res) => {
+  try {
+    const lf = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
+    const list = lf ? JSON.parse(lf.content) : JSON.parse(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8"));
+    const land = await getFile(GITHUB_BRANCH, "encyclopedia.html").catch(() => null);
+    const lh = land ? land.content : "";
+    const landing = {};
+    ["caudata", "sauria", "serpentes", "anura", "testudines", "amphisbaenia"].forEach(o => {
+      landing[o] = new RegExp('<a href="[^"]*' + o + '\\.html" class="species-item">[\\s\\S]*?images/encyclopedia/' + o + '\\.jpg').test(lh);
+    });
+    const menus = {};
+    Object.keys(list.menus || {}).forEach(o => { menus[o] = { mode: list.menus[o].mode, cells: {} }; (list.menus[o].cells || []).forEach(c => menus[o].cells[c.slug] = !!c.active); });
+    const published = [];
+    (list.groups || []).forEach(g => (g.families || []).forEach(F => (F.species || []).forEach(s => { if (s.status === "published") published.push(s.slug); })));
+    res.json({ landing: landing, menus: menus, published: published });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 

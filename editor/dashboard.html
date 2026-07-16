@@ -103,6 +103,7 @@ function speciesRow(f,s,arr){
   r.appendChild(sci);
   r.appendChild(statusBadge(()=>s.status,v=>s.status=v,SP_CYCLE));
   const ed=el("a","act");ed.href=`wysiwyg.html?order=${f.order}&family=${f.slug}&slug=${s.slug}&sci=${encodeURIComponent(s.scientific)}`+(s.status==="published"?"&existing=1":"");ed.innerHTML='<i class="fas fa-pen"></i> Éditer';r.appendChild(ed);
+  if(s.status==="published"||(ST.published||[]).includes(s.slug)){const up=el("button","mini");up.innerHTML='<i class="fas fa-eye-slash"></i>';up.title="Dépublier (retirer du menu, la fiche reste)";up.style.color="#c56a00";up.onclick=()=>unpublish(f,s);r.appendChild(up);}
   const rm=el("button","mini del");rm.innerHTML='<i class="fas fa-xmark"></i>';rm.onclick=()=>{if(confirm("Retirer "+s.scientific+" ?")){f.species.splice(f.species.indexOf(s),1);render();}};r.appendChild(rm);
   return r;
 }
@@ -114,7 +115,11 @@ function familyBlock(g,f,body){
   const c=el("span","fc");c.textContent=`${f.species.filter(s=>s.status==="published").length}/${f.species.length}`;fh.appendChild(c);
   fh.appendChild(statusBadge(()=>f.status,v=>f.status=v,NODE_CYCLE));
   // Bascule « cliquable sur la page d'ordre » (uniquement les ordres en mode familles)
-  if(f.order!=="testudines"&&f.order!=="caudata"){const mo=el("button","mini");mo.innerHTML='<i class="fas fa-link"></i>';mo.title="Menu de l'ordre : rendre cette famille cliquable ↔ coming soon";mo.onclick=()=>menuToggle(f.order,f.slug);fh.appendChild(mo);}
+  if(f.order!=="testudines"&&f.order!=="caudata"){
+    const act=!!(((ST.menus||{})[f.order]||{cells:{}}).cells[f.slug]);
+    const ms=el("span","badge "+(act?"b-live":"b-soon"));ms.style.fontSize="10px";ms.textContent=act?"cliquable":"coming soon";fh.appendChild(ms);
+    const mo=el("button","mini");mo.innerHTML=act?'<i class="fas fa-link-slash"></i>':'<i class="fas fa-link"></i>';mo.title=act?"Rendre coming soon sur la page d'ordre":"Rendre cliquable sur la page d'ordre";mo.onclick=()=>menuSet(f.order,f.slug,!act);fh.appendChild(mo);
+  }
   fh.appendChild(el("span","sp"));
   const gt=el("span","genusToggle"+(f.groupByGenus?" on":""));gt.textContent="par genre";gt.onclick=()=>{f.groupByGenus=!f.groupByGenus;render();};fh.appendChild(gt);
   const ren=el("button","mini");ren.innerHTML='<i class="fas fa-pen"></i>';ren.title="Renommer";ren.onclick=()=>{const v=prompt("Nom de la famille :",f.name);if(v){f.name=v.trim();f.slug=slugify(v);render();}};fh.appendChild(ren);
@@ -146,7 +151,9 @@ function render(){
     const h2=el("h2");h2.textContent=g.name;head.appendChild(h2);
     head.appendChild(statusBadge(()=>g.status,v=>g.status=v,NODE_CYCLE));
     const cnt=el("span","cnt");cnt.textContent=`${all.filter(s=>s.status==="published").length}/${all.length} publiées`;head.appendChild(cnt);
-    const lb=el("button","addbtn");lb.style.cssText="margin-left:8px;font-size:12px";lb.innerHTML='<i class="fas fa-globe"></i> Accueil : afficher/masquer';lb.title="Basculer ce groupe sur la page d'accueil (afficher ↔ masquer). Isolé.";lb.onclick=()=>landingToggle(g.order);head.appendChild(lb);
+    const onL=!!(ST.landing&&ST.landing[g.order]);
+    const ls=el("span","badge "+(onL?"b-live":"b-soon"));ls.style.marginLeft="8px";ls.textContent="Accueil : "+(onL?"EN LIGNE":"masqué");head.appendChild(ls);
+    const lbtn=el("button","addbtn");lbtn.style.cssText="margin-left:6px;font-size:12px";lbtn.innerHTML='<i class="fas fa-globe"></i> '+(onL?"Masquer de l'accueil":"Afficher sur l'accueil");lbtn.onclick=()=>landingSet(g.order,!onL);head.appendChild(lbtn);
     head.appendChild(el("span","sp"));
     const tg=el("div","toggle");tg.innerHTML=`<button data-l="family" class="${g.displayLevel==='family'?'on':''}">Familles</button><button data-l="species" class="${g.displayLevel==='species'?'on':''}">Espèces</button>`;
     tg.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{g.displayLevel=btn.dataset.l;render();});
@@ -166,7 +173,46 @@ document.getElementById("q").oninput=e=>{q=e.target.value.toLowerCase().trim();r
 const API=(location.origin&&location.origin!=="null")?location.origin:"";
 let KEY=(typeof sessionStorage!=="undefined"&&sessionStorage.getItem("fauna_key"))||"";
 function needKey(){if(!KEY){KEY=(prompt("Mot de passe d'édition :")||"").trim();if(KEY&&typeof sessionStorage!=="undefined")sessionStorage.setItem("fauna_key",KEY);}return KEY;}
-async function loadServer(){if(!API)return;try{const r=await fetch(API+"/api/species-list",{headers:{"x-fauna-key":needKey()}});if(r.ok){const d=await r.json();if(d&&d.groups){DATA.groups=d.groups;render();}}else if(r.status===401){KEY="";if(typeof sessionStorage!=="undefined")sessionStorage.removeItem("fauna_key");}}catch(e){}}
+let ST={landing:{},menus:{},published:[]};
+// Réorganisation SUR LE MENU DU SITE : 6 cartes d'ordre (comme la page d'accueil de l'encyclopédie).
+const ORDER_UNITS=[
+  {slug:"caudata",name:"Caudata — Urodèles (salamandres & tritons)",order:"caudata",m:f=>f.order==="caudata"},
+  {slug:"sauria",name:"Sauria — Lézards",order:"sauria",m:f=>f.order==="sauria"&&f.slug!=="amphisbaenia"},
+  {slug:"serpentes",name:"Serpentes — Serpents",order:"serpentes",m:f=>f.order==="serpentes"},
+  {slug:"anura",name:"Anura — Grenouilles & crapauds",order:"anura",m:f=>f.order==="anura"},
+  {slug:"testudines",name:"Testudines — Tortues",order:"testudines",m:f=>f.order==="testudines"},
+  {slug:"amphisbaenia",name:"Amphisbaenia — Amphisbènes",order:"amphisbaenia",m:f=>f.slug==="amphisbaenia"}
+];
+function regroupByOrder(){
+  const all=[];DATA.groups.forEach(g=>(g.families||[]).forEach(f=>all.push(f)));
+  DATA.groups=ORDER_UNITS.map(u=>({slug:u.slug,name:u.name,order:u.order,displayLevel:"family",families:all.filter(u.m)}));
+}
+async function loadServer(){
+  if(!API)return;
+  try{
+    const r=await fetch(API+"/api/species-list",{headers:{"x-fauna-key":needKey()}});
+    if(r.ok){const d=await r.json();if(d&&d.groups){DATA.groups=d.groups;regroupByOrder();}}
+    else if(r.status===401){KEY="";if(typeof sessionStorage!=="undefined")sessionStorage.removeItem("fauna_key");}
+    try{const rs=await fetch(API+"/api/site-state",{headers:{"x-fauna-key":KEY}});if(rs.ok)ST=await rs.json();}catch(e){}
+    render();
+  }catch(e){}
+}
+async function landingSet(order,online){
+  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
+  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
+  try{const r=await fetch(API+"/api/landing-toggle/"+order,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub},body:JSON.stringify({online:online})});const d=await r.json().catch(()=>({}));if(r.ok){ST.landing=ST.landing||{};ST.landing[order]=online;render();alert(d.note||"OK");}else alert("Erreur : "+(d.error||r.status));}catch(e){alert("Serveur injoignable.");}
+}
+async function menuSet(order,slug,active){
+  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
+  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
+  try{const r=await fetch(API+"/api/menu-toggle/"+order+"/"+slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub},body:JSON.stringify({active:active})});const d=await r.json().catch(()=>({}));if(r.ok){ST.menus[order]=ST.menus[order]||{cells:{}};ST.menus[order].cells[slug]=active;render();alert(d.note||"OK");}else alert("Erreur : "+(d.error||r.status));}catch(e){alert("Serveur injoignable.");}
+}
+async function unpublish(f,s){
+  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
+  if(!confirm("Dépublier « "+s.scientific+" » ?\n(Retiré du menu / plus cliquable. La fiche reste, réversible.)"))return;
+  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
+  try{const r=await fetch(API+"/api/unpublish/"+s.slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub}});const d=await r.json().catch(()=>({}));if(r.ok){s.status="todo";ST.published=(ST.published||[]).filter(x=>x!==s.slug);render();alert(d.note||"OK");}else alert("Erreur : "+(d.error||r.status));}catch(e){alert("Serveur injoignable.");}
+}
 async function landingToggle(order){
   if(!API){alert("Disponible une fois l'outil en ligne.");return;}
   if(!confirm("Basculer « "+order+" » sur la page d'accueil (afficher ↔ masquer) ?\n(Ça ne touche QUE l'accueil.)"))return;
@@ -213,6 +259,7 @@ function uploadThumb(f,s){
     }catch(e){alert("Serveur injoignable.");}
   };inp.click();
 }
+regroupByOrder();
 render();
 loadServer();
 </script></body></html>
