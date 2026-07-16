@@ -1,0 +1,599 @@
+{
+ "meta": {
+  "slug": "varanus-griseus",
+  "order": {
+   "slug": "sauria",
+   "name": "Sauria"
+  },
+  "family": {
+   "slug": "varanidae",
+   "name": "Varanidae"
+  },
+  "title": {
+   "en": "Desert Monitor",
+   "fr": "Varan du désert",
+   "ar": ""
+  },
+  "description": {
+   "en": "",
+   "fr": "",
+   "ar": ""
+  }
+ },
+ "state": {
+  "statusCode": "LC",
+  "trendCode": "decreasing",
+  "refs": [
+   {
+    "key": "r1",
+    "text": "Bennett, D. (1995). A little book of monitor lizards."
+   },
+   {
+    "key": "r2",
+    "text": "CITES (2025). Appendices. https://cites.org/eng/app/appendices.php"
+   },
+   {
+    "key": "r3",
+    "text": "Ibrahim, A.A. (2000). A radiotelemetric study of the body temperature of Varanus griseus in Zaranik Protected Area, North Sinai, Egypt. Egyptian Journal of Biology, 2, 57–66."
+   },
+   {
+    "key": "r4",
+    "text": "Observations. (2025). iNaturalist. Retrieved 4 December 2025, from https://www.inaturalist.org/observations?taxon_id=39407"
+   },
+   {
+    "key": "r5",
+    "text": "Pleguezuelos, J., Brito, J., Fahd, S., Feriche, M., Mateo, J., Moreno-Rueda, G., Reques, R., & Santos, X. (2010). Setting conservation priorities for the Moroccan herpetofauna: The utility of regional red lists. Oryx, 44, 501–508. https://doi.org/10.1017/S0030605310000992"
+   },
+   {
+    "key": "r6",
+    "text": "Soorae, P., Eid, E.K.A., Behbehani, S.J.Y., Al Johany, A.M.H., Amr, Z.S.S., Egan, D.M., Els, J., Baha El Din, S., Böhme, W., Orlov, N.L., Wilkinson, J., Tuniyev, B., Lymberakis, P., Aghasyan, A., Cogălniceanu, D., Ananjeva, N.B., Disi, A.M., Mateo, J.A., Sattorov, T., Nuridjanov, D. & Chirikova, M. (2021). Varanus griseus. The IUCN Red List of Threatened Species 2021: e.T62252A3110663."
+   },
+   {
+    "key": "r7",
+    "text": "Vernet, R., Lemire, M., & Grenot, C. (1983). [Sur la reproduction de V. griseus]."
+   },
+   {
+    "key": "r8",
+    "text": "Vernet, R. et al. (1988b). [Température corporelle et physiologie de V. griseus]."
+   },
+   {
+    "key": "r9",
+    "text": "Zdunek, P., Bouazza, A., & Martínez del Mármol, G. (2024). Dragons in desert trouble: Anthropogenic wells as a potential threat to the Desert Monitor, Varanus griseus (Daudin, 1803), in Morocco. Herpetology Notes, 17, 821–826."
+   },
+   {
+    "key": "r10",
+    "text": "Zima, Y. (2019). On the Toxicity of the Bite of the Caspian Gray Monitor Lizard (Varanus griseus caspius). Biawak, 13, 115–118."
+   },
+   {
+    "key": "r11",
+    "text": "Zima, Y. A., & Fedorenko, V. A. (2024). The range of the Desert Monitor Varanus griseus caspius (Eichwald, 1831) in Central Asia. Frontiers of Biogeography, 17, e138199. https://doi.org/10.21425/fob.17.138199"
+   }
+  ],
+  "langs": {
+   "en": {
+    "name": "Desert Monitor",
+    "sci": "Varanus griseus",
+    "intro": "As the largest lizard in Morocco, the desert monitor is one of the most impressive reptiles in the country. As an apex predator, it plays a crucial role in maintaining ecological balance by regulating populations of small mammals, birds, and insects. However, the species faces numerous threats. From human persecution fueled by fear, tradition, and misunderstanding to the slow death suffered when trapped in water retention reservoirs, the desert monitor serves as a charismatic example of the delicate balance between desert wildlife and human activity.",
+    "introImg": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-intro.jpg",
+    "introMap": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-map-intro.jpg",
+    "sections": [
+     {
+      "title": "Description",
+      "icon": "fa-info-circle",
+      "items": [
+       {
+        "kind": "text",
+        "text": "The Desert monitor (*Varanus griseus*) is the largest Saharan lizard and belongs to the family *Varanidae*. It has an elongated, robust body that can reach more than one meter in total length depending on the population. The tail generally represents 120 to 150% of the snout-to-vent length{{r1}}. The limbs of this monitor are broad and sturdy. Its size varies greatly depending on the region: in Iraq, some individuals reach 120 cm, while in Palestine specimens rarely exceed 100 cm, and in Algeria individuals measuring 80 cm are already considered large{{r1}}. This variability suggests that climatic conditions and the availability of food resources directly influence growth and maximum attainable size. One may assume that Moroccan populations follow the same trend. During our expeditions, we observed specimens with a total length exceeding 80 cm."
+       },
+       {
+        "kind": "gallery-16-9",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-1.jpg",
+          "alt": "Desert monitor (Varanus griseus) in a relaxed and non-defensive posture",
+          "cap": "Desert monitor (Varanus griseus) in a relaxed and non-defensive posture."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-2.jpg",
+          "alt": "Desert monitor (Varanus griseus) in a defensive posture, using its tail as a whip and inflating its throat",
+          "cap": "Desert monitor (Varanus griseus) in a defensive posture, using its tail as a whip and inflating its throat."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "The coloration of the desert monitor is highly variable: in arid and sandy areas, some individuals display a uniform color, whereas in more vegetated environments, the patterning is more contrasted. Juveniles always show brighter coloration than adults{{r1}}. Despite these variations, the base color is generally sandy interspersed with black patterns in bands of varying width, fine lines, or spots."
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-3.jpg",
+          "alt": "Headshot of a Desert monitor (Varanus griseus); note the nostrils positioned close to the eyes",
+          "cap": "Headshot of a Desert monitor (Varanus griseus); note the nostrils positioned close to the eyes."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-4.jpg",
+          "alt": "Headshot of a defensive Desert monitor (Varanus griseus) with its throat inflated",
+          "cap": "Headshot of a defensive Desert monitor (Varanus griseus) with its throat inflated."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "It is noteworthy that the nostrils of the desert monitor are oriented backward and positioned close to the eyes. This likely indicates increased adaptation to dry and sandy environments."
+       },
+       {
+        "kind": "text",
+        "text": "This lizard is easily distinguishable from other saurian species found in Morocco, being the largest of them all."
+       }
+      ]
+     },
+     {
+      "title": "Distribution",
+      "icon": "fa-globe-africa",
+      "items": [
+       {
+        "kind": "text",
+        "text": "In Morocco, *Varanus griseus* is widely distributed in desert and Saharan areas south of the Atlas Mountains, with a strong presence in the Atlantic Sahara{{r4}}. Moroccan populations are probably all connected, even though this species is often considered to occur at low density in the country. The reality is certainly more complex, and some regions likely harbor higher densities of monitors. This impression of low density is probably due to its highly discreet behavior. Based on our observations and collected testimonies, it appears to be present in most regions south of the Atlas. However, it seems to be absent from the littoral region and the Souss valley."
+       },
+       {
+        "kind": "text",
+        "text": "On a global scale, its distribution range covers North Africa (Morocco, Mauritania, Algeria, Tunisia, Libya, Egypt, Sudan, Chad), the Arabian Peninsula (Saudi Arabia, Yemen, Oman, Kuwait), Southern Iraq and South-western Iran{{r1}}."
+       },
+       {
+        "kind": "distribution-map",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-map.jpg",
+          "alt": "Distribution map of Varanus griseus in Morocco",
+          "cap": "Distribution of *Varanus griseus* in Morocco, widespread throughout the arid landscape south of the Atlas Mountains."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Habitat",
+      "icon": "fa-tree",
+      "items": [
+       {
+        "kind": "text",
+        "text": "The species occupies desert and semi-desert environments, including dunes, regs, rocky plains, and sparsely shrub-covered areas. It tolerates a wide variety of substrates (gravel, dunes, dry plains) and altitudes (up to 1200 m in Israel){{r1}}. During our expeditions, we found tracks and living or dead specimens within sandy deserts, low-density agricultural areas, relatively close to urbanized areas, and rocky-soiled plateaus with few inhabitants. This variety clearly illustrates the versatility of the species, far from the cliché of a purely desert-dwelling and elusive animal, and closer to that of a discreet opportunist."
+       },
+       {
+        "kind": "gallery-full-width",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-habitat-full.jpg",
+          "alt": "Desert monitor (Varanus griseus) rescued from a well where it was trapped, showing its habitat",
+          "cap": "Desert monitor (Varanus griseus) rescued from a well where it was trapped for a long time - hence its sadly skinny appearance - in its habitat, near Smara."
+         }
+        ]
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-habitat-1.jpg",
+          "alt": "Desert monitor habitat around Merzouga, with sand dunes, small bushes, and rocky formations",
+          "cap": "Desert monitor habitat around Merzouga, with sand dunes, small bushes, and rocky formations surrounding the area."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-habitat-2.jpg",
+          "alt": "Desert monitor habitat around Assa, sandy terrain with scattered acacias",
+          "cap": "Desert monitor habitat around Assa, sandy terrain with scattered acacias."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Natural History",
+      "icon": "fa-leaf",
+      "items": [
+       {
+        "kind": "sub-section",
+        "title": "Ecology and Behavior",
+        "icon": "fa-cogs",
+        "items": [
+         {
+          "kind": "text",
+          "text": "The desert monitor is adapted to extreme heat and dryness. Burrows play a crucial role: in Israel, they measure on average 125 cm in length and 30 cm in depth{{r11}}. In Algeria, burrows exceeding 3 m have been described{{r1}}. In Morocco, neither the depth nor the complexity of burrows is documented, but the sandy and rocky substrates make similar shelters plausible. These burrows allow the animal to access a cooler and more humid microhabitat."
+         },
+         {
+          "kind": "text",
+          "text": "The species actively regulates its body temperature. In Egypt, radiotelemetry studies show an optimal temperature between 35 and 38 °C, reached through direct sun exposure in the morning and then maintained actively until early afternoon{{r3}}{{r7}}. The inactivity threshold is observed below 20 °C, and hibernation begins around 17 °C. The maximum tolerance is between 44 to 47 °C, beyond which mortality occurs{{r7}}."
+         },
+         {
+          "kind": "text",
+          "text": "The desert monitor is active mainly in spring and autumn, while it likely remains confined to its burrows during the coldest periods of winter and the hottest periods of summer. In Algeria, two main activity periods have been described: from April to June, then in October{{r1}}. In Mauritania, individuals have been observed until November{{r1}}. In Morocco, we recorded several fresh tracks in multiple regions during August and September, indicating summer activity as well. Monitors have also been observed by other herpetological groups in Morocco in the middle of summer. It is therefore likely that monitors reduce their activity to the cooler hours of the day during the peak of summer, yet they still remain active."
+         },
+         {
+          "kind": "text",
+          "text": "In Algeria, monitor territories extend over 1–5 km², with daily movements reaching up to 8 km{{r12}}{{r13}}. These values may vary greatly depending on prey availability within the habitat."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Diet",
+        "icon": "fa-utensils",
+        "items": [
+         {
+          "kind": "text",
+          "text": "The diet of the desert monitor is highly varied and opportunistic. In Israel, it mainly consumes other reptiles (lizards, snakes), ground-nesting birds, tortoises and their eggs, as well as mammals such as gerbils and young hares. It is also necrophagous, feeding on carcasses, including those of hedgehogs or even cats{{r1}}."
+         },
+         {
+          "kind": "text",
+          "text": "Analyses conducted in various countries (Algeria, Turkey, Arabia, Egypt, Tunisia) confirm the same trend: the desert monitor devours any suitably sized prey it encounters, including invertebrates such as beetles, orthopterans, scorpions, and ants{{r1}}. It is reasonable to assume that the Moroccan diet is similar, given the available fauna. Cases of monitors consuming horned vipers are reported verbally."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Reproduction",
+        "icon": "fa-venus-mars",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Data on reproduction in Morocco are lacking. However, in neighboring regions (Algeria, Tunisia, Israel), mating occurs in May and June, and egg-laying takes place in June–July{{r6}}{{r11}}. Females can lose up to 47% of their body mass after laying{{r11}}. Incubation likely lasts several months, and juveniles appear the following spring, although the exact duration of incubation remains uncertain{{r1}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Toxicity and Human-Wildlife Conflict",
+        "icon": "fa-exclamation-triangle",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Traditionally, *Varanus griseus* is feared by Saharan communities, often considered venomous and associated with negative beliefs{{r1}}. Although it does not possess venom comparable to that of snakes, a recent study on Varanus griseus caspius in Central Asia documented toxic effects linked to the saliva: generalized muscle pain, digestive issues, tachycardia, and bodily weakness, appearing after a prolonged bite during which the monitor remains attached for several minutes. A short bite carries no apparent risk{{r9}}. Historically, the species has been persecuted in several countries where it is associated with negative beliefs{{r1}}."
+         },
+         {
+          "kind": "text",
+          "text": "In Morocco, we found no evidence of active hunting targeting monitors. However, many monitors are found opportunistically near dwellings and are collected. Their skin is used as a poultice in traditional remedies for skin diseases. We were also told that monitor skins stored in tents or houses keep snakes away."
+         },
+         {
+          "kind": "text",
+          "text": "The desert monitor, as the only representative of the Varanidae in the country and an emblematic species of desert herpetofauna, is highly sought after by naturalists. These groups often explore reservoirs and wells, thereby offering a second chance to trapped animals that would otherwise perish. However, these practices may sometimes lead to excessive relocations of these animals."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Conservation",
+      "icon": "fa-shield-alt",
+      "items": [
+       {
+        "kind": "text",
+        "text": "In Morocco, *Varanus griseus* is classified as \"Near Threatened\" on the national Red List{{r4}}. Globally, it is assessed as \"Least Concern\" due to its wide distribution, despite local declines{{r5}}."
+       },
+       {
+        "kind": "text",
+        "text": "The main threats include:"
+       },
+       {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "text",
+          "text": "road collisions{{r8}},"
+         },
+         {
+          "kind": "text",
+          "text": "habitat destruction,"
+         },
+         {
+          "kind": "text",
+          "text": "direct persecution by humans{{r1}},"
+         },
+         {
+          "kind": "text",
+          "text": "accidental mortality due to falls into matfias (traditional wells), pipeline inspection shafts, cisterns, and agricultural reservoirs{{r8}}."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "In Morocco, it frequently falls into wells, reservoirs, or pipeline inspection shafts, where it can remain trapped, representing a significant threat to the species{{r8}}. During our expeditions, we found dead individuals in agricultural reservoirs, sometimes several individuals in the same location."
+       },
+       {
+        "kind": "text",
+        "text": "Finally, the species is listed in Appendix I of CITES, strictly prohibiting international trade for commercial purposes{{r2}}."
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-conservation-1.jpg",
+          "alt": "Dead Monitor lizards in a water retention basin",
+          "cap": "Dead Monitor lizards in a water retention basin in an agricultural area, in the middle of an otherwise very arid region."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-conservation-2.jpg",
+          "alt": "Agricultural water basins, deadly traps for Monitor lizards",
+          "cap": "The agricultural basins in question, deadly traps for many Monitor lizards every year."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-conservation-3.jpg",
+          "alt": "Dead Monitor lizard in a pipeline inspection shaft",
+          "cap": "A Monitor lizard found dead and decomposing in a pipeline inspection shaft near a city."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-conservation-4.jpg",
+          "alt": "Dried Monitor lizard for sale in Jemaa el-Fna Square",
+          "cap": "A whole dried Monitor lizard for sale in Jemaa el-Fna Square in Marrakech."
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "fr": {
+    "name": "Varan du désert",
+    "sci": "Varanus griseus",
+    "intro": "Plus grand lézard du Maroc, le Varan du désert est l'un des reptiles les plus impressionnants du pays. En tant que prédateur au sommet de la chaîne alimentaire, il joue un rôle crucial dans le maintien de l'équilibre écologique en régulant les populations de petits mammifères, d'oiseaux et d'insectes. Cependant, l'espèce fait face à de nombreuses menaces. De la persécution humaine alimentée par la peur, la tradition et l'incompréhension à la mort lente lorsqu'il est piégé dans des puits et bassins de rétention d'eau, le Varan du désert est un exemple de l'équilibre délicat entre la faune désertique et l'activité humaine.",
+    "introImg": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-intro.jpg",
+    "introMap": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-map-intro.jpg",
+    "sections": [
+     {
+      "title": "Description",
+      "icon": "fa-info-circle",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Le Varan du désert (Varanus griseus) est le plus grand lézard saharien et appartient à la famille des Varanidae. Il possède un corps allongé et robuste pouvant dépasser un mètre de longueur totale selon les populations. La queue représente généralement 120 à 150 % de la longueur museau-cloaque{{r1}}. Les membres de ce varan sont larges et solides. Sa taille varie fortement selon les régions : en Irak, certains individus atteignent 120 cm, tandis qu'en Palestine les spécimens dépassent rarement 100 cm, et en Algérie, les individus mesurant 80 cm sont déjà considérés comme grands{{r1}}. Cette variabilité suggère que les conditions climatiques et la disponibilité en ressources alimentaires influencent directement la croissance et la taille maximale atteignable. On peut supposer que les populations marocaines suivent la même tendance. Au cours de nos expéditions, nous avons observé des spécimens dont la longueur totale dépassait 80 cm."
+       },
+       {
+        "kind": "gallery-16-9",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-1.jpg",
+          "alt": "Desert monitor (Varanus griseus) in a relaxed and non-defensive posture",
+          "cap": "Varan du désert (Varanus griseus) dans une posture détendue, non défensive."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-2.jpg",
+          "alt": "Desert monitor (Varanus griseus) in a defensive posture, using its tail as a whip and inflating its throat",
+          "cap": "Varan du désert (Varanus griseus) en posture défensive, utilisant sa queue comme fouet et gonflant sa gorge."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "La coloration du Varan du désert est très variable : dans les zones arides et sableuses, certains individus présentent une couleur uniforme, tandis que dans les milieux plus végétalisés, les motifs sont plus contrastés. Les juvéniles montrent toujours une coloration plus vive que les adultes{{r1}}. Malgré ces variations, la couleur de base est généralement sableuse, entrecoupée de motifs noirs en bandes de largeur variable, en fines lignes ou en taches."
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-3.jpg",
+          "alt": "Headshot of a Desert monitor (Varanus griseus); note the nostrils positioned close to the eyes",
+          "cap": "Portrait d'un varan du désert (Varanus griseus), avec les narines situées typiquement près des yeux."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-4.jpg",
+          "alt": "Headshot of a defensive Desert monitor (Varanus griseus) with its throat inflated",
+          "cap": "Portrait d'un varan du désert (Varanus griseus) sur la défensive, la gorge gonflée."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "Il est à noter que les narines du Varan du désert sont orientées vers l'arrière et situées près des yeux. Cela indique vraisemblablement une adaptation accrue aux environnements secs et sablonneux."
+       },
+       {
+        "kind": "text",
+        "text": "Ce lézard se distingue donc aisément des autres espèces de sauriens trouvées au Maroc, étant le plus grand de tous."
+       }
+      ]
+     },
+     {
+      "title": "Distribution",
+      "icon": "fa-globe-africa",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Au Maroc, Varanus griseus est largement distribué dans les zones désertiques et sahariennes situées au sud de l'Atlas, avec une forte présence dans le Sahara atlantique{{r4}}. Les populations marocaines sont probablement toutes connectées, même si cette espèce est souvent considérée comme présente à faible densité dans le pays. La réalité est certainement plus complexe, et certaines régions abritent probablement des densités relativement élevées de varans. Cette impression de faible densité est probablement due à son comportement très discret. D'après nos observations et les témoignages recueillis, l'espèce semble présente dans la plupart des régions situées au sud de l'Atlas. Toutefois, elle paraît absente de la région littorale et de la vallée du Souss."
+       },
+       {
+        "kind": "text",
+        "text": "À l'échelle mondiale, son aire de répartition couvre l'Afrique du Nord (Maroc, Mauritanie, Algérie, Tunisie, Libye, Égypte, Soudan, Tchad), la péninsule Arabique (Arabie saoudite, Yémen, Oman, Koweït), le sud de l'Irak et le sud-ouest de l'Iran{{r1}}."
+       },
+       {
+        "kind": "distribution-map",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-map.jpg",
+          "alt": "Distribution map of Varanus griseus in Morocco",
+          "cap": "Répartition de Varanus griseus au Maroc, largement répandu dans les environnements arides au sud des montagnes de l'Atlas."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Habitat",
+      "icon": "fa-tree",
+      "items": [
+       {
+        "kind": "text",
+        "text": "L'espèce occupe des environnements désertiques et semi-désertiques, comprenant dunes, regs, plaines rocheuses et zones faiblement arbustives. Elle tolère une grande variété de substrats (graviers, dunes, plaines sèches) et d'altitudes (jusqu'à 1200 m en Israël){{r1}}. Au cours de nos expéditions, nous avons trouvé des traces ainsi que des spécimens vivants ou morts dans des déserts sableux, des zones agricoles de faible densité, relativement proches de zones urbanisées, ainsi que sur des plateaux à sol rocheux, très peu habités. Cette diversité illustre clairement la polyvalence de l'espèce, loin du cliché d'un animal strictement déserticole et insaisissable, et plus proche de celui d'un opportuniste discret."
+       },
+       {
+        "kind": "gallery-full-width",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-habitat-full.jpg",
+          "alt": "Desert monitor (Varanus griseus) rescued from a well where it was trapped, showing its habitat",
+          "cap": "Un Varan du désert (Varanus griseus) sauvé d'un puits où il était resté piégé pendant longtemps — d'où son apparence malheureusement amaigrie — dans son habitat naturel, vers Smara."
+         }
+        ]
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-habitat-1.jpg",
+          "alt": "Desert monitor habitat around Merzouga, with sand dunes, small bushes, and rocky formations",
+          "cap": "Habitat du Varan du désert autour de Merzouga, avec des dunes de sable, de petits buissons et des formations rocheuses tout autour."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-habitat-2.jpg",
+          "alt": "Desert monitor habitat around Assa, sandy terrain with scattered acacias",
+          "cap": "Habitat du Varan du désert autour d'Assa, terrain sablonneux avec acacias dispersés."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Histoire naturelle",
+      "icon": "fa-leaf",
+      "items": [
+       {
+        "kind": "sub-section",
+        "title": "Écologie et comportement",
+        "icon": "fa-cogs",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Le Varan du désert est adapté à la chaleur extrême et à la sécheresse. Les terriers jouent un rôle essentiel : en Israël, ils mesurent en moyenne 125 cm de longueur et 30 cm de profondeur{{r11}}. En Algérie, des terriers dépassant 3 m ont été décrits{{r1}}. Au Maroc, ni la profondeur ni la complexité des terriers ne sont documentées, mais les substrats sableux et rocheux rendent plausibles des abris similaires. Ces terriers permettent à l'animal d'accéder à un microhabitat plus frais et plus humide."
+         },
+         {
+          "kind": "text",
+          "text": "L'espèce régule activement sa température corporelle. En Égypte, des études de radiotélémétrie montrent une température optimale comprise entre 35 et 38 °C, atteinte grâce à une exposition directe au soleil le matin puis maintenue activement jusqu'en début d'après-midi{{r3}}{{r7}}. Le seuil d'inactivité est observé en dessous de 20 °C, et l'hibernation débute autour de 17 °C. La tolérance maximale se situe entre 44 et 47 °C, au-delà de laquelle la mortalité survient{{r7}}."
+         },
+         {
+          "kind": "text",
+          "text": "Le Varan du désert est principalement actif au printemps et en automne, tandis qu'il reste probablement confiné dans ses terriers durant les périodes les plus froides de l'hiver et les plus chaudes de l'été. En Algérie, deux principales périodes d'activité ont été décrites : d'avril à juin, puis en octobre{{r1}}. En Mauritanie, des individus ont été observés jusqu'en novembre{{r1}}. Au Maroc, nous avons relevé plusieurs traces fraîches dans différentes régions en août et septembre, ce qui indique également une activité estivale. Des varans ont aussi été observés par d'autres groupes herpétologiques en plein été. Il est donc probable que les varans réduisent leur activité aux heures les plus fraîches de la journée durant le pic estival, tout en restant actifs."
+         },
+         {
+          "kind": "text",
+          "text": "En Algérie, les territoires des varans s'étendent sur 1–5 km², avec des déplacements journaliers atteignant jusqu'à 8 km{{r12}}{{r13}}. Ces valeurs peuvent varier fortement selon la disponibilité en proies dans l'habitat."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Régime alimentaire",
+        "icon": "fa-utensils",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Le régime alimentaire du Varan du désert est très varié et opportuniste. En Israël, il consomme principalement d'autres reptiles (lézards, serpents), des oiseaux nichant au sol, des tortues et leurs œufs, ainsi que des mammifères tels que les gerbilles et les jeunes lièvres. Il est également nécrophage, se nourrissant de carcasses, y compris celles de hérissons ou même de chats{{r1}}."
+         },
+         {
+          "kind": "text",
+          "text": "Les analyses réalisées dans plusieurs pays (Algérie, Turquie, Arabie, Égypte, Tunisie) confirment la même tendance : le Varan du désert dévore toute proie de taille appropriée qu'il rencontre, y compris des invertébrés tels que coléoptères, orthoptères, scorpions et fourmis{{r1}}. Il est raisonnable de supposer que le régime marocain est similaire, compte tenu de la faune disponible. Des cas de consommation de vipères à cornes sont rapportés verbalement."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Reproduction",
+        "icon": "fa-venus-mars",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Les données concernant la reproduction au Maroc sont inexistantes. Cependant, dans les régions voisines (Algérie, Tunisie, Israël), l'accouplement a lieu en mai et juin et la ponte se déroule en juin–juillet{{r6}}{{r11}}. Les femelles peuvent perdre jusqu'à 47 % de leur masse corporelle après la ponte{{r11}}. L'incubation dure vraisemblablement plusieurs mois et les juvéniles apparaissent au printemps suivant, bien que la durée exacte reste incertaine{{r1}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Toxicité et interactions avec l'homme",
+        "icon": "fa-exclamation-triangle",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Traditionnellement, Varanus griseus est craint par les communautés sahariennes, souvent considéré comme venimeux et associé à des croyances négatives{{r1}}. Bien qu'il ne possède pas de venin comparable à celui des serpents, une étude récente portant sur Varanus griseus caspius en Asie centrale a documenté des effets toxiques liés à la salive : douleurs musculaires généralisées, troubles digestifs, tachycardie et faiblesse corporelle, apparaissant après une morsure prolongée durant laquelle le varan reste accroché plusieurs minutes. Une morsure brève ne présente aucun risque apparent{{r9}}. Historiquement, l'espèce a été persécutée dans plusieurs pays où elle est associée à des croyances négatives{{r1}}."
+         },
+         {
+          "kind": "text",
+          "text": "Au Maroc, nous n'avons trouvé aucune preuve de chasse active ciblant les varans. Cependant, de nombreux individus sont trouvés opportunément près des habitations et sont collectés. Leur peau est utilisée comme cataplasme dans des remèdes traditionnels pour les maladies de peau. On nous a également rapporté que les peaux de varan conservées dans les tentes ou les maisons éloignent les serpents."
+         },
+         {
+          "kind": "text",
+          "text": "Le Varan du désert, en tant que seul représentant des Varanidae dans le pays et espèce emblématique de l'herpétofaune désertique, est très recherché par les naturalistes. Ces groupes explorent souvent les réservoirs et les puits, offrant ainsi une seconde chance aux animaux piégés qui périraient autrement. Cependant, ces pratiques peuvent parfois entraîner des relocalisations excessives de ces varans."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Conservation",
+      "icon": "fa-shield-alt",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Au Maroc, Varanus griseus est classé « Quasi menacé » sur la Liste rouge nationale{{r4}}. À l'échelle mondiale, il est évalué comme « Préoccupation mineure » en raison de sa large répartition, malgré des déclins locaux{{r5}}."
+       },
+       {
+        "kind": "text",
+        "text": "Les principales menaces incluent :"
+       },
+       {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "text",
+          "text": "les collisions routières{{r8}},"
+         },
+         {
+          "kind": "text",
+          "text": "la destruction de l'habitat,"
+         },
+         {
+          "kind": "text",
+          "text": "la persécution directe par l'humain{{r1}},"
+         },
+         {
+          "kind": "text",
+          "text": "la mortalité accidentelle due aux chutes dans les matfias (puits traditionnels), regards de pipelines, citernes et réservoirs agricoles{{r8}}."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "En Maroc, il tombe fréquemment dans les puits, réservoirs ou regards de pipeline, où il peut rester piégé, ce qui représente une menace importante pour l'espèce{{r8}}. Au cours de nos expéditions, nous avons trouvé des individus morts dans des réservoirs agricoles, parfois plusieurs au même endroit."
+       },
+       {
+        "kind": "text",
+        "text": "Enfin, l'espèce est inscrite en Annexe I de la CITES, interdisant strictement le commerce international à des fins commerciales{{r2}}."
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-conservation-1.jpg",
+          "alt": "Dead Monitor lizards in a water retention basin",
+          "cap": "Varans du désert morts dans un bassin de rétention d'eau dans une zone agricole au milieu d'un endroit pourtant très aride."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-conservation-2.jpg",
+          "alt": "Agricultural water basins, deadly traps for Monitor lizards",
+          "cap": "Bassins agricoles en question, pièges mortels pour de nombreux varans tous les ans."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-conservation-3.jpg",
+          "alt": "Dead Monitor lizard in a pipeline inspection shaft",
+          "cap": "Varan mort en décomposition dans un regard de pipeline à proximité d'une ville."
+         },
+         {
+          "src": "images/encyclopedia/sauria/varanidae/varanus-griseus/varanus-griseus-conservation-4.jpg",
+          "alt": "Dried Monitor lizard for sale in Jemaa el-Fna Square",
+          "cap": "Varan entier séché, à vendre sur la place Jaama el-Fna à Marrakech."
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

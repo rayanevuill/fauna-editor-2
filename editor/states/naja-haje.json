@@ -1,0 +1,409 @@
+{
+ "meta": {
+  "slug": "naja-haje",
+  "order": {
+   "slug": "serpentes",
+   "name": "Serpentes"
+  },
+  "family": {
+   "slug": "elapidae",
+   "name": "Elapidae"
+  },
+  "title": {
+   "en": "North African Cobra",
+   "fr": "Cobra d'Afrique du Nord",
+   "ar": ""
+  },
+  "description": {
+   "en": "",
+   "fr": "",
+   "ar": ""
+  }
+ },
+ "state": {
+  "statusCode": "LC",
+  "trendCode": "decreasing",
+  "refs": [
+   {
+    "key": "r1",
+    "text": "Trape, J.-F., Chirio, L., Broadley, D. & Wüster, W. (2009). Phylogeography and systematic revision of the Egyptian cobra (Serpentes: Elapidae: Naja haje) species complex, with the description of a new species from West Africa. <em>Zootaxa</em>, 2236: 1–25."
+   },
+   {
+    "key": "r2",
+    "text": "Russell, A.P. & Bauer, A.M. (2021). Vocalization by extant nonavian reptiles: A synthetic overview of phonation and the vocal apparatus. <em>The Anatomical Record</em>, 304(7): 1478–1528."
+   },
+   {
+    "key": "r3",
+    "text": "Shine, R., Branch, W.R., Webb, J.K., Harlow, P.S., Shine, T. & Keogh, J.S. (2007). Ecology of cobras from southern Africa. <em>Journal of Zoology</em>, 272(2): 183–193."
+   },
+   {
+    "key": "r4",
+    "text": "Behler, J. & Brazaitis, P. (2007). Breeding the Egyptian cobra: Naja haje: at the New York Zoological Park. <em>International Zoo Yearbook</em>, 14: 83–84."
+   },
+   {
+    "key": "r5",
+    "text": "iNaturalist. (2025). Naja haje observations in Morocco. Available from https://www.inaturalist.org/observations?taxon_id=30479. Accessed April 2, 2025."
+   },
+   {
+    "key": "r6",
+    "text": "IUCN SSC Snake Specialist Group. (2021). Naja haje. <em>The IUCN Red List of Threatened Species</em> 2021."
+   }
+  ],
+  "langs": {
+   "en": {
+    "name": "North African Cobra",
+    "sci": "Naja haje",
+    "intro": "A powerful symbol of Moroccan biodiversity, the North African cobra is one of the most iconic and impressive snakes of the Maghreb. As a top predator, it plays a vital role in maintaining ecological balance by controlling rodent populations. Yet this once widespread species is now in sharp decline. It faces serious threats from habitat degradation, targeted captures by snake charmers, and widespread fear that often leads to persecution. Now a striking emblem of the growing tensions between human communities and wildlife, *Naja haje* highlights the urgent need for thoughtful and effective conservation efforts.",
+    "introImg": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-intro.jpg",
+    "introMap": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-map-intro.jpg",
+    "sections": [
+     {
+      "title": "Description",
+      "icon": "fa-info-circle",
+      "items": [
+       {
+        "kind": "text",
+        "text": "The North African cobra (*Naja haje*) is a venomous snake and the only representative of the Elapidae family in Morocco. It can also be found in Tunisia, Libya and Egypt, as well as in the Sahel region, from Niger to Somalia. It is also possible that a small intermediate population still persists in Algeria. The Moroccan population, relatively isolated, displays distinct visual characteristics compared to other populations of the species. These morphological differences led to the Moroccan cobra being long considered as a subspecies (*N. h. legionis*), or even as a separate species (*Naja legionis*). However, in 2009, a study conducted by Trape et al. demonstrated that the cobras of Morocco are not genetically distinct from other North African populations and have therefore classified it within *Naja haje*. Furthermore, certain other subspecies of *Naja haje* have been reclassified as distinct species{{r1}}. To date, no subspecies of *Naja haje* is officially recognized."
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-1.jpg",
+          "alt": "Portrait of a relaxed North African cobra",
+          "cap": "Headshot of a relaxed North African Cobra (Naja haje), notice the hood is not noticeable when the snake is relaxed."
+         },
+         {
+          "src": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-2.jpg",
+          "alt": "Adult North African cobra in defensive position",
+          "cap": "Full body picture of an adult North African Cobra (Naja haje) in a defensive position, with the hood fully visible."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "In Morocco, the cobra's size generally does not exceed 1.50 meters, although some large males can reach nearly 2 meters. As adults, they display a uniformly black color with bronze reflections that appear on the flanks and, in some cases, extend to the back. Their eyes are entirely black, and they have a small white spot under the head, a distinctive trait of Moroccan specimens. Juveniles, on the other hand, have a sand-colored appearance adorned with black lines or spots. Their head and hood are already black from birth. The North African cobra's snout is rounded, and its head is covered with large scales."
+       }
+      ]
+     },
+     {
+      "title": "Distribution",
+      "icon": "fa-globe-africa",
+      "items": [
+       {
+        "kind": "text",
+        "text": "The North African cobra (*Naja haje*) is primarily known to be present in the region of Sidi Ifni, Guelmim and Tan-Tan, where its density is believed to be highest. Its range would extend southward to Laâyoune and northward to Agadir, climbing up the Souss valley. It is also found on the western foothills of the southern Atlas, from Ouarzazate to the Tinghir region{{r5}}{{r1}}."
+       },
+       {
+        "kind": "distribution-map",
+        "images": [
+         {
+          "src": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-map.jpg",
+          "alt": "Distribution map of Naja haje in Morocco",
+          "cap": "Distribution of Naja haje in Morocco, concentrated in the southwestern regions and south of the Atlas Mountains."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Habitat",
+      "icon": "fa-tree",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Although it lives in semi-arid areas, this snake seems to prefer slightly more humid habitats. It often takes refuge near riverbanks, under bushes or in underground galleries dug by squirrels and rodents."
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-habitat-1.jpg",
+          "alt": "North African cobra habitat southwest of Guelmim",
+          "cap": "Habitat of the species southwest of Guelmim. The plains are surrounded by hills where euphorbias and prickly pears alternate."
+         },
+         {
+          "src": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-habitat-2.jpg",
+          "alt": "Euphorbia officinarum characteristic of Naja haje habitat",
+          "cap": "Euphorbia officinarum characteristic of the Naja haje habitat from Sidi Ifni to Tan-Tan."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Natural History",
+      "icon": "fa-leaf",
+      "items": [
+       {
+        "kind": "sub-section",
+        "title": "Diet",
+        "icon": "fa-utensils",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Cobras are opportunistic predators with large appetites. They primarily feed on reptiles, amphibians, small mammals and, more rarely, birds{{r3}}. In Morocco, cobras appear to consume large quantities of snakes."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Behavior",
+        "icon": "fa-cogs",
+        "items": [
+         {
+          "kind": "text",
+          "text": "This snake has excellent vision and reacts very quickly to movements. It is also lively and fast, allowing it to effectively flee from danger. When taking flight, it often emits a deep hiss by expelling air, which causes a small cartilage structure in its throat to vibrate{{r2}}."
+         },
+         {
+          "kind": "text",
+          "text": "Its famous hood, entirely black and relatively elongated, is not solely a means of defense. It sometimes extends it when basking in the sun to absorb heat more quickly. It can also deploy it while fleeing, without necessarily raising its head."
+         },
+         {
+          "kind": "text",
+          "text": "The North African cobra adopts the classic cobra posture, with the head raised and the hood deployed, only when cornered and can no longer flee. In this situation, it seeks to impress the aggressor by appearing more imposing, while emitting powerful hisses. If the threat persists, it performs intimidation charges by projecting its body forward over a distance that can reach 70 cm for the largest individuals. Most of the time, these attacks are carried out with the mouth closed. If the danger continues to approach, the cobra may then attempt to bite."
+         },
+         {
+          "kind": "text",
+          "text": "Although this species is highly venomous, it does not systematically inject venom during a bite. The cobra controls and modulates the injection depending on the situation. Thus, it truly bites with venom injection only in the most extreme cases, when all its other deterrent attempts have failed."
+         },
+         {
+          "kind": "text",
+          "text": "The deployment of the hood with the head raised is precisely the behavior exploited by snake charmers. To achieve this, the snake is first removed from its box, then prevented from fleeing in order to force it to adopt this defensive posture. Once in this position, it is kept in a constant state of stress so that it doesn't relax its vigilance. This stress is maintained by the back-and-forth movements of the charmer and his flute, which the cobra perceives as a threat. In its eyes, these gestures mimic the movements of a predator hesitating to attack, which prompts it to remain alert and maintain its impressive posture."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Reproduction",
+        "icon": "fa-venus-mars",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Little is known about the reproduction of Moroccan Cobra in the wild. It is assumed to reproduce in spring and lay between 10 and 20 eggs, like other *Naja haje* populations{{r4}}."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Conservation",
+      "icon": "fa-shield-alt",
+      "items": [
+       {
+        "kind": "text",
+        "text": "The species *Naja haje* is classified as \"Least Concern\" on the IUCN Red List. However, this classification applies to the species as a whole and does not necessarily reflect the situation in Morocco{{r6}}."
+       },
+       {
+        "kind": "text",
+        "text": "This cobra appears to have been much more widespread in the Maghreb in the past than it is today. Its decline is probably due to several factors:"
+       },
+       {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Habitat destruction due to urbanization"
+         },
+         {
+          "kind": "text",
+          "text": "Systematic killing by the local population"
+         },
+         {
+          "kind": "text",
+          "text": "Indirect poisoning after ingestion of rodents contaminated by pesticides"
+         },
+         {
+          "kind": "text",
+          "text": "Massive collection of individuals to be sold to snake charmers{{r6}}"
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "In some regions, intensive collection by itinerant snake hunters has led to a near-local disappearance of the species."
+       }
+      ]
+     }
+    ]
+   },
+   "fr": {
+    "name": "Cobra d'Afrique du Nord",
+    "sci": "Naja haje",
+    "intro": "Symbole fort de la biodiversité marocaine, le cobra d'Afrique du Nord est l'un des serpents les plus emblématiques et impressionnants du Maghreb. Prédateur au sommet de la chaîne alimentaire, il joue un rôle essentiel dans l'équilibre des écosystèmes en régulant les populations de rongeurs. Pourtant, cette espèce autrefois répandue est aujourd'hui en net déclin. Elle est menacée par la dégradation de ses habitats, par les captures réalisées par les charmeurs de serpents, ainsi que par la peur qu'elle suscite, à l'origine d'une persécution intense. Devenu un symbole des tensions entre les communautés humaines et la faune sauvage, *Naja haje* incarne l'urgence de mettre en place des mesures de conservation adaptées et durables.",
+    "introImg": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-intro.jpg",
+    "introMap": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-map-intro.jpg",
+    "sections": [
+     {
+      "title": "Description",
+      "icon": "fa-info-circle",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Le Cobra d'Afrique du Nord (*Naja haje*) est un serpent venimeux et le seul représentant de la famille des Élapidés au Maroc. On le trouve également en Tunisie, en Libye et en Égypte, ainsi que dans la région du Sahel, du Niger à la Somalie. Il est également possible qu'une faible population intermédiaire subsiste encore en Algérie. La population marocaine, relativement isolée, présente des caractéristiques visuelles distinctes par rapport aux autres populations de l'espèce. Ces différences morphologiques ont conduit à ce que le cobra marocain soit longtemps considéré comme une sous-espèce (*N. h. legionis*), voire comme une espèce à part entière (*Naja legionis*). Cependant, en 2009, une étude menée par Trape et al. a démontré que les cobras du Maroc ne sont pas génétiquement distincts des autres populations d'Afrique du Nord et l'ont donc classé dans *Naja haje*. Par ailleurs, certaines autres sous-espèces de *Naja haje* ont été reclassées en tant qu'espèces distinctes{{r1}}. À ce jour, plus aucune sous-espèce de *Naja haje* n'est officiellement reconnue."
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-1.jpg",
+          "alt": "Portrait of a relaxed North African cobra",
+          "cap": "Portrait d'un Cobra d'Afrique du Nord (Naja haje) détendu, remarquez que la coiffe n'est pas visible quand le serpent est détendu."
+         },
+         {
+          "src": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-2.jpg",
+          "alt": "Adult North African cobra in defensive position",
+          "cap": "Photo du corps entier d'un Cobra d'Afrique du Nord (Naja haje) adulte en position défensive, avec la coiffe entièrement visible."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "Au Maroc, la taille des cobras ne dépasse généralement pas 1,50 mètres, bien que certains grands mâles puissent atteindre près de 2 mètres. À l'âge adulte, il arbore une couleur uniformément noire avec des reflets bronze qui apparaissent sur les flancs et, dans certains cas, remontent jusqu'au dos. Ses yeux sont entièrement noirs, et il possède une petite tache blanche sous la tête, un trait distinctif des spécimens marocains. Les juvéniles, en revanche, présentent une robe sable ornée de lignes ou de taches noires. Leur tête et leur coiffe sont déjà noires dès la naissance. Le museau du Cobra d'Afrique du Nord est arrondi et sa tête est couverte de larges écailles."
+       }
+      ]
+     },
+     {
+      "title": "Distribution",
+      "icon": "fa-globe-africa",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Le Cobra d'Afrique du Nord (*Naja haje*) est principalement connu pour être présent dans la région de Sidi Ifni, Guelmim et Tan-Tan, où sa densité serait la plus élevée. Son aire de répartition s'étendrait vers le sud jusqu'à Laâyoune et vers le nord jusqu'à Agadir, en remontant la vallée du Souss. On le retrouve également sur les contreforts occidentaux du sud de l'Atlas, de Ouarzazate jusqu'à la région de Tinghir{{r5}}{{r1}}."
+       },
+       {
+        "kind": "distribution-map",
+        "images": [
+         {
+          "src": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-map.jpg",
+          "alt": "Distribution map of Naja haje in Morocco",
+          "cap": "Distribution de Naja haje au Maroc, concentrée dans les régions du sud-ouest et au sud de l'Atlas."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Habitat",
+      "icon": "fa-tree",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Bien qu'il vive dans des zones semi-arides, ce serpent semble privilégier les habitats légèrement plus humides. Il se réfugie souvent près des berges des rivières, sous les buissons ou dans des galeries souterraines creusées par des écureuils et des rongeurs."
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-habitat-1.jpg",
+          "alt": "North African cobra habitat southwest of Guelmim",
+          "cap": "Habitat de l'espèce au sud-ouest de Guelmim. Les plaines sont entourées de collines où euphorbes et figuiers de barbarie s'alternent."
+         },
+         {
+          "src": "images/encyclopedia/serpentes/elapidae/naja-haje/naja-haje-habitat-2.jpg",
+          "alt": "Euphorbia officinarum characteristic of Naja haje habitat",
+          "cap": "*Euphorbia officinarum* caractéristique de l'habitat du Naja haje de Sidi Ifni à Tan-Tan."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Histoire Naturelle",
+      "icon": "fa-leaf",
+      "items": [
+       {
+        "kind": "sub-section",
+        "title": "Régime alimentaire",
+        "icon": "fa-utensils",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Les cobras sont des prédateurs opportunistes dotés d'un grand appétit. Ils se nourrissent principalement de reptiles, d'amphibiens, de petits mammifères et, plus rarement, d'oiseaux{{r3}}. Au Maroc, les cobras semblent consommer en grande quantité des couleuvres."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Comportement",
+        "icon": "fa-cogs",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Ce serpent est doté d'une excellente vision et réagit très rapidement aux mouvements. Il est aussi vif et rapide, ce qui lui permet de fuir efficacement face à un danger. Lorsqu'il prend la fuite, il émet souvent un sifflement grave en expulsant de l'air, ce qui fait vibrer une petite structure en cartilage dans sa gorge{{r2}}."
+         },
+         {
+          "kind": "text",
+          "text": "Sa célèbre coiffe, entièrement noire et relativement allongée, n'est pas uniquement un moyen de défense. Il lui arrive de l'étendre lorsqu'il prend le soleil, afin d'absorber plus rapidement la chaleur. Il peut aussi la déployer en fuyant, sans pour autant relever la tête."
+         },
+         {
+          "kind": "text",
+          "text": "Le Cobra d'Afrique du Nord adopte la posture classique du cobra, avec la tête redressée et la coiffe déployée, uniquement lorsqu'il est acculé et qu'il ne peut plus fuir. Dans cette situation, il cherche à impressionner l'agresseur en paraissant plus imposant, tout en émettant de puissants sifflements. Si la menace persiste, il effectue des charges d'intimidation en projetant son corps vers l'avant sur une distance pouvant atteindre 70 cm pour les plus gros individus. La plupart du temps, ces attaques sont réalisées la bouche fermée. Si le danger continue de s'approcher, le cobra peut alors tenter de mordre."
+         },
+         {
+          "kind": "text",
+          "text": "Bien que cette espèce soit très venimeuse, elle n'injecte pas systématiquement de venin lors d'une morsure. Le cobra contrôle et module l'injection en fonction de la situation. Ainsi, il ne mord véritablement avec injection de venin que dans les cas les plus extrêmes, lorsque toutes ses autres tentatives de dissuasion ont échoué."
+         },
+         {
+          "kind": "text",
+          "text": "Le déploiement de la coiffe avec la tête redressée est précisément le comportement exploité par les charmeurs de serpents. Pour y parvenir, le serpent est d'abord extrait de sa boîte, puis empêché de fuir afin de le contraindre à adopter cette posture défensive. Une fois dans cette position, il est maintenu dans un état de stress constant pour qu'il ne relâche pas sa vigilance. Ce stress est entretenu par les mouvements de va-et-vient du charmeur et de sa flûte, que le cobra perçoit comme une menace. À ses yeux, ces gestes imitent les déplacements d'un prédateur hésitant à l'attaquer, ce qui le pousse à rester en alerte et à maintenir sa posture impressionnante."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Reproduction",
+        "icon": "fa-venus-mars",
+        "items": [
+         {
+          "kind": "text",
+          "text": "On sait peu de choses sur la reproduction du Cobra marocain à l'état sauvage. Il est supposé se reproduire au printemps et pondre entre 10 et 20 œufs, comme d'autres populations de *Naja haje*{{r4}}."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Conservation",
+      "icon": "fa-shield-alt",
+      "items": [
+       {
+        "kind": "text",
+        "text": "L'espèce *Naja haje* est classée en « préoccupation mineure » (Least Concern) sur la liste rouge de l'UICN. Cependant, cette classification s'applique à l'ensemble de l'espèce et ne reflète pas forcément la situation au Maroc{{r6}}."
+       },
+       {
+        "kind": "text",
+        "text": "Ce cobra semble avoir été beaucoup plus répandu au Maghreb autrefois qu'il ne l'est aujourd'hui. Son déclin est probablement dû à plusieurs facteurs :"
+       },
+       {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "text",
+          "text": "La destruction de son habitat par l'urbanisation"
+         },
+         {
+          "kind": "text",
+          "text": "La mise à mort systématique par la population locale"
+         },
+         {
+          "kind": "text",
+          "text": "L'empoisonnement indirect après ingestion de rongeurs contaminés par des pesticides"
+         },
+         {
+          "kind": "text",
+          "text": "Le prélèvement massif d'individus pour être vendus aux charmeurs de serpents{{r6}}"
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "Dans certaines régions, le ramassage intensif par des chasseurs de serpents itinérants a conduit à une quasi-disparition locale de l'espèce."
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

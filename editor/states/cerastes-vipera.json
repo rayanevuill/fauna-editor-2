@@ -1,0 +1,365 @@
+{
+ "meta": {
+  "slug": "cerastes-vipera",
+  "order": {
+   "slug": "serpentes",
+   "name": "Serpentes"
+  },
+  "family": {
+   "slug": "viperidae",
+   "name": "Viperidae"
+  },
+  "title": {
+   "en": "Sahara Sand Viper",
+   "fr": "Vipère des sables",
+   "ar": ""
+  },
+  "description": {
+   "en": "",
+   "fr": "",
+   "ar": ""
+  }
+ },
+ "state": {
+  "statusCode": "LC",
+  "trendCode": "decreasing",
+  "refs": [
+   {
+    "key": "r1",
+    "text": "Bouazza, A., Laidi, K., & Justo, M. (2020). New record of the Sahara sand viper, <em>Cerastes vipera</em> (Linnaeus, 1758), from north-eastern Morocco."
+   },
+   {
+    "key": "r2",
+    "text": "García-Antón, P., Peranic, V., & Marín, G. (2024). First record of partially melanistic individual of <em>Cerastes vipera</em> (Squamata: Viperidae). <em>34</em>, 37–41."
+   },
+   {
+    "key": "r3",
+    "text": "Horesh, S. J. A., Sivan, J., Rosenstrauch, A., Tesler, I., Degen, A. A., & Kam, M. (2017). Seasonal biotic and abiotic factors affecting hunting strategy in free-living Saharan sand vipers, <em>Cerastes vipera</em>. <em>Behavioural Processes</em>, 135, 40–44. https://doi.org/10.1016/j.beproc.2016.11.013"
+   },
+   {
+    "key": "r4",
+    "text": "Sivan, J., Kam, M., Hadad, S., Allan Degen, A., Rozenboim, I., & Rosenstrauch, A. (2012). Reproductive cycle of free-living male Saharan sand vipers, <em>Cerastes vipera</em> (Viperidae) in the Negev desert, Israel. <em>General and Comparative Endocrinology</em>, 179(2), 241–247. https://doi.org/10.1016/j.ygcen.2012.08.021"
+   },
+   {
+    "key": "r5",
+    "text": "Sivan, J., Kam, M., Hadad, S., Degen, A. A., Rozenboim, I., & Rosenstrauch, A. (2013). Temporal activity and dietary selection in two coexisting desert snakes, the Saharan sand viper (<em>Cerastes vipera</em>) and the crowned leafnose (<em>Lytorhynchus diadema</em>). <em>Zoology</em>, 116(2), 113–117. https://doi.org/10.1016/j.zool.2012.09.002"
+   },
+   {
+    "key": "r6",
+    "text": "Subach, A., Scharf, I., & Ovadia, O. (2009). Foraging behavior and predation success of the sand viper (<em>Cerastes vipera</em>). <em>Canadian Journal of Zoology</em>, 87, 520–528. https://doi.org/10.1139/Z09-034"
+   },
+   {
+    "key": "r7",
+    "text": "Tesler, I., Sivan, J., Rosenstrauch, A., Horesh, S. J. A., Degen, A. A., & Kam, M. (2019). Sexual dichromatisation and sexual differences in hunting behavior and dietary intake in a free-ranging small viperid snake, <em>Cerastes vipera</em>. <em>Behavioural Processes</em>, 168, 103960. https://doi.org/10.1016/j.beproc.2019.103960"
+   },
+   {
+    "key": "r8",
+    "text": "Tesler, I., Sivan, J., Degen, A. A., & Kam, M. (2022). Replacement of fangs in a free-ranging desert viperid, <em>Cerastes vipera</em>. <em>Zoology</em>, 152, 126013. https://doi.org/10.1016/j.zool.2022.126013"
+   },
+   {
+    "key": "r9",
+    "text": "Wilms, T., Wagner, P., Joger, U., Geniez, P., Crochet, P.-A., El Mouden, E.H. & Mateo, J.A. (2013). <em>Cerastes vipera</em>. <em>The IUCN Red List of Threatened Species</em> 2013: e.T178210A15636436. https://dx.doi.org/10.2305/IUCN.UK.2013-1.RLTS.T178210A15636436.en. Accessed on 10 June 2025."
+   },
+   {
+    "key": "r10",
+    "text": "Schweiger, M. (2012). <em>Cerastes vipera</em> (Linnaeus, 1758). In: Martínez, G., León, R., Jiménez-Robles, O., González De la Vega, J. P., Gabari, V., Rebollo, B., Sánchez-Tójar, A., Fernández-Cardenete, J. R., Gállego, J. (Eds.). <em>Moroccoherps. Amphibians and Reptiles of Morocco and Western Sahara</em>. Available from www.moroccoherps.com/en/ficha/Cerastes_vipera/. Version 2/08/2012."
+   }
+  ],
+  "langs": {
+   "en": {
+    "name": "Sahara Sand Viper",
+    "sci": "Cerastes vipera",
+    "intro": "",
+    "introImg": "images/serpentes/viperidae/cerastes-vipera/header-cerastes-vipera.jpg",
+    "introMap": "images/serpentes/viperidae/cerastes-vipera/map-cerastes-vipera.jpg",
+    "sections": [
+     {
+      "title": "Description",
+      "icon": "fa-info-circle",
+      "items": [
+       {
+        "kind": "text",
+        "text": "The Sahara Sand Viper (*Cerastes vipera*) is a small viper species, reaching up to 35 cm in length. Its base coloration is typically sandy, although some individuals can appear darker or even almost entirely black{{r2}}. These vipers may display gray or white lines on the head, along with various dorsal patterns, often brown in color. Females exhibit sexual dimorphism, with a distinctly black and conspicuous tail tip, unlike males, whose tails lack this coloration{{r7}}. The scales are strongly keeled. The eyes are positioned more towards the top of the head, which distinguishes this species from the Saharan Horned Viper (*Cerastes cerastes*)."
+       }
+      ]
+     },
+     {
+      "title": "Distribution",
+      "icon": "fa-globe-africa",
+      "items": [
+       {
+        "kind": "text",
+        "text": "In Morocco, the Sahara sand viper (*Cerastes vipera*) is distributed from the Atlantic coast in the west to Bouarfa in the east, likely forming a continuous distribution. Its presence is also very likely in other sandy regions, likely around Assa or east all the way to Figuig{{r1}}."
+       },
+       {
+        "kind": "text",
+        "text": "On a broader scale, the species extends its range across the Sahara Desert, reaching as far as the Sinai Peninsula and the southwestern region of Israel{{r10}}."
+       },
+       {
+        "kind": "distribution-map",
+        "images": [
+         {
+          "src": "images/serpentes/viperidae/cerastes-vipera/distribution-map-cerastes-vipera.jpg",
+          "alt": "Distribution map of Cerastes vipera in Morocco",
+          "cap": "Distribution of Cerastes vipera in Morocco and North Africa."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Habitat",
+      "icon": "fa-tree",
+      "items": [
+       {
+        "kind": "text",
+        "text": "*Cerastes vipera* is strictly associated with dune and sandy areas throughout all Saharan countries{{r5}}. Denser vegetation and higher annual rainfall at certain sites are correlated with increased body size and a higher mass-to-length ratio in individuals{{r6}}."
+       }
+      ]
+     },
+     {
+      "title": "Natural History",
+      "icon": "fa-leaf",
+      "items": [
+       {
+        "kind": "sub-section",
+        "title": "Diet",
+        "icon": "fa-utensils",
+        "items": [
+         {
+          "kind": "text",
+          "text": "The diet consists mainly of lizards, particularly *Acanthodactylus* species{{r5}}. Hunting success is directly correlated with the distance traveled and the number of burrows inspected, indicating that larger and bulkier individuals, especially females, have an ecological advantage in predation{{r6}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Behavior",
+        "icon": "fa-cogs",
+        "items": [
+         {
+          "kind": "heading",
+          "level": "h5",
+          "text": "Seasonal Activity and Movement"
+         },
+         {
+          "kind": "text",
+          "text": "The species is active from April to October, with activity peaks in spring and autumn. It is primarily nocturnal, being most active during the first three hours after sunset. Nocturnal movements can reach up to 50 meters{{r5}}. Moreover, relative humidity—rather than temperature—is the environmental factor that most strongly influences the distance traveled{{r6}}."
+         },
+         {
+          "kind": "heading",
+          "level": "h5",
+          "text": "Hunting Modes"
+         },
+         {
+          "kind": "text",
+          "text": "Unlike most viperids that rely solely on ambush predation, *Cerastes vipera* uses both active foraging and ambush strategies. Activity intensifies as hibernation approaches, with a marked increase in the number of individuals engaging in active hunting (from 5% in April to over 30% in October). This behavior is influenced by abiotic factors, especially photoperiod, as well as by the individuals' physical condition (body condition index){{r3}}."
+         },
+         {
+          "kind": "heading",
+          "level": "h5",
+          "text": "Behavioral Dimorphism"
+         },
+         {
+          "kind": "text",
+          "text": "Females employ a \"caudal luring\" strategy—using tail movements to mimic prey and attract nocturnal lizards—a behavior completely absent in males. This results in a clear dietary difference, with females consuming more nocturnal lizards than males (15/40 vs. 4/27){{r7}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Reproduction",
+        "icon": "fa-venus-mars",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Plasma testosterone levels and testicular activity in male *Cerastes vipera* (testis volume, seminiferous tubule diameter, spermatogenesis) show high values in both spring and autumn, but reproduction occurs only in spring. Males are both \"autumnal\" (producing sperm in autumn, stored during hibernation) and \"vernal\" (producing sperm in early spring). Thus, spermatogenesis is prenuptial, peaking before spring mating. Females give birth to fully developed young at the end of summer{{r4}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Hibernation",
+        "icon": "fa-pause",
+        "items": [
+         {
+          "kind": "text",
+          "text": "*Cerastes vipera* enters hibernation in November and re-emerges in April3,4. The need to accumulate significant energy reserves before this period strongly influences hunting behavior, notably by increasing active foraging."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Venom and Dentition",
+        "icon": "fa-skull-crossbones",
+        "items": [
+         {
+          "kind": "text",
+          "text": "This viper possesses hollow venom fangs that are relatively fragile and essential for predation. These fangs function like \"disposable needles,\" as they are frequently lost and replaced. In fact, about 25% of the fecal samples analyzed contain fangs, suggesting a replacement every four predation events, or approximately every twenty days{{r8}}. Remarkably, the posterior teeth are also lost and replaced at a similar rate, indicating their active role in grasping and swallowing prey."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Conservation",
+      "icon": "fa-shield-alt",
+      "items": [
+       {
+        "kind": "text",
+        "text": "*Cerastes vipera* benefits from a wide distribution range that is relatively distant from human activities. As a result, it is classified as Least Concern by the IUCN{{r9}}."
+       }
+      ]
+     }
+    ]
+   },
+   "fr": {
+    "name": "Vipère des sables",
+    "sci": "Cerastes vipera",
+    "intro": "",
+    "introImg": "images/serpentes/viperidae/cerastes-vipera/header-cerastes-vipera.jpg",
+    "introMap": "images/serpentes/viperidae/cerastes-vipera/map-cerastes-vipera.jpg",
+    "sections": [
+     {
+      "title": "Description",
+      "icon": "fa-info-circle",
+      "items": [
+       {
+        "kind": "text",
+        "text": "La Vipère des sables (Cerastes vipera) est un serpent viperidé de petite taille, mesurant jusqu'à 35 cm de longueur. Sa couleur de fond est généralement couleur sable, même si quelques spécimens peuvent être plus foncé voire quasiment totalement noirs{{r2}}. Ces vipères peuvent avoir des lignes grises ou blanches sur la tête, ainsi que des dessins variés, souvent bruns, sur le dos. La femelle présente un dimorphisme sexuel avec une extrémité caudale noire et bien visible, à la différence du mâle dont la queue ne présente pas cette coloration{{r7}}. Les écailles sont fortement carénées. Les yeux de cette vipère sont positionnés plutôt sur le dessus de sa tête, ce qui permet de la différencier de la Vipère à cornes du Sahara (Cersastes cerastes)."
+       }
+      ]
+     },
+     {
+      "title": "Distribution",
+      "icon": "fa-globe-africa",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Au Maroc, la Vipère des sables (Cerastes vipera) est répartie de la côte atlantique à l'ouest jusqu'à Bouarfa à l'est, formant probablement une distribution continue. Sa présence est également très probable dans d'autres zones sablonneuses, notamment autour d'Assa ou plus à l'est jusqu'à Figuig.{{r1}}."
+       },
+       {
+        "kind": "text",
+        "text": "À une échelle plus large, l'espèce étend son aire de répartition à travers le désert du Sahara, atteignant la péninsule du Sinaï et le sud-ouest d'Israël{{r10}}."
+       },
+       {
+        "kind": "distribution-map",
+        "images": [
+         {
+          "src": "images/serpentes/viperidae/cerastes-vipera/distribution-map-cerastes-vipera.jpg",
+          "alt": "Distribution map of Cerastes vipera in Morocco",
+          "cap": "Distribution de Cerastes vipera au Maroc et en Afrique du Nord."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Habitat",
+      "icon": "fa-tree",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Cerastes vipera est strictement associée aux zones dunaires et sablonneuses de l'ensemble des pays sahariens. La végétation plus dense et une pluviométrie annuelle plus élevée dans certains sites sont corrélées à une taille corporelle accrue et un rapport masse/longueur plus élevé chez les individus{{r5}}. {{r6}}."
+       }
+      ]
+     },
+     {
+      "title": "Histoire Naturelle",
+      "icon": "fa-leaf",
+      "items": [
+       {
+        "kind": "sub-section",
+        "title": "Régime alimentaire",
+        "icon": "fa-utensils",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Le régime alimentaire est composé principalement de lézards, notamment d'Acanthodactylus. Le succès de capture est directement corrélé à la distance de déplacement et au nombre de terriers inspectés, ce qui indique que les individus plus grands et corpulents, notamment les femelles, bénéficient d'un avantage écologique dans la prédation{{r5}}. {{r6}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Comportement",
+        "icon": "fa-cogs",
+        "items": [
+         {
+          "kind": "heading",
+          "level": "h5",
+          "text": "Activité saisonnière et déplacement"
+         },
+         {
+          "kind": "text",
+          "text": "L'espèce est active d'avril à octobre, avec des pics au printemps et à l'automne. Elle est surtout nocturne, présente principalement durant les trois premières heures suivant le coucher du soleil. Les déplacements nocturnes atteignent un maximum de 50 mètres{{r5}}. De plus, l'humidité relative, et non la température, est le facteur environnemental qui influence le plus la distance parcourue{{r6}}."
+         },
+         {
+          "kind": "heading",
+          "level": "h5",
+          "text": "Modes de chasse"
+         },
+         {
+          "kind": "text",
+          "text": "Contrairement à la plupart des viperidés qui se contentent du mode d'embuscade, Cerastes vipera emploie à la fois la chasse active et l'embuscade. L'activité augmente en intensité à l'approche de l'hibernation, avec une augmentation notable du nombre d'individus pratiquant la chasse active (de 5 % en avril à plus de 30 % en octobre). Ce comportement est modulé par des facteurs abiotiques, notamment la photopériode, ainsi que par l'état corporel des individus (indice de condition corporelle){{r3}}."
+         },
+         {
+          "kind": "heading",
+          "level": "h5",
+          "text": "Dimorphisme comportemental"
+         },
+         {
+          "kind": "text",
+          "text": "Les femelles utilisent la stratégie de « caudal luring », mimétisme impliquant des mouvements de la queue noire pour attirer les lézards nocturnes, une stratégie totalement absente chez les mâles. Cela se traduit par une différence nette dans le régime alimentaire, les femelles consommant plus de lézards nocturnes que les mâles (15/40 vs 4/27){{r7}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Reproduction",
+        "icon": "fa-venus-mars",
+        "items": [
+         {
+          "kind": "text",
+          "text": "La concentration plasmatique en testostérone ainsi que l'activité testiculaire chez les mâles de Cerastes vipera (volume des testicules, diamètre des tubules séminifères, spermatogenèse) présentent des valeurs élevées au printemps et à l'automne, mais la reproduction n'a lieu qu'au printemps. Les mâles sont à la fois « estivaux » (production de spermatozoïdes en automne, stockés pendant l'hibernation) et « vernaux » (production au début du printemps). Ainsi, la spermatogenèse est prénuptiale, atteignant son pic avant les accouplements printaniers. Les femelles mettent bas des petits entièrement formés à la fin de l'été{{r4}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Hibernation",
+        "icon": "fa-pause",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Cerastes vipera entre en hibernation en novembre et réémerge en avril3,4. La nécessité d'accumuler des réserves énergétiques importantes avant cette période influence fortement le comportement de chasse, notamment l'augmentation de la chasse active."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Venin et dentition",
+        "icon": "fa-skull-crossbones",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Cette vipère possède des crochets à venins creux, relativement fragiles, essentiels à la prédation. Ces crochets fonctionnent comme des « aiguilles jetables », étant fréquemment perdus et remplacés. En effet, environ 25 % des échantillons fécaux analysés contiennent des crochets, ce qui suggère un remplacement tous les quatre événements de prédation, soit environ tous les vingt jours{{r8}}. Fait remarquable, les dents postérieures sont également perdues et remplacées à un rythme similaire, montrant leur rôle actif dans la préhension et la déglutition des proies."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Conservation",
+      "icon": "fa-shield-alt",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Cerastes vipera bénéficie d'une grande aire de répartition relativement éloignée des activités humaines. De ce fait, elle est classée en préoccupation mineure par l'IUCN{{r9}}."
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

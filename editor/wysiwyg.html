@@ -129,6 +129,8 @@ body{padding-bottom:100px}
 <div class="toast" id="toast"></div>
 
 <script src="generator.js"></script>
+<script src="generator2.js"></script>
+<script src="importer2.js"></script>
 <script src="page.js"></script>
 <script>
 /* ===================== DONNÉES DE RÉFÉRENCE ===================== */
@@ -182,7 +184,7 @@ let state={
 };
 
 /* ===================== helpers texte <-> DOM ===================== */
-const G=window.FaunaGenerator, P=window.FaunaPage;
+const G=window.FaunaGenerator, P=window.FaunaPage, G2=window.FaunaGenerator2, IMP=window.FaunaImporter2;
 function refNum(key){const i=state.refs.findIndex(r=>r.key===key);return i<0?"?":i+1;}
 function textToHTML(t){
   let h=(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -239,7 +241,6 @@ function openImagePicker(opts){
   }
   if(opts.chooseStyle)paintStyles();else paintDrop();
 }
-function addImageBlock(si,style,src){eachLang(c=>{const b=newBlock(style);b.images.push({src,cap:"",alt:""});c.sections[si].blocks.push(b);});render();}
 
 /* ===================== rendu ===================== */
 const app=document.getElementById("app");
@@ -313,7 +314,7 @@ function introImageEl(c,key,label){
 function itool(icon,label,fn,cls){const b=document.createElement("button");b.className="itool "+(cls||"");b.innerHTML=`<i class="fas ${icon}"></i>${label?" "+label:""}`;b.onclick=fn;return b;}
 
 
-/* ===================== SECTIONS ===================== */
+/* ===================== SECTIONS (modèle à CONTENU ORDONNÉ) ===================== */
 function sectionEl(s,si){
   const item=el("div","accordion-item");
   const head=el("button","accordion-header active");const hc=el("div","accordion-header-content");
@@ -325,38 +326,68 @@ function sectionEl(s,si){
   ctl.appendChild(mini("✕",e=>{e.stopPropagation();if(confirm("Supprimer la section ?"))removeSection(si);}));
   hc.appendChild(ctl);head.appendChild(hc);head.insertAdjacentHTML("beforeend",'<i class="fas fa-chevron-down accordion-arrow"></i>');item.appendChild(head);
   const content=el("div","accordion-content active");const body=el("div","accordion-body");
-  body.appendChild(insBar(si,0));
-  (s.blocks||[]).forEach((b,bi)=>{body.appendChild(blockEl(b,si,bi));body.appendChild(insBar(si,bi+1));});
-  (s.subs||[]).forEach((su,ki)=>body.appendChild(subEl(su,si,ki)));
-  (s.subspecies||[]).forEach((sp,pi)=>body.appendChild(subspEl(sp,si,pi)));
-  const imgChip=chip('<i class="fas fa-image"></i> Ajouter une image (choisir le format)',(e)=>openImagePicker({x:e.clientX,y:e.clientY+10,chooseStyle:true,onPick:(src,style)=>addImageBlock(si,style,src)}));
-  imgChip.style.cssText="border-color:var(--ocre);color:#e0b487;font-weight:700;margin:12px 6px 6px 0";
-  body.appendChild(imgChip);
-  body.appendChild(chip("＋ Sous-section",(e)=>openPickMenu(e,SUB_PRESETS,p=>addSubPreset(si,p),()=>addSubCustom(si,e))));
-  body.appendChild(chip("＋ Sous-espèce",()=>addSubspecies(si)));
+  renderItems(body,[si],s.items||[]);
   content.appendChild(body);item.appendChild(content);return item;
 }
+// rend une liste d'items ordonnés dans `container`, cp = chemin du conteneur
+function renderItems(container,cp,items){
+  container.appendChild(insBar(cp,0));
+  items.forEach((it,i)=>{container.appendChild(itemEl(it,cp,i));container.appendChild(insBar(cp,i+1));});
+}
+function ctlEl(cp,i){const ctl=el("span","ctl");
+  ctl.appendChild(mini("↑",e=>{e.stopPropagation();movItem(cp,i,-1);}));
+  ctl.appendChild(mini("↓",e=>{e.stopPropagation();movItem(cp,i,1);}));
+  ctl.appendChild(mini("✕",e=>{e.stopPropagation();delItem(cp,i);}));
+  return ctl;
+}
 
-/* ===================== BLOCS ===================== */
-function blockEl(b,si,bi){
-  const t=b.type||"text";
-  if(t==="text"){
+/* ===================== ITEMS (texte, liste, titre, galeries, carte, sous-section, sous-espèce) ===================== */
+function itemEl(it,cp,i){
+  const k=it.kind;
+  if(k==="text"){
     const p=document.createElement("p");
-    const sp=document.createElement("span");sp.setAttribute("contenteditable","true");sp.dataset.ed="1";sp.dataset.ph="Texte…";sp.innerHTML=textToHTML(b.text);sp.oninput=()=>b.text=htmlToText(sp);bindSel(sp);p.appendChild(sp);
-    const ctl=el("span","ctl");ctl.appendChild(mini("✕",()=>{eachLang(c=>c.sections[si].blocks.splice(bi,1));render();}));p.appendChild(ctl);
-    return p;
+    const sp=document.createElement("span");sp.setAttribute("contenteditable","true");sp.dataset.ed="1";sp.dataset.ph="Texte…";sp.innerHTML=textToHTML(it.text);sp.oninput=()=>it.text=htmlToText(sp);bindSel(sp);p.appendChild(sp);
+    p.appendChild(ctlEl(cp,i));return p;
+  }
+  if(k==="heading"){
+    const h=document.createElement("h4");h.style.cssText="margin:.5rem 0 .2rem";
+    const sp=document.createElement("span");sp.setAttribute("contenteditable","true");sp.dataset.ed="1";sp.dataset.ph="Sous-titre…";sp.innerHTML=textToHTML(it.text);sp.oninput=()=>it.text=htmlToText(sp);bindSel(sp);h.appendChild(sp);
+    h.appendChild(ctlEl(cp,i));return h;
+  }
+  if(k==="list"){
+    const wrap=el("div");const ul=document.createElement("ul");ul.style.cssText="margin:.3rem 0 .2rem 1.1rem";
+    (it.items||[]).forEach((li,lj)=>{const liEl=document.createElement("li");
+      const sp=document.createElement("span");sp.setAttribute("contenteditable","true");sp.dataset.ed="1";sp.dataset.ph="Élément de liste…";sp.innerHTML=textToHTML(li.text);sp.oninput=()=>li.text=htmlToText(sp);bindSel(sp);liEl.appendChild(sp);
+      const rm=mini("✕",()=>{eachLang(c=>itemAt(c,cp,i).items.splice(lj,1));render();});rm.style.marginLeft="6px";liEl.appendChild(rm);ul.appendChild(liEl);});
+    wrap.appendChild(ul);
+    wrap.appendChild(chip("＋ Élément",()=>{eachLang(c=>itemAt(c,cp,i).items.push({kind:"text",text:""}));render();}));
+    wrap.appendChild(ctlEl(cp,i));return wrap;
+  }
+  if(k==="sub-section"){
+    const d=el("div","sub-section");const h=el("button","sub-section-header active");h.innerHTML='<i class="fas fa-chevron-down sub-section-arrow"></i>';
+    const hc=el("div","sub-section-header-content");const ic=document.createElement("i");ic.className="fas secicon "+(it.icon||"fa-cogs");ic.onclick=e=>{e.stopPropagation();openIconPicker(e,it.icon,icon=>{eachLang(c=>itemAt(c,cp,i).icon=icon);render();});};hc.appendChild(ic);
+    const t=document.createElement("span");t.setAttribute("contenteditable","true");t.dataset.ed="1";t.dataset.ph="Titre";t.textContent=it.title||"";t.oninput=()=>it.title=t.textContent;t.onclick=e=>e.stopPropagation();hc.appendChild(t);
+    hc.appendChild(ctlEl(cp,i));h.appendChild(hc);h.insertAdjacentHTML("beforeend",'<i class="fas fa-chevron-down sub-section-arrow"></i>');d.appendChild(h);
+    const cont=el("div","sub-section-content active");cont.style.maxHeight="none";cont.style.overflow="visible";const body=el("div","sub-section-body");
+    renderItems(body,cp.concat(i),it.items||[]);cont.appendChild(body);d.appendChild(cont);return d;
+  }
+  if(k==="subspecies"){
+    const box=el("div","subsp");const sh=el("div","sh");sh.innerHTML='<i class="fas fa-sitemap"></i>';
+    const t=document.createElement("span");t.setAttribute("contenteditable","true");t.dataset.ed="1";t.dataset.ph="Nom de la sous-espèce (ex. *Salamandra algira atlantica*)";t.style.color="#e9e3d7";t.innerHTML=textToHTML(it.title);t.oninput=()=>it.title=htmlToText(t);bindSel(t);sh.appendChild(t);
+    sh.appendChild(ctlEl(cp,i));box.appendChild(sh);
+    const body=el("div");renderItems(body,cp.concat(i),it.items||[]);box.appendChild(body);
+    box.appendChild(edGlobalCap(it));return box;
   }
   // galeries / carte
-  const wrap=el("div");
+  const t=k;const wrap=el("div");
   const label=el("div");label.style.cssText="font:700 10px/1 'Oswald';letter-spacing:.1em;text-transform:uppercase;color:#7a756b;margin:4px 0";
-  label.innerHTML=(BLOCK_TYPES.find(x=>x.t===t)||{}).label||t;
-  const rm=mini("✕",()=>{eachLang(c=>c.sections[si].blocks.splice(bi,1));render();});rm.style.marginLeft="8px";label.appendChild(rm);wrap.appendChild(label);
+  label.innerHTML=(ITEM_KINDS.find(x=>x.k===t)||{}).label||t;label.appendChild(ctlEl(cp,i));wrap.appendChild(label);
   const grid=el("div",t+"-grid");grid.style.display="grid";grid.style.gridTemplateColumns=SINGLE[t]?"1fr":"1fr 1fr";grid.style.gap="8px";
-  (b.images||[]).forEach((im,ii)=>grid.appendChild(imageCard(im,t,()=>{eachLang(c=>c.sections[si].blocks[bi].images[ii].src=im.src);},()=>{eachLang(c=>c.sections[si].blocks[bi].images.splice(ii,1));render();})));
+  (it.images||[]).forEach((im,ii)=>grid.appendChild(imageCard(im,t,()=>{eachLang(c=>{itemAt(c,cp,i).images[ii].src=im.src;});},()=>{eachLang(c=>itemAt(c,cp,i).images.splice(ii,1));render();})));
   wrap.appendChild(grid);
-  if(!SINGLE[t]||!(b.images||[]).length)
-    wrap.appendChild(chip("＋ Photo de plus (même format)",(e)=>openImagePicker({x:e.clientX,y:e.clientY+10,onPick:v=>{eachLang(c=>c.sections[si].blocks[bi].images.push({src:v,cap:"",alt:""}));render();}})));
-  if(t==="gallery-5-4"){wrap.appendChild(edGlobalCap(b));}
+  if(!SINGLE[t]||!(it.images||[]).length)
+    wrap.appendChild(chip("＋ Photo",(e)=>openImagePicker({x:e.clientX,y:e.clientY+10,onPick:v=>{eachLang(c=>{const iu=itemAt(c,cp,i);(iu.images=iu.images||[]).push({src:v,cap:"",alt:""});});render();}})));
+  if(t==="gallery-5-4"){wrap.appendChild(edGlobalCap(it));}
   return wrap;
 }
 function imageCard(im,t,onSrc,onDel){
@@ -372,33 +403,33 @@ function imageCard(im,t,onSrc,onDel){
 }
 function edGlobalCap(b){const d=el("div","globalcap");const s=document.createElement("span");s.setAttribute("contenteditable","true");s.dataset.ed="1";s.dataset.ph="Légende globale du diaporama (optionnelle)…";s.textContent=b.globalCap||"";s.oninput=()=>b.globalCap=s.textContent;d.appendChild(s);return d;}
 
-/* ===================== SOUS-SECTIONS ===================== */
-function subEl(su,si,ki){
-  const d=el("div","sub-section");
-  const h=el("button","sub-section-header active");h.innerHTML='<i class="fas fa-chevron-down sub-section-arrow"></i>';
-  const hc=el("div","sub-section-header-content");const ic=document.createElement("i");ic.className="fas secicon "+(su.icon||"fa-cogs");ic.onclick=e=>{e.stopPropagation();openIconPicker(e,su.icon,icon=>{eachLang(c=>c.sections[si].subs[ki].icon=icon);render();});};hc.appendChild(ic);
-  const t=document.createElement("span");t.setAttribute("contenteditable","true");t.dataset.ed="1";t.dataset.ph="Titre";t.textContent=su.title||"";t.oninput=()=>su.title=t.textContent;t.onclick=e=>e.stopPropagation();hc.appendChild(t);
-  const ctl=el("span","ctl");ctl.appendChild(mini("✕",e=>{e.stopPropagation();eachLang(c=>c.sections[si].subs.splice(ki,1));render();}));hc.appendChild(ctl);
-  h.appendChild(hc);h.insertAdjacentHTML("beforeend",'<i class="fas fa-chevron-down sub-section-arrow"></i>');d.appendChild(h);
-  const cont=el("div","sub-section-content active");cont.style.maxHeight="none";cont.style.overflow="visible";const body=el("div","sub-section-body");
-  const p=document.createElement("p");const sp=document.createElement("span");sp.setAttribute("contenteditable","true");sp.dataset.ed="1";sp.dataset.ph="Texte…";sp.innerHTML=textToHTML(su.text);sp.oninput=()=>su.text=htmlToText(sp);bindSel(sp);p.appendChild(sp);body.appendChild(p);
-  cont.appendChild(body);d.appendChild(cont);return d;
+/* ===================== HELPERS DU MODÈLE ORDONNÉ ===================== */
+// cp = chemin du conteneur : [si] = corps de section ; [si,i,...] = items d'une sous-section/sous-espèce
+function arrAt(c,cp){let a=c.sections[cp[0]].items;for(let d=1;d<cp.length;d++)a=a[cp[d]].items;return a;}
+function itemAt(c,cp,i){return arrAt(c,cp)[i];}
+function insItem(cp,pos,factory){eachLang(c=>arrAt(c,cp).splice(pos,0,factory()));render();}
+function delItem(cp,pos){eachLang(c=>arrAt(c,cp).splice(pos,1));render();}
+function movItem(cp,pos,dir){const j=pos+dir;eachLang(c=>{const a=arrAt(c,cp);if(j<0||j>=a.length)return;const x=a.splice(pos,1)[0];a.splice(j,0,x);});render();}
+function newItem(k){
+  if(k==="text")return{kind:"text",text:""};
+  if(k==="heading")return{kind:"heading",level:"h4",text:""};
+  if(k==="list")return{kind:"list",items:[{kind:"text",text:""}]};
+  if(k==="sub-section")return{kind:"sub-section",title:"Sous-section",icon:"fa-cogs",items:[{kind:"text",text:""}]};
+  if(k==="subspecies")return{kind:"subspecies",title:"Sous-espèce",globalCap:"",items:[{kind:"text",text:""}]};
+  return{kind:k,images:[],globalCap:""};
 }
-
-/* ===================== SOUS-ESPÈCES ===================== */
-function subspEl(sp,si,pi){
-  const box=el("div","subsp");
-  const sh=el("div","sh");sh.innerHTML='<i class="fas fa-sitemap"></i>';
-  const t=document.createElement("span");t.setAttribute("contenteditable","true");t.dataset.ed="1";t.dataset.ph="Nom de la sous-espèce";t.style.color="#e9e3d7";t.textContent=sp.title||"";t.oninput=()=>sp.title=t.textContent;sh.appendChild(t);
-  const rm=mini("✕",()=>{eachLang(c=>c.sections[si].subspecies.splice(pi,1));render();});rm.style.marginLeft="auto";sh.appendChild(rm);box.appendChild(sh);
-  const p=document.createElement("p");const spx=document.createElement("span");spx.setAttribute("contenteditable","true");spx.dataset.ed="1";spx.dataset.ph="Texte…";spx.innerHTML=textToHTML(sp.text);spx.oninput=()=>sp.text=htmlToText(spx);bindSel(spx);p.appendChild(spx);box.appendChild(p);
-  const grid=el("div");grid.style.cssText="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px";
-  (sp.images||[]).forEach((im,ii)=>grid.appendChild(imageCard(im,"gallery-5-4",()=>{eachLang(c=>c.sections[si].subspecies[pi].images[ii].src=im.src);},()=>{eachLang(c=>c.sections[si].subspecies[pi].images.splice(ii,1));render();})));
-  box.appendChild(grid);
-  box.appendChild(chip("＋ Photo",(e)=>openImagePicker({x:e.clientX,y:e.clientY+10,onPick:v=>{eachLang(c=>c.sections[si].subspecies[pi].images.push({src:v,cap:"",alt:""}));render();}})));
-  box.appendChild(edGlobalCap(sp));
-  return box;
-}
+const ITEM_KINDS=[
+  {k:"text",icon:"fa-align-left",label:"Texte"},
+  {k:"list",icon:"fa-list-ul",label:"Liste à puces"},
+  {k:"heading",icon:"fa-heading",label:"Sous-titre"},
+  {k:"gallery-2-3",icon:"fa-images",label:"Galerie portrait"},
+  {k:"gallery-16-9",icon:"fa-image",label:"Galerie paysage"},
+  {k:"gallery-5-4",icon:"fa-clone",label:"Diaporama"},
+  {k:"gallery-full-width",icon:"fa-panorama",label:"Image pleine largeur"},
+  {k:"distribution-map",icon:"fa-map",label:"Carte de répartition"},
+  {k:"sub-section",icon:"fa-folder-plus",label:"Sous-section"},
+  {k:"subspecies",icon:"fa-sitemap",label:"Sous-espèce"}
+];
 
 /* ===================== RÉFÉRENCES ===================== */
 function refsEl(){
@@ -434,24 +465,19 @@ function openIconPicker(ev,cur,cb){
   const ok=el("button","pkok");ok.textContent="OK";ok.onclick=()=>{let v=inp.value.trim().replace(/^fa[srlb]?\s+/,"").replace(/^fa-/,"");if(v){close();cb("fa-"+v);}};
   inp.onkeydown=e=>{if(e.key==="Enter")ok.click();};row.appendChild(inp);row.appendChild(ok);b.appendChild(row);
 }
-function insBar(si,pos){
+function insBar(cp,pos){
   const bar=el("div","ins");const plus=document.createElement("button");plus.className="plus";plus.textContent="+";
-  plus.onclick=e=>{e.stopPropagation();closeMenus();const{b,close}=floatBox(e.clientX,e.clientY+8,240);b.innerHTML='<div class="pkh">Insérer un bloc</div>';
-    BLOCK_TYPES.forEach(bt=>{const btn=el("button","pk");btn.innerHTML=`<i class="fas ${bt.icon}"></i> ${bt.label}`;btn.onclick=()=>{close();insertBlock(si,pos,bt.t);};b.appendChild(btn);});};
+  plus.onclick=e=>{e.stopPropagation();closeMenus();const{b,close}=floatBox(e.clientX,e.clientY+8,240);b.innerHTML='<div class="pkh">Insérer…</div>';
+    ITEM_KINDS.forEach(bt=>{const btn=el("button","pk");btn.innerHTML=`<i class="fas ${bt.icon}"></i> ${bt.label}`;btn.onclick=()=>{close();insItem(cp,pos,()=>newItem(bt.k));};b.appendChild(btn);});};
   bar.appendChild(plus);return bar;
 }
 
-/* ===================== OPÉRATIONS (miroir multi-langue) ===================== */
+/* ===================== OPÉRATIONS SECTIONS (miroir multi-langue) ===================== */
 function eachLang(fn){LANGS.forEach(l=>{if(state.langs[l])fn(state.langs[l],l);});}
-function newBlock(t){return t==="text"?{type:"text",text:""}:{type:t,images:[],globalCap:""};}
-function insertBlock(si,pos,t){eachLang(c=>c.sections[si].blocks.splice(pos,0,newBlock(t)));render();}
-function addSectionPreset(p){eachLang((c,l)=>c.sections.push({title:p[l]||p.en,icon:p.icon,blocks:[{type:"text",text:""}],subs:[],subspecies:[]}));render();}
-function addSectionCustom(ev){openIconPicker(ev,"fa-leaf",icon=>{const t=prompt("Titre de la section :","Nouvelle section");if(t===null)return;eachLang(c=>c.sections.push({title:t,icon:icon,blocks:[{type:"text",text:""}],subs:[],subspecies:[]}));render();});}
+function addSectionPreset(p){eachLang((c,l)=>c.sections.push({title:p[l]||p.en,icon:p.icon,items:[{kind:"text",text:""}]}));render();}
+function addSectionCustom(ev){openIconPicker(ev,"fa-leaf",icon=>{const t=prompt("Titre de la section :","Nouvelle section");if(t===null)return;eachLang(c=>c.sections.push({title:t,icon:icon,items:[{kind:"text",text:""}]}));render();});}
 function removeSection(si){eachLang(c=>c.sections.splice(si,1));render();}
-function moveSection(si,dir){const j=si+dir;if(j<0)return;eachLang(c=>{if(j>=c.sections.length)return;const[x]=c.sections.splice(si,1);c.sections.splice(j,0,x);});render();}
-function addSubPreset(si,p){eachLang((c,l)=>c.sections[si].subs.push({title:p[l]||p.en,icon:p.icon,text:""}));render();}
-function addSubCustom(si,ev){openIconPicker(ev,"fa-cogs",icon=>{const t=prompt("Titre de la sous-section :","Sous-section");if(t===null)return;eachLang(c=>c.sections[si].subs.push({title:t,icon:icon,text:""}));render();});}
-function addSubspecies(si){eachLang(c=>c.sections[si].subspecies.push({title:"Sous-espèce",text:"",images:[],globalCap:""}));render();}
+function moveSection(si,dir){const j=si+dir;if(j<0)return;eachLang(c=>{if(j>=c.sections.length)return;const x=c.sections.splice(si,1)[0];c.sections.splice(j,0,x);});render();}
 function setSectionIcon(si,ev){openIconPicker(ev,state.langs[L].sections[si].icon,icon=>{eachLang(c=>c.sections[si].icon=icon);render();});}
 
 /* ===================== SÉLECTION : format + citer ===================== */
@@ -517,25 +543,20 @@ function newPage(){
 }
 
 /* ===================== SORTIE (aperçu / JSON) ===================== */
+function walkImgs(items,P){(items||[]).forEach(it=>{if(it.images)it.images.forEach(im=>{if(im.src)im.src=P(im.src);});if(it.items)walkImgs(it.items,P);});}
 function buildStateRel(rel){   // pour l'aperçu : affiche les nouvelles images (blob) sinon chemin absolu
   const cl=JSON.parse(JSON.stringify(state));
   LANGS.forEach(l=>{const c=cl.langs[l];if(!c)return;
     const P=x=>x?(previewMap[x]||(rel+x)):"";
     c.introImg=P(c.introImg);c.introMap=P(c.introMap);
-    (c.sections||[]).forEach(s=>{
-      (s.blocks||[]).forEach(b=>(b.images||[]).forEach(im=>{if(im.src)im.src=P(im.src);}));
-      (s.subspecies||[]).forEach(su=>(su.images||[]).forEach(im=>{if(im.src)im.src=P(im.src);}));
-    });
+    (c.sections||[]).forEach(s=>walkImgs(s.items,P));
   });return cl;
 }
 function buildPublishState(){   // pour publier : chemins préfixés selon la profondeur de chaque langue
   const cl=JSON.parse(JSON.stringify(state));
   LANGS.forEach(l=>{const c=cl.langs[l];if(!c)return;const rel=REL[l];const P=x=>x?(rel+x):"";
     c.introImg=P(c.introImg);c.introMap=P(c.introMap);
-    (c.sections||[]).forEach(s=>{
-      (s.blocks||[]).forEach(b=>(b.images||[]).forEach(im=>{if(im.src)im.src=P(im.src);}));
-      (s.subspecies||[]).forEach(su=>(su.images||[]).forEach(im=>{if(im.src)im.src=P(im.src);}));
-    });
+    (c.sections||[]).forEach(s=>walkImgs(s.items,P));
   });return cl;
 }
 function buildMeta(){
@@ -553,7 +574,7 @@ function buildMeta(){
 function preview(){
   const S="https://fauna-morocco.org/";
   const ps=buildStateRel(S);
-  const body=G.generateBody(ps,L,{});
+  const body=G2.generateBody(ps,L,{});
   const w=window.open("","_blank");
   w.document.write(`<!doctype html><html lang="${L}" dir="${L==='ar'?'rtl':'ltr'}"><head><meta charset="utf-8"><link rel="stylesheet" href="${S}css/general.css"><link rel="stylesheet" href="${S}encyclopedia/species-account.css"><link rel="stylesheet" href="${S}css/reskin.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head><body>${body}<script src="${S}encyclopedia/species-account.js"><\/script></body></html>`);
   w.document.close();
@@ -633,7 +654,7 @@ function loadStateInto(loaded){
     meta={slug:slug,order:{slug:o.slug,name:o.name},family:{slug:fa.slug,name:fa.name},title:{en:"",fr:"",ar:""},description:{en:"",fr:"",ar:""}};
     state={statusCode:"LC",trendCode:"decreasing",refs:[],langs:{}};
     LANGS.forEach(l=>{const c=blankLang();c.sci=sci;state.langs[l]=c;});
-    SECTION_PRESETS.forEach(pp=>LANGS.forEach(l=>state.langs[l].sections.push({title:pp[l]||pp.en,icon:pp.icon,blocks:[{type:"text",text:""}],subs:[],subspecies:[]})));
+    SECTION_PRESETS.forEach(pp=>LANGS.forEach(l=>state.langs[l].sections.push({title:pp[l]||pp.en,icon:pp.icon,items:[{kind:"text",text:""}]})));
   } else {
     LANGS.forEach(l=>{ if(!state.langs[l]){ const b=JSON.parse(JSON.stringify(state.langs.fr)); b.name="";b.intro=""; (b.sections||[]).forEach(s=>{s.title="";(s.blocks||[]).forEach(bl=>{if(bl.type==="text")bl.text="";(bl.images||[]).forEach(im=>im.cap="");});(s.subs||[]).forEach(su=>{su.title="";su.text="";});(s.subspecies||[]).forEach(sp=>{sp.title="";sp.text="";});}); state.langs[l]=b; } });
   }

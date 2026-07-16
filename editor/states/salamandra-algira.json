@@ -1,0 +1,909 @@
+{
+ "meta": {
+  "slug": "salamandra-algira",
+  "order": {
+   "slug": "caudata",
+   "name": "Caudata"
+  },
+  "family": {
+   "slug": "",
+   "name": ""
+  },
+  "title": {
+   "en": "North African Salamander",
+   "fr": "Salamandre d'Afrique du Nord",
+   "ar": ""
+  },
+  "description": {
+   "en": "",
+   "fr": "",
+   "ar": ""
+  }
+ },
+ "state": {
+  "statusCode": "VU",
+  "trendCode": "decreasing",
+  "refs": [
+   {
+    "key": "r1",
+    "text": "Beukema, W., de Pous, P., Donaire-Barroso, D., Bogaerts, S., Toxopeus, A.G., De Bie, C.A.J.M., Roca, J. & Carranza, S. (2010). Biogeography and contemporary climatic differentiation among Moroccan Salamandra algira. <em>Biological Journal of the Linnean Society</em>, 101: 626-631."
+   },
+   {
+    "key": "r2",
+    "text": "Reinhard, S., Renner, S., & Kupfer, A. (2015). Age and fecundity in Salamandra algira (Caudata: Salamandridae). <em>Salamandra</em>, 51: 19-24."
+   },
+   {
+    "key": "r3",
+    "text": "Hernandez, A. & Escoriza, D. (2019). A new subspecies of African fire salamander Salamandra algira (Urodela, Salamandridae) from the Middle Atlas Mountains, Morocco. <em>ZooKeys</em>, 893: 143-158."
+   },
+   {
+    "key": "r4",
+    "text": "Escoriza, D. & Comas, M.M. (2007). Description of a new subspecies of Salamandra algira Bedriaga, 1883 (Amphibia: Salamandridae) from the Beni Snassen massif (Northeast Morocco). <em>Salamandra</em>, 43: 77-90."
+   },
+   {
+    "key": "r5",
+    "text": "Hernandez, A. (2018). Salamandra algira splendens and Pleurodeles waltl in Moroccan caves; new distributional records. <em>Herpetological Bulletin</em>, 144: 36-38."
+   },
+   {
+    "key": "r6",
+    "text": "Hernandez, A. (2017). Les Urodèles du Maroc: Pleurodeles waltl, Salamandra algira tingitana, S. algira splendens et S. algira spelaea (Caudata: Salamandridae). Histoire naturelle, taxinomie, écologie et perspectives conservatoires. <em>Situla Revue d'Herpétoculture Francophone</em>, 29: 30-48."
+   },
+   {
+    "key": "r7",
+    "text": "Donaire-Barroso, D. & Bogaerts, S. (2003). A new subspecies of Salamandra algira Bedriaga, 1883 from northern Morocco. <em>Podarcis</em>, 4: 84-100."
+   },
+   {
+    "key": "r8",
+    "text": "Ben Hassine, J., Gutiérrez-Rodríguez, J., Escoriza, D. & Martínez-Solano, I. (2016). Inferring the roles of vicariance, climate and topography in population differentiation in Salamandra algira (Caudata, Salamandridae). <em>Journal of Zoological Systematics and Evolutionary Research</em>, 54: 116-126."
+   },
+   {
+    "key": "r9",
+    "text": "Raffaëlli, J. (2013). <em>Les Urodèles du monde. 2ème édition</em>. Penclen editions, 480 pp."
+   },
+   {
+    "key": "r10",
+    "text": "Donaire Barroso, D. & Bogaerts, S. (2001). Observations on viviparity of Salamandra algira in North Morocco. In: Lymberakis, P., Valakos, E., Pafilis, P., and Mylonas, M. (eds.). <em>Herpetologia Candiana</em>. S.E.H. Irakleio 2001, pp. 147-151."
+   },
+   {
+    "key": "r11",
+    "text": "Beukema, W. (2015). Salamandra algira Bedriaga, 1883. In: Martínez, G., León, R., Jiménez-Robles, O., González De la Vega, J.P., Gabari, V., Rebollo, B., Sánchez-Tójar, A., Fernández-Cardenete, J.R., Gállego, J. (Eds.). <em>Moroccoherps. Amphibians and Reptiles of Morocco</em>. Available from www.moroccoherps.com/en/ficha/Salamandra_algira/. Version 9/09/2015."
+   },
+   {
+    "key": "r12",
+    "text": "Schleich, H.H., Kästle, W. & Kabisch, K. (1996). <em>Amphibians and Reptiles of North Africa</em>. Koeltz Scientific Books, Koenigstein."
+   },
+   {
+    "key": "r13",
+    "text": "Escoriza, D., Comas, M.M., Donaire, D. & Carranza, S. (2006). Rediscovery of Salamandra algira Bedriaga, 1883 from the Beni Snassen massif (Morocco) and phylogenetic relationships of North African Salamandra. <em>Amphibia-Reptilia</em>, 27: 448-455."
+   },
+   {
+    "key": "r14",
+    "text": "Bogaerts, S., Donaire-Barroso, D., Pasmans, F., Böhme, W. & Carranza, S. (2013). Do north African fire salamanders, Salamandra algira, occur in Tunisia? <em>Herpetological Notes</em>, 6: 301-306."
+   },
+   {
+    "key": "r15",
+    "text": "Hernandez, A. & Escoriza, D. (2017). Easternmost record of Salamandra algira splendens in Morocco. <em>Boletín de la Asociación Herpetológica Española</em>, 28(1): 60-61."
+   },
+   {
+    "key": "r16",
+    "text": "Dinis, M., Merabet, K., Martínez-Freiría, F., Steinfartz, S., Vences, M., Burgon, J.D., Elmer, K.R., Donaire, D., Hinckley, A., Fahd, S., Joger, U., Fawzi, A., Slimani, T. & Velo-Antón, G. (2019). Allopatric diversification and evolutionary melting pot in a North African Palearctic relict: The biogeographic history of Salamandra algira. <em>Molecular Phylogenetics and Evolution</em>, 130: 81-91."
+   },
+   {
+    "key": "r17",
+    "text": "IUCN SSC Amphibian Specialist Group. (2013). Salamandra algira. <em>The IUCN Red List of Threatened Species</em> 2013."
+   },
+   {
+    "key": "r18",
+    "text": "Escoriza, D. & Ben Hassine, J. (2014). Microclimatic variation in multiple Salamandra algira populations along an altitudinal gradient: phenology and reproductive strategies. <em>Acta Herpetologica</em>, 9(1): 33-41."
+   },
+   {
+    "key": "r19",
+    "text": "Bosch, J., Martínez-Solano, I. & García-París, M. (2001). Evidence of a chytrid fungus infection involved in the decline of the common midwife toad (Alytes obstetricans) in protected areas of central Spain. <em>Biological Conservation</em>, 97: 331-337."
+   },
+   {
+    "key": "r20",
+    "text": "Reques, R., Pleguezuelos, J.M., Busack, S.D., et al. (2013). Amphibians of Morocco, including Western Sahara: a status report. <em>Basic and Applied Herpetology</em>, 27: 23-50."
+   }
+  ],
+  "langs": {
+   "en": {
+    "name": "North African Salamander",
+    "sci": "Salamandra algira",
+    "intro": "The only salamander native to the African continent, *Salamandra algira* is a remarkable and emblematic species of Morocco's biodiversity. This elusive amphibian inhabits a few mountainous areas of northern Morocco, where it relies on cool, humid microhabitats. However, its survival is increasingly at risk. Prolonged droughts, combined with ongoing habitat loss, are rapidly shrinking the availability of these fragile environments. As a result, *Salamandra algira* has become a symbol not only of ecological uniqueness, but also of the urgent need to conserve North Africa's last remaining pockets of suitable habitat.",
+    "introImg": "images/encyclopedia/caudata/salamandra-algira/salamandra-algira-intro.jpg",
+    "introMap": "images/encyclopedia/caudata/salamandra-algira/salamandra-algira-map-intro.jpg",
+    "sections": [
+     {
+      "title": "Description",
+      "icon": "fa-info-circle",
+      "items": [
+       {
+        "kind": "text",
+        "text": "The North African Salamander (*Salamandra algira*) is a striking amphibian endemic to North Africa. It measures between 15-25 cm in total length, with a robust body and rounded snout. The most distinctive feature of this salamander is its dramatic coloration, which consists of a glossy black background adorned with bright yellow or orange-red patterns that form irregular spots, stripes, or blotches along the body and tail{{r1}}."
+       },
+       {
+        "kind": "text",
+        "text": "Sexual dimorphism is also observed, with males being generally smaller than females and possessing a more swollen cloaca during the breeding season{{r2}}."
+       },
+       {
+        "kind": "text",
+        "text": "4 out of the 5 subspecies can be found in Morocco, the nominal form being endemic to Algeria."
+       },
+       {
+        "kind": "sub-section",
+        "title": "",
+        "icon": "fa-cogs",
+        "items": [
+         {
+          "kind": "heading",
+          "level": "h4",
+          "text": "Subspecies"
+         },
+         {
+          "kind": "subspecies",
+          "title": "*Salamandra algira atlantica*",
+          "globalCap": "Specimens of *Salamandra algira atlantica* (non-troglodytic population) from the Tazekka National Park. © Rayane Vuillemin",
+          "items": [
+           {
+            "kind": "gallery-5-4",
+            "images": [
+             {
+              "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica1.jpg",
+              "alt": "Salamandra algira atlantica subspecies from Tazekka National Park Morocco showing red dominant coloration pattern - North African salamander scientific documentation",
+              "cap": "Specimen of *Salamandra algira atlantica* (non-troglodytic population) from the Tazekka National Park. © Rayane Vuillemin"
+             },
+             {
+              "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica2.jpg",
+              "alt": "Salamandra algira atlantica subspecies specimen 2 from Tazekka National Park Morocco red coloration morphology - endemic salamander scientific photography",
+              "cap": "Specimen of *Salamandra algira atlantica* (non-troglodytic population) from the Tazekka National Park. © Rayane Vuillemin"
+             },
+             {
+              "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica3.jpg",
+              "alt": "Salamandra algira atlantica subspecies specimen 3 non-troglodytic population Tazekka National Park Morocco Middle Atlas endemic amphibian",
+              "cap": "Specimen of *Salamandra algira atlantica* (non-troglodytic population) from the Tazekka National Park. © Rayane Vuillemin"
+             },
+             {
+              "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica4.jpg",
+              "alt": "Salamandra algira atlantica subspecies specimen 4 showing red coloration pattern Middle Atlas Morocco scientific herpetology documentation",
+              "cap": "Specimen of *Salamandra algira atlantica* (non-troglodytic population) from the Tazekka National Park. © Rayane Vuillemin"
+             }
+            ],
+            "globalCap": "Specimens of *Salamandra algira atlantica* (non-troglodytic population) from the Tazekka National Park. © Rayane Vuillemin"
+           },
+           {
+            "kind": "text",
+            "text": "The *Salamandra algira atlantica* subspecies is a slender and large-sized salamander with a highly variable coloration pattern. It is the only known subspecies of *Salamandra algira* in which red can exceed the proportion of black{{r3}}. This subspecies displays a variable number of yellow dorsal blotches, but usually in lower numbers than the nominotypical subspecies. Some cave individuals have been found to be almost completely red while maintaining the yellow markings{{r3}}."
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "kind": "subspecies",
+        "title": "*Salamandra algira spelaea*",
+        "globalCap": "*Salamandra algira spelaea* from eastern Morocco, showing the distinctive wine red coloration as well as the many yellow dots. © Rayane Vuillemin",
+        "items": [
+         {
+          "kind": "gallery-5-4",
+          "images": [
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.spelaea1.jpg",
+            "alt": "Salamandra algira spelaea subspecies eastern Morocco Beni Snassen showing distinctive wine red coloration yellow dots - endemic cave salamander scientific documentation",
+            "cap": "*Salamandra algira spelaea* from eastern Morocco, showing the distinctive wine red coloration as well as the many yellow dots. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.spelaea2.jpg",
+            "alt": "Salamandra algira spelaea subspecies specimen 2 from eastern Morocco wine red coloration pattern yellow spots - Beni Snassen endemic amphibian herpetology",
+            "cap": "*Salamandra algira spelaea* from eastern Morocco, showing the distinctive wine red coloration as well as the many yellow dots. © Rayane Vuillemin"
+           }
+          ],
+          "globalCap": "*Salamandra algira spelaea* from eastern Morocco, showing the distinctive wine red coloration as well as the many yellow dots. © Rayane Vuillemin"
+         },
+         {
+          "kind": "text",
+          "text": "The *Salamandra algira spelaea* subspecies is more constant in coloration compared to other subspecies. Yellow markings are usually small and numerous. White dots can sometimes be found on the body, particularly in the lateral, gular, and ventral regions{{r4}}. This subspecies is only found in the Beni Snassen massif in northeastern Morocco, where it has adapted to life in or near cave systems{{r5}}."
+         }
+        ]
+       },
+       {
+        "kind": "subspecies",
+        "title": "*Salamandra algira splendens*",
+        "globalCap": "Specimens of *Salamandra algira splendens* from the Chefchaouen region, showing the strong chromatic variation within this subspecies. © Rayane Vuillemin",
+        "items": [
+         {
+          "kind": "gallery-5-4",
+          "images": [
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.splendens1.jpg",
+            "alt": "Salamandra algira splendens sous-espèce Moyen Atlas Maroc spécimen 1",
+            "cap": "*Salamandra algira splendens* from the Chefchaouen region, with an exceptional amount of red. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.splendens2.jpg",
+            "alt": "Salamandra algira splendens sous-espèce Moyen Atlas Maroc spécimen 2",
+            "cap": "*Salamandra algira splendens* from the Chefchaouen region, with an exceptional amount of red. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.splendens3.jpg",
+            "alt": "Salamandra algira splendens sous-espèce Moyen Atlas Maroc spécimen 3",
+            "cap": "*Salamandra algira splendens* from the Chefchaouen region, much blacker and with surprising wine red markings. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.splendens4.jpg",
+            "alt": "Salamandra algira splendens sous-espèce Moyen Atlas Maroc spécimen 4",
+            "cap": "*Salamandra algira splendens* from the Chefchaouen region, illustrating the strong chromatic variation within this subspecies. © Rayane Vuillemin"
+           }
+          ],
+          "globalCap": "Specimens of *Salamandra algira splendens* from the Chefchaouen region, showing the strong chromatic variation within this subspecies. © Rayane Vuillemin"
+         },
+         {
+          "kind": "text",
+          "text": "The *Salamandra algira splendens* subspecies shows high variability in coloration, ranging from mostly black individuals with few red markings and abundant yellow dots, to surprisingly colorful individuals with very high amounts of red{{r6}}. Individuals from the eastern-most part of the range display a darker shade of red, almost grape purple colored. This subspecies is characterized by a longer tail and a more elongated form. Red pigmentation is particularly prominent in Rif populations, especially around the parotoid glands, throat, and between limbs{{r6}}."
+         }
+        ]
+       },
+       {
+        "kind": "subspecies",
+        "title": "*Salamandra algira tingitana*",
+        "globalCap": "",
+        "items": [
+         {
+          "kind": "gallery-5-4",
+          "images": [
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c1-1.jpg",
+            "alt": "Salamandra algira tingitana sous-espèce Maroc spécimen 1",
+            "cap": "A melanistic *Salamandra algira tingitana* of the Clade 1, a viviparous form of the subspecies. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c2-1.jpg",
+            "alt": "Salamandra algira tingitana sous-espèce Maroc spécimen 2",
+            "cap": "*Salamandra algira tingitana* of the Clade 2. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c3-1.jpg",
+            "alt": "Salamandra algira tingitana sous-espèce Maroc spécimen 3",
+            "cap": "*Salamandra algira tingitana* of the Clade 3, ovoviviparous form. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c3-2.jpg",
+            "alt": "Salamandra algira tingitana sous-espèce Maroc spécimen 4",
+            "cap": "*Salamandra algira tingitana* of the Clade 3, ovoviviparous form. © Rayane Vuillemin"
+           }
+          ],
+          "globalCap": ""
+         },
+         {
+          "kind": "text",
+          "text": "The *Salamandra algira tingitana* subspecies is composed of both viviparous and ovoviviparous forms that inhabit the Tingitana Peninsula region, and be split in 3 distinct genetical clades. The viviparous form (Clade 1) is characterized by a brown-black to completely black coloration (melanism) with few scattered yellow spots, and is uniquely localized to the north of Oued Martil{{r7}}. The ovoviviparous form has more pronounced yellow patterning on the dorsal surface and resembles the nominotypical subspecies from Algeria. Males of this subspecies develop swollen forearms during the breeding season{{r7}}."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Distribution",
+      "icon": "fa-globe-africa",
+      "items": [
+       {
+        "kind": "text",
+        "text": "The North African Salamander is endemic to the mountainous regions of northwestern Africa. Its distribution is highly fragmented due to climate and topographical barriers, with populations isolated in different mountain ranges{{r13}}."
+       },
+       {
+        "kind": "distribution-map",
+        "images": [
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/salamandra-algira-map.jpg",
+          "alt": "Distribution map of Salamandra algira subspecies in Morocco",
+          "cap": "Distribution of Salamandra algira in Morocco showing ranges of different subspecies"
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "In Morocco, different subspecies occupy distinct ranges:"
+       },
+       {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "text",
+          "text": "*S. algira tingitana* is found in the northwestern Rif Mountains (Tingitana Peninsula), ranging from Ceuta to Jbel Sougna{{r14}}."
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira splendens* inhabits the central and eastern Rif Mountains, from Chefchaouen to Al Hoceima, including recently discovered populations in the Bokkoyas massif which represent its easternmost occurrence in the Rif{{r15}}."
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira spelaea* is restricted to the Beni Snassen massif in northeastern Morocco, where it is confined to a small area of approximately 45 km²{{r4}}."
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira atlantica* is endemic to the northern and central Middle Atlas Mountains, particularly around Jbel Tazekka and Bou Iblane Massif{{r3}}."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "The nominotypical *S. algira algira* is found in Algeria, across the pericoastal mountains of Annaba, Collo, Kabylia, and the Blida Atlas{{r16}}. These populations are separated from Moroccan populations by approximately 800 km{{r2}}. The main distribution barrier separates the eastern *S. algira spelaea* population from the three other western subspecies."
+       },
+       {
+        "kind": "text",
+        "text": "The fragmented distribution of *Salamandra algira* is primarily due to its requirement for humid habitats in predominantly arid regions. The main barrier between eastern and western populations is the arid Moulouya River basin, which creates a significant biogeographical boundary{{r13}}."
+       }
+      ]
+     },
+     {
+      "title": "Habitat",
+      "icon": "fa-tree",
+      "items": [
+       {
+        "kind": "text",
+        "text": ". In Morocco, *Salamandra algira* inhabits predominantly humid, forested mountain regions with abundant rainfall. These salamanders are typically found between elevations of 30-2,455 m above sea level, occupying a variety of Mediterranean forest types and microhabitats depending on the subspecies{{r13}}."
+       },
+       {
+        "kind": "text",
+        "text": "The four Moroccan subspecies have adapted to slightly different habitat types:"
+       },
+       {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "text",
+          "text": "*S. algira atlantica* is found in subhumid to humid forests and karstic systems at mid to high elevations (600-1,300 m), typically in forests dominated by *Quercetalia ilicis* vegetation including cork oak, holm oak, and cedar forests{{r3}}."
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira spelaea* inhabits rocky environments and caves in the Beni Snassen massif, at elevations of 600-1,300 m. This troglophilic subspecies can be found deep within caves, as well as in the Mediterranean forest outside{{r5}}."
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira splendens* occurs in diverse habitats from 280-2,200 m elevation in the Rif Mountains and Middle Atlas, preferring calcareous soils in pine, cedar, and oak forests. It is typically found near springs and small streams{{r6}}. Recently discovered populations in the region of Al Hoceima have been found at lower elevations (around 220 m) in mesic mixed forest with dense scrub{{r15}}."
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira tingitana* occupies varied ecological niches in karstic regions at elevations of 390-1,274 m. The vegetation is predominantly Mediterranean maquis with small shrubs, herbs, and forests of pine and cork oak{{r6}}."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "The species requires access to clean, flowing water bodies such as mountain springs, streams, and seeps for larval development, typically avoiding still waters. Populations from caves and certain high-elevation areas have adapted to viviparous reproduction, eliminating the need for aquatic habitats{{r10}}."
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica-habitat-1.jpg",
+          "alt": "Salamandra algira atlantica habitat forêt humide Tazekka Atlas Maroc Moyen-Atlas Salamandre",
+          "cap": "*Salamandra algira atlantica* at the edge of a forest in the Middle Atlas."
+         },
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica-habitat-2.jpg",
+          "alt": "Salamandra algira atlantica habitat grotte humide Tazekka Atlas Maroc Moyen-Atlas Salamandre",
+          "cap": "*Salamandra algira atlantica* in a cave 50 meters below the surface, in the Middle Atlas."
+         },
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.spelaea-habitat.jpg",
+          "alt": "Salamandra algira spelaea Beni Snassen Maroc Nord Rif Algerie Salamandre salamandra",
+          "cap": "*Salamandra algira spelaea* in a rare pocket of humidity in the Beni Snassen Massif."
+         },
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.splendens-habitat.jpg",
+          "alt": "Salamandra algira splendens Maroc Salamandre habitat naturel source Rif salamandra",
+          "cap": "*Salamandra algira splendens* in its natural habitat near a spring in the Rif Mountains."
+         },
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c1-habitat.jpg",
+          "alt": "Salamandra algira tingitana Clade1 menacé montagne salamandre mélanique melanistic",
+          "cap": "Melanistic individual of *Salamandra algira tingitana*, belonging to the first genetic clade, observed in a highly humid open habitat currently threatened by quarrying activity."
+         },
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c3-habitat.jpg",
+          "alt": "Salamandra algira grotte calcaire Beni Snassen",
+          "cap": "*Salamandra algira tingitana*, belonging to the third genetic clade, observed near a stream in a forest of the Tingitan Peninsula."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Natural History",
+      "icon": "fa-leaf",
+      "items": [
+       {
+        "kind": "sub-section",
+        "title": "Diet",
+        "icon": "fa-utensils",
+        "items": [
+         {
+          "kind": "text",
+          "text": "*Salamandra algira* is a primarily terrestrial species that is most active during cool, humid conditions. These salamanders are nocturnal, spending daylight hours concealed under rocks, logs, or in burrows, emerging at night to forage. Their diet is probably similar to European species which consists mainly of low-mobility terrestrial detritivores, including millipedes, roundback slugs and earthworms{{r8}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Defense",
+        "icon": "fa-exclamation-triangle",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Like other salamander species, *Salamandra algira* possesses skin glands that secrete toxins as a defense against predators. When threatened, they may arch their back and lift their tail to display their warning coloration more prominently, a behavior known as the unken reflex. The bright colors serve as aposematic signals, warning potential predators of their toxicity{{r9}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Reproduction",
+        "icon": "fa-venus-mars",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Reproduction in *Salamandra algira* is quite variable across its range. Some populations are ovoviviparous, with females giving birth to fully developed larvae that are deposited in water, while others (particularly at higher elevations and in the viviparous form of *S. algira tingitana*) are fully viviparous, giving birth to fully metamorphosed juveniles.{{r7}}{{r10}} Mating typically occurs on land during rainy periods between autumn and spring. Depending on the subspecies and local conditions, females may produce 10-40 offspring per reproductive cycle. Larvae typically develop in cool, oxygen-rich streams or springs for 3-5 months before metamorphosing into terrestrial juveniles{{r11}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Lifespan",
+        "icon": "fa-hourglass-half",
+        "items": [
+         {
+          "kind": "text",
+          "text": "These salamanders can live up to 15-20 years in the wild and are adapted to the Mediterranean climate of North Africa, becoming dormant during hot, dry summer months (estivation) and sometimes during the coldest winter periods{{r12}}."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Conservation",
+      "icon": "fa-shield-alt",
+      "items": [
+       {
+        "kind": "text",
+        "text": "*Salamandra algira* is listed as Vulnerable on the IUCN Red List, with populations showing a declining trend. The species faces numerous threats throughout its limited range in North Africa, resulting in increasingly fragmented populations and local extinctions{{r17}}."
+       },
+       {
+        "kind": "text",
+        "text": "Major threats to this species in Morocco include:"
+       },
+       {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Habitat loss due to deforestation, agricultural expansion, and infrastructure development{{r17}}."
+         },
+         {
+          "kind": "text",
+          "text": "Increasing drought frequency, reducing habitat suitability and breeding opportunities. The species' specific reproductive requirements make it particularly vulnerable to climate change impacts{{r18}}."
+         },
+         {
+          "kind": "text",
+          "text": "Water pollution and modification of stream habitats, affecting larval development{{r17}}."
+         },
+         {
+          "kind": "text",
+          "text": "Introduced predatory fish that prey on salamander larvae{{r17}}."
+         },
+         {
+          "kind": "text",
+          "text": "Emerging fungal diseases, including chytridiomycosis, which threatens amphibian populations globally{{r19}}."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "Conservation efforts for *Salamandra algira* in Morocco include protection within several national parks and nature reserves, such as Talassemtane National Park in the Rif Mountains and the Parc National d'Al-Hoceima. The species is legally protected in Morocco, though enforcement is inconsistent. Research and monitoring programs have been established to better understand population dynamics and genetic diversity across the species' range{{r20}}."
+       },
+       {
+        "kind": "text",
+        "text": "The cave-dwelling subspecies *S. a. spelaea* is of particular conservation concern due to its extremely restricted range and specialized habitat requirements. This subspecies may warrant elevation to Critically Endangered status in future assessments{{r4}}."
+       }
+      ]
+     }
+    ]
+   },
+   "fr": {
+    "name": "Salamandre d'Afrique du Nord",
+    "sci": "Salamandra algira",
+    "intro": "Seule salamandre originaire du continent africain, *Salamandra algira* est une espèce remarquable et emblématique de la biodiversité marocaine. Ce discret amphibien habite quelques zones montagneuses du nord du Maroc, où il dépend de microhabitats frais et humides. Cependant, sa survie est de plus en plus menacée. Les sécheresses prolongées, combinées à la perte continue de son habitat, réduisent rapidement la disponibilité de ces milieux fragiles. *Salamandra algira* est ainsi devenue un symbole non seulement de l'unicité écologique de la région, mais aussi de l'urgence à préserver les dernières poches d'habitats favorables en Afrique du Nord.",
+    "introImg": "images/encyclopedia/caudata/salamandra-algira/salamandra-algira-intro.jpg",
+    "introMap": "images/encyclopedia/caudata/salamandra-algira/salamandra-algira-map-intro.jpg",
+    "sections": [
+     {
+      "title": "Description",
+      "icon": "fa-info-circle",
+      "items": [
+       {
+        "kind": "text",
+        "text": "La Salamandre d'Afrique du Nord (*Salamandra algira*) est un amphibien endémique d'Afrique du Nord. Elle mesure entre 15 et 25 cm de longueur totale, avec un corps robuste ainsi qu'un museau arrondi. La caractéristique la plus distinctive de cette salamandre est sa coloration spectaculaire, qui consiste en un fond noir brillant orné de motifs jaune vif ou rouge-orange qui forment des taches, des rayures ou des marbrures irrégulières le long du corps et de la queue{{r1}}."
+       },
+       {
+        "kind": "text",
+        "text": "Un dimorphisme sexuel est aussi observé chez cette espèce, les mâles étant généralement plus petits que les femelles et possédant un cloaque plus gonflé durant la période de reproduction{{r2}}."
+       },
+       {
+        "kind": "text",
+        "text": "Parmi les 5 sous-espèces existantes, 4 peuvent être trouvées au Maroc, tandis que la forme nominale est endémique à l'Algérie."
+       },
+       {
+        "kind": "sub-section",
+        "title": "",
+        "icon": "fa-cogs",
+        "items": [
+         {
+          "kind": "heading",
+          "level": "h4",
+          "text": "Sous-espèces"
+         },
+         {
+          "kind": "subspecies",
+          "title": "*Salamandra algira atlantica*",
+          "globalCap": "Spécimens de *Salamandra algira atlantica* (population non cavernicole) du Parc National de Tazekka. © Rayane Vuillemin",
+          "items": [
+           {
+            "kind": "gallery-5-4",
+            "images": [
+             {
+              "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica1.jpg",
+              "alt": "Salamandra algira atlantica subspecies from Tazekka National Park Morocco showing red dominant coloration pattern - North African salamander scientific documentation",
+              "cap": "Spécimen de *Salamandra algira atlantica* (population non cavernicole) du Parc National de Tazekka. © Rayane Vuillemin"
+             },
+             {
+              "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica2.jpg",
+              "alt": "Salamandra algira atlantica subspecies specimen 2 from Tazekka National Park Morocco red coloration morphology - endemic salamander scientific photography",
+              "cap": "Spécimen de *Salamandra algira atlantica* (population non cavernicole) du Parc National de Tazekka. © Rayane Vuillemin"
+             },
+             {
+              "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica3.jpg",
+              "alt": "Salamandra algira atlantica subspecies specimen 3 non-troglodytic population Tazekka National Park Morocco Middle Atlas endemic amphibian",
+              "cap": "Spécimen de *Salamandra algira atlantica* (population non cavernicole) du Parc National de Tazekka. © Rayane Vuillemin"
+             },
+             {
+              "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica4.jpg",
+              "alt": "Salamandra algira atlantica subspecies specimen 4 showing red coloration pattern Middle Atlas Morocco scientific herpetology documentation",
+              "cap": "Spécimen de *Salamandra algira atlantica* (population non cavernicole) du Parc National de Tazekka. © Rayane Vuillemin"
+             }
+            ],
+            "globalCap": "Spécimens de *Salamandra algira atlantica* (population non cavernicole) du Parc National de Tazekka. © Rayane Vuillemin"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "kind": "subspecies",
+        "title": "*Salamandra algira spelaea*",
+        "globalCap": "*Salamandra algira spelaea* de l'est du Maroc, montrant la coloration rouge vin distinctive ainsi que les nombreux points jaunes. © Rayane Vuillemin",
+        "items": [
+         {
+          "kind": "gallery-5-4",
+          "images": [
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.spelaea1.jpg",
+            "alt": "Salamandra algira spelaea subspecies eastern Morocco Beni Snassen showing distinctive wine red coloration yellow dots - endemic cave salamander scientific documentation",
+            "cap": "*Salamandra algira spelaea* de l'est du Maroc, montrant la coloration rouge vin distinctive ainsi que les nombreux points jaunes. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.spelaea2.jpg",
+            "alt": "Salamandra algira spelaea subspecies specimen 2 from eastern Morocco wine red coloration pattern yellow spots - Beni Snassen endemic amphibian herpetology",
+            "cap": "*Salamandra algira spelaea* de l'est du Maroc, montrant la coloration rouge vin distinctive ainsi que les nombreux points jaunes. © Rayane Vuillemin"
+           }
+          ],
+          "globalCap": "*Salamandra algira spelaea* de l'est du Maroc, montrant la coloration rouge vin distinctive ainsi que les nombreux points jaunes. © Rayane Vuillemin"
+         },
+         {
+          "kind": "text",
+          "text": "La sous-espèce *Salamandra algira spelaea* a une coloration moins variable par rapport aux autres sous-espèces. Les marques jaunes sont généralement petites et nombreuses. Des points blancs peuvent parfois être trouvés sur le corps, particulièrement au niveau des flancs, gulaires et ventrales{{r4}}. Cette sous-espèce ne se trouve que dans le massif des Beni Snassen au nord-est du Maroc, où elle s'est adaptée à la vie dans ou près des systèmes cavernicoles{{r5}}."
+         }
+        ]
+       },
+       {
+        "kind": "subspecies",
+        "title": "*Salamandra algira splendens*",
+        "globalCap": "Spécimens de *Salamandra algira splendens* de la région de Chefchaouen, illustrant la forte variation chromatique au sein de cette sous-espèce. © Rayane Vuillemin",
+        "items": [
+         {
+          "kind": "gallery-5-4",
+          "images": [
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.splendens1.jpg",
+            "alt": "Salamandra algira splendens sous-espèce Moyen Atlas Maroc spécimen 1",
+            "cap": "*Salamandra algira splendens* de la région de Chefchaouen, avec une quantité exceptionnelle de rouge. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.splendens2.jpg",
+            "alt": "Salamandra algira splendens sous-espèce Moyen Atlas Maroc spécimen 2",
+            "cap": "*Salamandra algira splendens* de la région de Chefchaouen, avec une quantité exceptionnelle de rouge. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.splendens3.jpg",
+            "alt": "Salamandra algira splendens sous-espèce Moyen Atlas Maroc spécimen 3",
+            "cap": "*Salamandra algira splendens* de la région de Chefchaouen, plus foncé et avec d'étonnants marquages rouge vin. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.splendens4.jpg",
+            "alt": "Salamandra algira splendens sous-espèce Moyen Atlas Maroc spécimen 4",
+            "cap": "*Salamandra algira splendens* de la région de Chefchaouen, illustrant la forte variation chromatique au sein de cette sous-espèce. © Rayane Vuillemin"
+           }
+          ],
+          "globalCap": "Spécimens de *Salamandra algira splendens* de la région de Chefchaouen, illustrant la forte variation chromatique au sein de cette sous-espèce. © Rayane Vuillemin"
+         },
+         {
+          "kind": "text",
+          "text": "La sous-espèce *Salamandra algira splendens* présente une grande variabilité de coloration, allant d'individus majoritairement noirs avec peu de marques rouges et d'abondants points jaunes, à des individus étonnamment colorés avec de très grandes quantités de rouge{{r6}}. Les individus de la partie la plus orientale de l'aire de répartition présentent une teinte de rouge plus foncée, presque pourpre. Cette sous-espèce est caractérisée par une queue plus longue et une forme plus allongée. La pigmentation rouge est particulièrement prononcée dans les populations du Rif, surtout autour des glandes parotoides, de la gorge et entre les membres{{r6}}."
+         }
+        ]
+       },
+       {
+        "kind": "subspecies",
+        "title": "*Salamandra algira tingitana*",
+        "globalCap": "",
+        "items": [
+         {
+          "kind": "gallery-5-4",
+          "images": [
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c1-1.jpg",
+            "alt": "Salamandra algira tingitana sous-espèce Maroc spécimen 1",
+            "cap": "Une *Salamandra algira tingitana* mélanique du Clade 1, forme vivipare de la sous-espèce. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c2-1.jpg",
+            "alt": "Salamandra algira tingitana sous-espèce Maroc spécimen 2",
+            "cap": "*Salamandra algira tingitana* du Clade 2. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c3-1.jpg",
+            "alt": "Salamandra algira tingitana sous-espèce Maroc spécimen 3",
+            "cap": "*Salamandra algira tingitana* du Clade 3, forme ovovivipare. © Rayane Vuillemin"
+           },
+           {
+            "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c3-2.jpg",
+            "alt": "Salamandra algira tingitana sous-espèce Maroc spécimen 4",
+            "cap": "*Salamandra algira tingitana* du Clade 3, forme ovovivipare. © Rayane Vuillemin"
+           }
+          ],
+          "globalCap": ""
+         },
+         {
+          "kind": "text",
+          "text": "La sous-espèce *Salamandra algira tingitana* comprend à la fois des formes vivipares et ovovivipares qui habitent la région de la péninsule Tingitane, et peut être divisée en 3 clades génétiques distincts. La forme vivipare (Clade 1) est caractérisée par une coloration brun-noir à complètement noire (mélanisme) avec parfois quelques taches jaunes éparses, et est localisée uniquement au nord de l'Oued Martil{{r7}}. Les formes ovovivipares présentent quant à elles des motifs jaunes plus prononcés sur la surface dorsale et ressemble à la sous-espèce nominale d'Algérie. Les mâles de cette sous-espèce développent des avant-bras gonflés pendant la saison de reproduction{{r7}}."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Distribution",
+      "icon": "fa-globe-africa",
+      "items": [
+       {
+        "kind": "text",
+        "text": "La Salamandre d'Afrique du Nord est endémique des régions montagneuses du nord-ouest de l'Afrique. Sa distribution est très fragmentée en raison des barrières climatiques et topographiques, avec des populations isolées dans différents massifs montagneux{{r13}}."
+       },
+       {
+        "kind": "distribution-map",
+        "images": [
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/salamandra-algira-map.jpg",
+          "alt": "Distribution map of Salamandra algira subspecies in Morocco",
+          "cap": "Répartition de Salamandra algira au Maroc, montrant les aires des différentes sous-espèces"
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "Au Maroc, différentes sous-espèces occupent des aires distinctes :"
+       },
+       {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "text",
+          "text": "*S. algira tingitana* se trouve dans les montagnes du Rif nord-ouest (péninsule Tingitane), s'étendant de Ceuta à Jbel Sougna{{r14}}."
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira splendens* habite les montagnes centrales et orientales du Rif, de Chefchaouen à Al Hoceima, y compris les populations récemment découvertes dans le massif des Bokkoyas qui représentent sa présence la plus orientale dans le Rif{{r15}}."
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira spelaea* est limitée au massif des Beni Snassen dans le nord-est du Maroc, où elle est confinée à une petite zone d'environ 45 km²{{r4}}."
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira atlantica* est endémique des montagnes du Moyen Atlas du nord et du centre, particulièrement autour de Jbel Tazekka et du Massif de Bou Iblane{{r3}}."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "La forme nominale *S. algira algira* se trouve en Algérie, dans les montagnes péricôtières d'Annaba, dans le massif de Collo, en Kabylie et dans l'Atlas de Blida{{r16}}. Ces populations sont séparées des populations marocaines par environ 800 km{{r2}}. La principale barrière de distribution sépare la population orientale de *S. algira spelaea* des trois autres sous-espèces occidentales."
+       },
+       {
+        "kind": "text",
+        "text": "La distribution fragmentée de *Salamandra algira* est principalement due à son besoin d'habitats humides dans des régions majoritairement arides. La principale barrière entre les populations orientales et occidentales est le bassin aride de la rivière Moulouya, qui crée une frontière biogéographique significative{{r13}}."
+       }
+      ]
+     },
+     {
+      "title": "Habitat",
+      "icon": "fa-tree",
+      "items": [
+       {
+        "kind": "text",
+        "text": "Au Maroc, *Salamandra algira* habite principalement les régions montagneuses humides et boisées avec des précipitations abondantes. Ces salamandres se trouvent généralement entre des altitudes de 30 à 2455 m au-dessus du niveau de la mer, s'adaptant à divers types de forêts méditerranéennes et de microhabitats selon la sous-espèce{{r13}}"
+       },
+       {
+        "kind": "text",
+        "text": "Les quatre sous-espèces marocaines se sont adaptées à des types d'habitats légèrement différents :"
+       },
+       {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "text",
+          "text": "*S. algira atlantica* se trouve dans les forêts subhumides à humides et les systèmes karstiques à moyenne et haute altitude (600-1 300 m), généralement dans des forêts dominées par la végétation *Quercetalia ilicis* comprenant des forêts de chênes-lièges, de chênes verts et de cèdres{{r3}}"
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira spelaea* habite les environnements rocheux et les grottes du massif des Beni Snassen, à des altitudes de 600 à 1 300 m. Cette sous-espèce troglophile peut être trouvée dans les grottes, ainsi que dans la forêt méditerranéenne à l'extérieur{{r5}}"
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira splendens* se trouve dans divers habitats de 280 à 2 200 m d'altitude dans les montagnes du Rif et du Moyen Atlas, préférant les sols calcaires dans les forêts de pins, de cèdres et de chênes. Elle est généralement trouvée près des sources et des petits ruisseaux{{r6}}. Des populations récemment découvertes dans la région d'Al Hoceima ont été trouvées à des altitudes plus basses (environ 220 m) dans des forêts mixtes mésiques avec des broussailles denses{{r15}}"
+         },
+         {
+          "kind": "text",
+          "text": "*S. algira tingitana* occupe diverses niches écologiques dans les régions karstiques à des altitudes de 390 à 1 274 m. La végétation est principalement constituée de maquis méditerranéen avec de petits arbustes, des herbes et des forêts de pins et de chênes-lièges{{r6}}"
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "L'espèce nécessite un accès à des plans d'eau propres et vives tels que les sources de montagne, les ruisseaux et les suintements pour le développement larvaire, évitant généralement les eaux stagnantes. Les populations des grottes et de certaines zones de haute altitude se sont adaptées à la reproduction vivipare, éliminant ainsi le besoin d'un milieu aquatique pour le développement larvaire{{r10}}."
+       },
+       {
+        "kind": "gallery-2-3",
+        "images": [
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica-habitat-1.jpg",
+          "alt": "Salamandra algira atlantica habitat forêt humide Tazekka Atlas Maroc Moyen-Atlas Salamandre",
+          "cap": "*Salamandra algira atlantica* aux abords d'une forêt dans le Moyen-Atlas."
+         },
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.atlantica-habitat-2.jpg",
+          "alt": "Salamandra algira atlantica habitat grotte humide Tazekka Atlas Maroc Moyen-Atlas Salamandre",
+          "cap": "*Salamandra algira atlantica* dans une grotte à 50 mètres sous la surface du sol, dans le Moyen-Atlas."
+         },
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.spelaea-habitat.jpg",
+          "alt": "Salamandra algira spelaea Beni Snassen Maroc Nord Rif Algerie Salamandre salamandra",
+          "cap": "*Salamandra algira spelaea* dans une formation souterraine dans le Massif des Beni Snassen."
+         },
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.splendens-habitat.jpg",
+          "alt": "Salamandra algira splendens Maroc Salamandre habitat naturel source Rif salamandra",
+          "cap": "*Salamandra algira splendens* dans son habitat naturel, près d'une source dans les hauteurs du Rif."
+         },
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c1-habitat.jpg",
+          "alt": "Salamandra algira tingitana Clade1 menacé montagne salamandre mélanique melanistic",
+          "cap": "Individu mélanistique de *Salamandra algira tingitana*, rattachée au premier clade génétique, observé dans un habitat ouvert à forte humidité, actuellement menacé par l'exploitation d'une carrière."
+         },
+         {
+          "src": "images/encyclopedia/caudata/salamandra-algira/s.s.tingitana-c3-habitat.jpg",
+          "alt": "Salamandra algira grotte calcaire Beni Snassen",
+          "cap": "*Salamandra algira tingitana*, rattachée au troisième clade génétique, observé à proximité d'un ruisseau dans une forêt de la péninsule tingitane."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Histoire Naturelle",
+      "icon": "fa-leaf",
+      "items": [
+       {
+        "kind": "sub-section",
+        "title": "Régime alimentaire",
+        "icon": "fa-utensils",
+        "items": [
+         {
+          "kind": "text",
+          "text": "*Salamandra algira* est une espèce principalement terrestre qui est plus active pendant les conditions fraîches et humides. Ces salamandres sont nocturnes, passant la journée dissimulées sous des roches, des bûches ou dans des terriers, émergeant la nuit pour se nourrir. Leur régime alimentaire est probablement similaire à celui des espèces européennes, qui se compose principalement de détritivores terrestres à faible mobilité, notamment des mille-pattes, des limaces et des vers de terre{{r8}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Défense",
+        "icon": "fa-exclamation-triangle",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Comme d'autres espèces de salamandres, *Salamandra algira* possède des glandes cutanées qui sécrètent des toxines comme défense contre les prédateurs. Lorsqu'elle est menacée, elle peut cambrer son dos et soulever sa queue pour afficher plus visiblement sa coloration d'avertissement, un comportement connu sous le nom de réflexe d'Unken. Les couleurs vives servent de signaux aposématiques, avertissant les prédateurs potentiels de leur toxicité{{r9}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Reproduction",
+        "icon": "fa-venus-mars",
+        "items": [
+         {
+          "kind": "text",
+          "text": "La reproduction de *Salamandra algira* est assez variable selon son aire de répartition. Certaines populations sont ovovivipares, les femelles donnant naissance à des larves entièrement développées qui sont déposées dans l'eau, tandis que d'autres populations (en particulier celles vivant à haute altitude et dans le Clade 1 de *S. algira tingitana*) sont complètement vivipares, donnant naissance à des juvéniles entièrement métamorphosés.{{r7}}{{r10}} L'accouplement a généralement lieu sur terre pendant les périodes pluvieuses entre l'automne et le printemps. Selon la sous-espèce et les conditions locales, les femelles peuvent produire 10 à 40 descendants par cycle reproductif. Les larves se développent généralement dans des ruisseaux ou des sources fraîches et riches en oxygène, où elles se développent pendant 3 à 5 mois avant de se métamorphoser en juvéniles terrestres.{{r11}}."
+         }
+        ]
+       },
+       {
+        "kind": "sub-section",
+        "title": "Longévité",
+        "icon": "fa-hourglass-half",
+        "items": [
+         {
+          "kind": "text",
+          "text": "Ces salamandres peuvent vivre jusqu'à 15-20 ans dans la nature et sont adaptées au climat méditerranéen d'Afrique du Nord, devenant dormantes pendant les mois chauds et secs de l'été (estivation) et parfois pendant les périodes les plus froides de l'hiver{{r12}}."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "Conservation",
+      "icon": "fa-shield-alt",
+      "items": [
+       {
+        "kind": "text",
+        "text": "*Salamandra algira* est classée comme Vulnérable sur la Liste Rouge de l'UICN, avec des populations montrant une tendance à la baisse. L'espèce est confrontée à de nombreuses menaces dans toute son aire de répartition limitée en Afrique du Nord, ce qui entraîne des populations de plus en plus fragmentées et des extinctions locales{{r17}}."
+       },
+       {
+        "kind": "text",
+        "text": "Les principales menaces pour cette espèce au Maroc comprennent :"
+       },
+       {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "text",
+          "text": "La perte d'habitat due à la déforestation, à l'expansion agricole et au développement des infrastructures{{r17}}."
+         },
+         {
+          "kind": "text",
+          "text": "L'augmentation de la fréquence des sécheresses, réduisant la qualité de l'habitat et les opportunités de reproduction. Les exigences reproductives spécifiques de l'espèce la rendent particulièrement vulnérable aux impacts du changement climatique{{r18}}."
+         },
+         {
+          "kind": "text",
+          "text": "La pollution de l'eau et la modification des habitats des cours d'eau, affectant le développement larvaire{{r17}}."
+         },
+         {
+          "kind": "text",
+          "text": "Les poissons prédateurs introduits qui se nourrissent des larves de salamandre{{r17}}."
+         },
+         {
+          "kind": "text",
+          "text": "Les maladies fongiques émergentes, y compris la chytridiomycose, qui menacent les populations d'amphibiens à l'échelle mondiale{{r19}}."
+         }
+        ]
+       },
+       {
+        "kind": "text",
+        "text": "Les efforts de conservation pour *Salamandra algira* au Maroc comprennent la protection dans plusieurs parcs nationaux et réserves naturelles, comme le Parc National de Talassemtane dans les montagnes du Rif et le Parc National d'Al-Hoceima. L'espèce est légalement protégée au Maroc, bien que l'application de cette réglementation soit parfois insuffisante. Des programmes de recherche et de surveillance ont été établis pour mieux comprendre la dynamique des populations et la diversité génétique à travers l'aire de répartition de l'espèce{{r20}}."
+       },
+       {
+        "kind": "text",
+        "text": "La sous-espèce cavernicole *S. a. spelaea* est particulièrement préoccupante en matière de conservation en raison de son aire de répartition extrêmement restreinte et de ses exigences d'habitat spécialisées. Cette sous-espèce pourrait mériter d'être élevée au statut En danger critique d'extinction dans les évaluations futures{{r4}}."
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

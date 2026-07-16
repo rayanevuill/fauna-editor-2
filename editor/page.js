@@ -5,9 +5,9 @@
    Chemins relatifs calculés selon la profondeur (racine / fr / ar).
    ==========================================================================*/
 (function (root, factory) {
-  if (typeof module === "object" && module.exports) module.exports = factory(require("./generator.js"));
-  else root.FaunaPage = factory(root.FaunaGenerator);
-})(typeof self !== "undefined" ? self : this, function (G) {
+  if (typeof module === "object" && module.exports) module.exports = factory(require("./generator.js"), require("./generator2.js"));
+  else root.FaunaPage = factory(root.FaunaGenerator, root.FaunaGenerator2);
+})(typeof self !== "undefined" ? self : this, function (G, G2) {
   "use strict";
   const SITE = "https://fauna-morocco.org";
   const esc = G.esc;
@@ -186,7 +186,10 @@
     const path = pagePath(meta, lang);
     const root = opts.absoluteRoot ? SITE + "/" : rootPrefix(path);
     const bc = breadcrumb(meta, lang, root);
-    const body = G.generateBody(state, lang, { breadcrumb: bc });
+    // Détecte le modèle : v2 = sections à `items` ordonnés -> générateur v2.
+    const anyLang = (state.langs && (state.langs.en || state.langs.fr || state.langs.ar)) || {};
+    const isV2 = ((anyLang.sections) || []).some(function (s) { return s && s.items; });
+    const body = (isV2 && G2 ? G2 : G).generateBody(state, lang, { breadcrumb: bc });
     const html = head(meta, lang, root, path) + "\n<body>\n" + nav(meta, lang, root) + "\n\n" + body + "\n\n" + footerScripts(lang, root) + "\n";
     return { path: path, html: html };
   }
