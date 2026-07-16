@@ -121,7 +121,9 @@
             const vn = genComm(f, gen, lang);
             const h3 = esc(vn || gen);
             const sub = vn ? `<p class="scientific-name">${esc(gen)}</p>` : "";
-            return `<div class="species-item-wrapper"><a href="${fam}/${gen.toLowerCase()}.html" class="species-item"><div class="species-image"><img src="${img}" alt="${esc(gen)}" loading="lazy"></div><h3>${h3}</h3>${sub}</a></div>`;
+            const n = (f.species || []).filter(s => s.scientific.split(" ")[0] === gen).length;
+            const cnt = `<p class="species-count">${n} <span>${lang === "en" ? "species" : (n === 1 ? "espèce" : "espèces")}</span></p>`;
+            return `<div class="species-item-wrapper"><a href="${fam}/${gen.toLowerCase()}.html" class="species-item"><div class="species-image"><img src="${img}" alt="${esc(gen)}" loading="lazy"></div><h3>${h3}</h3>${sub}${cnt}</a></div>`;
           }).join("\n");
           title = lang === "en" ? `${fname} of Morocco | ${cap(fam)} genera | Fauna Morocco` : `${fname} du Maroc | Genres de ${cap(fam)} | Fauna Morocco`;
           desc = lang === "en" ? `The genera of ${cap(fam)} in Morocco.` : `Les genres de ${cap(fam)} au Maroc.`;
