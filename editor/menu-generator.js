@@ -21,6 +21,8 @@
   const rel = d => "../".repeat(d);
   const comm = (o, l) => ((o && o.common && o.common[l]) || "");
   const spName = (s, l) => comm(s, l) || s.scientific;
+  // nom vernaculaire d'un genre (stocké sur la famille : f.genusCommon[Genre] = {en, fr})
+  const genComm = (f, gen, l) => (((f.genusCommon || {})[gen] || {})[l] || "");
 
   function head(lang, depth, pathEN, title, desc) {
     const root = rel(depth);
@@ -116,7 +118,10 @@
         if (byGenus) {
           grid = genusList(f).map(gen => {
             const img = rel(depth) + `images/encyclopedia/${order}/${fam}/${gen.toLowerCase()}.jpg`;
-            return `<div class="species-item-wrapper"><a href="${fam}/${gen.toLowerCase()}.html" class="species-item"><div class="species-image"><img src="${img}" alt="${esc(gen)}" loading="lazy"></div><h3>${esc(gen)}</h3></a></div>`;
+            const vn = genComm(f, gen, lang);
+            const h3 = esc(vn || gen);
+            const sub = vn ? `<p class="scientific-name">${esc(gen)}</p>` : "";
+            return `<div class="species-item-wrapper"><a href="${fam}/${gen.toLowerCase()}.html" class="species-item"><div class="species-image"><img src="${img}" alt="${esc(gen)}" loading="lazy"></div><h3>${h3}</h3>${sub}</a></div>`;
           }).join("\n");
           title = lang === "en" ? `${fname} of Morocco | ${cap(fam)} genera | Fauna Morocco` : `${fname} du Maroc | Genres de ${cap(fam)} | Fauna Morocco`;
           desc = lang === "en" ? `The genera of ${cap(fam)} in Morocco.` : `Les genres de ${cap(fam)} au Maroc.`;
@@ -196,5 +201,10 @@
     return '<div class="species-grid">\n' + cells + '\n                </div>';
   }
 
-  return { generatePages, orderGrid };
+  // Carte d'une espèce pour une grille de page-famille (utilisée aussi pour l'injection
+  // chirurgicale dans les pages faites main, sans les régénérer). depth: EN=2, FR=3.
+  function speciesCard(s, lang, order, fam, depth) { return itemSpecies(s, lang, order, fam, depth); }
+  function speciesName(s, lang) { return spName(s, lang); }
+
+  return { generatePages, orderGrid, speciesCard, speciesName };
 });

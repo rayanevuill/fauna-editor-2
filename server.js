@@ -250,10 +250,21 @@ app.post("/api/publish/:slug", needPublish, async (req, res) => {
         if (okStruct) files.push({ path: op, html: patched });
       }
     }
-    // page famille (mode famille non hand-made) : (re)générer pour y montrer l'espèce cliquable
-    if (menu && menu.mode === "family" && famObj && !PRESERVE.has(`encyclopedia/${order}/${family}.html`)) {
-      const fam2 = JSON.parse(JSON.stringify(famObj)); fam2.active = true;
-      MENUS.generatePages({ groups: [{ families: [fam2] }], menus: list.menus }, new Set()).forEach(pg => files.push({ path: pg.path, html: pg.html }));
+    // page famille : montrer la nouvelle espèce cliquable.
+    if (menu && menu.mode === "family" && famObj) {
+      if (!PRESERVE.has(`encyclopedia/${order}/${family}.html`)) {
+        // famille générée : régénération complète
+        const fam2 = JSON.parse(JSON.stringify(famObj)); fam2.active = true;
+        MENUS.generatePages({ groups: [{ families: [fam2] }], menus: list.menus }, new Set()).forEach(pg => files.push({ path: pg.path, html: pg.html }));
+      } else {
+        // famille FAITE MAIN : injection chirurgicale (préserve le SEO/contenu)
+        for (const [pre, lang] of [["", "en"], ["fr/", "fr"]]) {
+          const fp = pre + `encyclopedia/${order}/${family}.html`;
+          const ex = await getFile(GITHUB_BRANCH, fp).catch(() => null); if (!ex) continue;
+          const out = injectFamilySpecies(ex.content, order, family, famObj, lang);
+          if (out && out !== ex.content) files.push({ path: fp, html: out });
+        }
+      }
     }
 
     // 5) liste maj
@@ -350,7 +361,9 @@ app.post("/api/contact", async (req, res) => {
 
 const fs = require("fs");
 const MENUS = require("./editor/menu-generator.js");
-const IMG_OK = /^images\/encyclopedia\/[a-z0-9-]+\/[a-z0-9-]+\/[a-z0-9-]+\/[\w.-]+\.(jpe?g|png|webp)$/i;
+// Accepte les miniatures (order/famille/espèce.jpg = 2 segments) ET les photos de contenu
+// (order/famille/espèce/photo.jpg = 3) ET les vignettes famille/ordre (1). 1 à 4 segments.
+const IMG_OK = /^images\/encyclopedia\/([a-z0-9-]+\/){1,4}[\w.-]+\.(jpe?g|png|webp)$/i;
 async function putBinary(branch, filepath, b64, message) {
   const existing = await getFile(branch, filepath).catch(() => null);
   const body = { message, content: b64, branch }; if (existing) body.sha = existing.sha;
@@ -367,6 +380,30 @@ async function commitFiles(files, message) {
   await gh(`/repos/${GITHUB_REPO}/git/refs/heads/${b}`, { method: "PATCH", body: JSON.stringify({ sha: commitR.sha }) });
 }
 const PRESERVE = new Set(["encyclopedia/serpentes/viperidae.html","encyclopedia/serpentes/elapidae.html","encyclopedia/sauria/varanidae.html","encyclopedia/sauria/chamaeleonidae.html"]);
+
+// INJECTION CHIRURGICALE — ajoute dans une page-famille FAITE MAIN les cartes des espèces
+// présentes dans la liste mais absentes de la grille, SANS régénérer la page (on préserve
+// le SEO/contenu fait main). Retourne le HTML modifié, ou null si rien à changer / grille introuvable.
+function injectFamilySpecies(html, order, fam, family, lang) {
+  const depth = lang === "fr" ? 3 : 2;
+  const gridRe = /(<div class="species-grid)([^"]*)(">)([\s\S]*?)(<\/div>\s*<\/div>\s*<\/section>)/;
+  const m = gridRe.exec(html);
+  if (!m) return null;
+  let extra = m[2], inner = m[4];
+  const cards = [];
+  (family.species || []).forEach(s => {
+    const slug = s.slug;
+    // déjà présente ? (par l'image de la carte ou le lien de la fiche)
+    if (inner.includes(`/${fam}/${slug}.jpg`) || inner.includes(`${fam}/${slug}.html`) || inner.includes(`"${slug}.html"`)) return;
+    cards.push("                    " + MENUS.speciesCard(s, lang, order, fam, depth));
+  });
+  if (!cards.length) return null;
+  const newInner = inner.replace(/\s*$/, "\n") + cards.join("\n") + "\n                ";
+  // >1 espèce : on retire la classe de centrage "single-species"
+  const nbWrappers = (newInner.match(/species-item-wrapper/g) || []).length;
+  if (nbWrappers > 1) extra = extra.replace(/\s*single-species/, "");
+  return html.replace(gridRe, (_all, p1, _p2, p3, _p4, p5) => p1 + extra + p3 + newInner + p5);
+}
 app.post("/api/upload", needEditor, async (req, res) => {
   try {
     const fp = (req.body && req.body.path) || "";
@@ -595,8 +632,20 @@ app.post("/api/apply-site", needPublish, async (req, res) => {
     if (req.body && req.body.groups) list.groups = req.body.groups; // ordre/prefs à jour, on garde le menus du dépôt
     reorderMenusFromList(list);
     const files = [];
-    // pages famille + genre (familles actives, non faites-main)
+    // pages famille + genre (familles actives, non faites-main) : régénérées entièrement
     MENUS.generatePages(list, PRESERVE).forEach(pg => files.push({ path: pg.path, html: pg.html }));
+    // familles FAITES MAIN (PRESERVE) : on n'écrase PAS la page (SEO/contenu), on injecte
+    // seulement les cartes des espèces manquantes dans la grille existante.
+    for (const g of list.groups || []) for (const f of g.families || []) {
+      const rel = `encyclopedia/${f.order}/${f.slug}.html`;
+      if (!PRESERVE.has(rel)) continue;
+      if (f.active === false || (list.menus[f.order] || {}).mode === "species") continue;
+      for (const [pre, lang] of [["", "en"], ["fr/", "fr"]]) {
+        const ex = await getFile(GITHUB_BRANCH, pre + rel).catch(() => null); if (!ex) continue;
+        const out = injectFamilySpecies(ex.content, f.order, f.slug, f, lang);
+        if (out && out !== ex.content) files.push({ path: pre + rel, html: out });
+      }
+    }
     // pages d'ordre régénérées (ordre des cases = arborescence)
     const gridRe = /<div class="species-grid">[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/;
     for (const order of Object.keys(list.menus || {})) {

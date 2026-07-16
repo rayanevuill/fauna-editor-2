@@ -64,8 +64,6 @@ h1{font-size:25px;margin-bottom:2px;color:#222}
   <button class="btn" onclick="downloadJSON()"><i class="fas fa-download"></i> Télécharger la liste</button>
   <button class="btn" onclick="copyJSON()"><i class="fas fa-copy"></i> Copier</button>
   <button class="btn" onclick="saveServer()"><i class="fas fa-cloud-arrow-up"></i> Enregistrer sur le serveur</button>
-  <button class="btn" onclick="applySite()" style="border-color:var(--ocre,#C06A2C);color:#b45f24"><i class="fas fa-globe"></i> Appliquer au site</button>
-  <!-- « Publier les menus » retiré : publier une fiche met à jour seulement son menu (isolé). -->
 </div>
 <div class="legend"><span>Statut (clic pour changer) —</span>
   <span>Menu :</span><span class="badge b-live">En ligne</span><span class="badge b-soon">Coming soon</span><span class="badge b-todo">À faire</span>
@@ -94,24 +92,11 @@ function gStatus(f,gen){f.genusStatus=f.genusStatus||{};if(!(gen in f.genusStatu
 function speciesRow(f,s,arr){
   const r=el("div","row");
   r.appendChild(ordBtns(arr||f.species,s,render));
-  const mv=el("button","mini");mv.innerHTML='<i class="fas fa-right-left"></i>';mv.title="Déplacer vers une autre famille";mv.style.marginRight="2px";mv.onclick=()=>moveSpeciesPicker(f,s);r.appendChild(mv);
-  const th=el("span");th.style.cssText="width:44px;height:26px;border-radius:4px;overflow:hidden;flex:none;background:#eef0f2;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--line)";
-  if(s.thumb){const im=document.createElement("img");im.src=previewThumb[s.thumb]||("https://fauna-morocco.org/"+s.thumb);im.style.cssText="width:100%;height:100%;object-fit:cover";im.onerror=()=>{im.remove();th.innerHTML='<i class="fas fa-image" style="color:#c0c4c9;font-size:11px"></i>';};th.appendChild(im);}
-  else th.innerHTML='<i class="fas fa-image" style="color:#c0c4c9;font-size:11px"></i>';
-  th.title="Ajouter / changer la miniature (1200×720)";th.onclick=()=>uploadThumb(f,s);
-  r.appendChild(th);
-  const sci=el("div","sci");
-  const l1=document.createElement("div");l1.innerHTML=s.path?`<a href="../${s.path}" target="_blank">${s.scientific}</a>`:s.scientific;l1.style.cursor="pointer";l1.title="Cliquer pour renommer (nom scientifique)";
-  l1.onclick=(e)=>{if(e.target.tagName==="A")return;const v=prompt("Nom scientifique :",s.scientific);if(v){s.scientific=v.trim();s.slug=slugify(v.split(" ").slice(0,2).join(" "));render();}};
-  const cn=(s.common&&(s.common.fr||s.common.en))||"";
-  const l2=document.createElement("div");l2.textContent=cn||"+ nom commun (menu)";l2.style.cssText="font-size:11px;margin-top:1px;cursor:pointer;color:"+(cn?"#6b7075":"#b98a5e");l2.title="Nom vernaculaire affiché dans le menu du site (FR / EN)";
-  l2.onclick=()=>{const fr=prompt("Nom commun (français) — affiché dans le menu FR :",(s.common&&s.common.fr)||"");if(fr===null)return;const en=prompt("Common name (English) — shown in EN menu :",(s.common&&s.common.en)||"");if(en===null)return;s.common=Object.assign({},s.common,{fr:fr.trim(),en:en.trim()});render();};
-  sci.appendChild(l1);sci.appendChild(l2);
+  const sci=el("div","sci");sci.innerHTML=s.path?`<a href="../${s.path}" target="_blank">${s.scientific}</a>`:s.scientific;
+  sci.title="Cliquer pour renommer";sci.onclick=(e)=>{if(e.target.tagName==="A")return;const v=prompt("Nom scientifique :",s.scientific);if(v){s.scientific=v.trim();s.slug=slugify(v.split(" ").slice(0,2).join(" "));render();}};
   r.appendChild(sci);
-  const isPub=s.status==="published"||(ST.published||[]).includes(s.slug);
-  const sb=el("span","badge "+(isPub?"b-published":"b-soon"));sb.textContent=isPub?"Publié":"Coming soon";sb.title="En ligne = Publié ; sinon Coming soon";r.appendChild(sb);
-  const ed=el("a","act");ed.href=`wysiwyg.html?order=${f.order}&family=${f.slug}&slug=${s.slug}&sci=${encodeURIComponent(s.scientific)}`+(s.status==="published"?"&existing=1":"");ed.innerHTML='<i class="fas fa-pen"></i> Éditer';r.appendChild(ed);
-  if(s.status==="published"||(ST.published||[]).includes(s.slug)){const up=el("button","mini");up.innerHTML='<i class="fas fa-eye-slash"></i>';up.title="Dépublier (retirer du menu, la fiche reste)";up.style.color="#c56a00";up.onclick=()=>unpublish(f,s);r.appendChild(up);}
+  r.appendChild(statusBadge(()=>s.status,v=>s.status=v,SP_CYCLE));
+  const ed=el("a","act");ed.href=`wysiwyg.html?order=${f.order}&family=${f.slug}&slug=${s.slug}&sci=${encodeURIComponent(s.scientific)}`;ed.innerHTML='<i class="fas fa-pen"></i> Éditer';r.appendChild(ed);
   const rm=el("button","mini del");rm.innerHTML='<i class="fas fa-xmark"></i>';rm.onclick=()=>{if(confirm("Retirer "+s.scientific+" ?")){f.species.splice(f.species.indexOf(s),1);render();}};r.appendChild(rm);
   return r;
 }
@@ -122,12 +107,6 @@ function familyBlock(g,f,body){
   const h=el("h3");h.textContent=f.name;fh.appendChild(h);
   const c=el("span","fc");c.textContent=`${f.species.filter(s=>s.status==="published").length}/${f.species.length}`;fh.appendChild(c);
   fh.appendChild(statusBadge(()=>f.status,v=>f.status=v,NODE_CYCLE));
-  // Bascule « cliquable sur la page d'ordre » (uniquement les ordres en mode familles)
-  if(f.order!=="testudines"&&f.order!=="caudata"){
-    const act=!!(((ST.menus||{})[f.order]||{cells:{}}).cells[f.slug]);
-    const ms=el("span","badge "+(act?"b-live":"b-soon"));ms.style.fontSize="10px";ms.textContent=act?"cliquable":"coming soon";fh.appendChild(ms);
-    const mo=el("button","mini");mo.innerHTML=act?'<i class="fas fa-link-slash"></i>':'<i class="fas fa-link"></i>';mo.title=act?"Rendre coming soon sur la page d'ordre":"Rendre cliquable sur la page d'ordre";mo.onclick=()=>menuSet(f.order,f.slug,!act);fh.appendChild(mo);
-  }
   fh.appendChild(el("span","sp"));
   const gt=el("span","genusToggle"+(f.groupByGenus?" on":""));gt.textContent="par genre";gt.onclick=()=>{f.groupByGenus=!f.groupByGenus;render();};fh.appendChild(gt);
   const ren=el("button","mini");ren.innerHTML='<i class="fas fa-pen"></i>';ren.title="Renommer";ren.onclick=()=>{const v=prompt("Nom de la famille :",f.name);if(v){f.name=v.trim();f.slug=slugify(v);render();}};fh.appendChild(ren);
@@ -138,10 +117,7 @@ function familyBlock(g,f,body){
     order.forEach(gen=>{
       const list=f.species.filter(s=>genusOf(s)===gen&&matches(s));if(!list.length&&q)return;
       const gh=el("div","genus");gh.appendChild(ordBtns(f.genusOrder,gen,render));
-      const gc=(f.genusCommon||{})[gen]||{};const gv=gc.fr||gc.en||"";
-      const h4=el("h4");h4.innerHTML=gv?`${gv} <span style="font-weight:400;font-style:italic;color:#8a8f95;font-size:12px">${gen}</span>`:gen;h4.style.cursor="pointer";h4.title="Nom vernaculaire du genre affiché dans le menu (FR / EN). Cliquer pour éditer.";
-      h4.onclick=()=>{const cur=(f.genusCommon||{})[gen]||{};const fr=prompt("Genre « "+gen+" » — nom commun (français), menu FR :",cur.fr||"");if(fr===null)return;const en=prompt("Genus « "+gen+" » — common name (English), menu EN :",cur.en||"");if(en===null)return;f.genusCommon=Object.assign({},f.genusCommon,{[gen]:{fr:fr.trim(),en:en.trim()}});render();};
-      gh.appendChild(h4);
+      const h4=el("h4");h4.textContent=gen;gh.appendChild(h4);
       gh.appendChild(statusBadge(()=>gStatus(f,gen),v=>{f.genusStatus[gen]=v;},NODE_CYCLE));
       gh.appendChild(el("span","sp"));body.appendChild(gh);
       list.slice().sort((a,b)=>a.scientific.localeCompare(b.scientific)).forEach(s=>body.appendChild(speciesRow(f,s,f.species)));
@@ -149,29 +125,7 @@ function familyBlock(g,f,body){
   } else sp.forEach(s=>body.appendChild(speciesRow(f,s,f.species)));
   const add=el("button","addbtn");add.innerHTML='<i class="fas fa-plus"></i> Espèce dans '+f.name;add.onclick=()=>addSpecies(f);body.appendChild(add);
 }
-function moveSpeciesPicker(srcFam,s){
-  // overlay
-  const ov=el("div");ov.style.cssText="position:fixed;inset:0;background:rgba(20,15,10,.45);display:flex;align-items:center;justify-content:center;z-index:9999";
-  const pan=el("div");pan.style.cssText="background:#fff;border-radius:10px;padding:18px 18px 14px;width:min(440px,92vw);box-shadow:0 12px 40px rgba(0,0,0,.3);font-family:inherit";
-  const t=el("div");t.style.cssText="font-weight:600;margin-bottom:4px;color:#3a2f26";t.textContent="Déplacer une espèce";
-  const sub=el("div");sub.style.cssText="font-size:13px;color:#7a7068;margin-bottom:12px";sub.innerHTML=`<i>${s.scientific}</i> — actuellement dans <b>${srcFam.name}</b>`;
-  const sel=document.createElement("select");sel.style.cssText="width:100%;padding:8px;border:1px solid var(--line,#d9d4cd);border-radius:6px;font-size:14px;margin-bottom:6px";
-  DATA.groups.forEach(g=>{const og=document.createElement("optgroup");og.label=g.name+" ("+g.order+")";g.families.forEach(fam=>{const o=document.createElement("option");o.value=g.families.indexOf(fam)+"@"+DATA.groups.indexOf(g);o.textContent=fam.name+(fam===srcFam?" — (actuelle)":"");if(fam===srcFam)o.disabled=true;og.appendChild(o);});sel.appendChild(og);});
-  const warn=el("div");warn.style.cssText="font-size:12px;color:#c56a00;min-height:16px;margin-bottom:8px";
-  if(s.status==="published"||s.path)warn.textContent="⚠ Espèce publiée : dépublie-la d'abord (sinon sa fiche reste à l'ancien emplacement).";
-  const bar=el("div");bar.style.cssText="display:flex;gap:8px;justify-content:flex-end";
-  const cancel=el("button","btn");cancel.textContent="Annuler";cancel.onclick=()=>document.body.removeChild(ov);
-  const okb=el("button","btn");okb.textContent="Déplacer";okb.style.cssText="background:var(--ocre,#C06A2C);color:#fff;border-color:var(--ocre,#C06A2C)";
-  okb.onclick=()=>{const[fi,gi]=sel.value.split("@").map(Number);const dg=DATA.groups[gi];const df=dg&&dg.families[fi];if(!df||df===srcFam){document.body.removeChild(ov);return;}
-    const i=srcFam.species.indexOf(s);if(i>=0)srcFam.species.splice(i,1);
-    s.family=df.slug;s.order=df.order;delete s.thumb; // la miniature vit sous l'ancien dossier famille -> à re-uploader
-    df.species.push(s);document.body.removeChild(ov);render();};
-  bar.appendChild(cancel);bar.appendChild(okb);
-  pan.appendChild(t);pan.appendChild(sub);pan.appendChild(sel);pan.appendChild(warn);pan.appendChild(bar);
-  ov.appendChild(pan);ov.onclick=(e)=>{if(e.target===ov)document.body.removeChild(ov);};
-  document.body.appendChild(ov);
-}
-function addSpecies(f){const v=prompt("Nom scientifique :","");if(!v)return;const fr=(prompt("Nom commun (français) — affiché dans le menu (vide si inconnu) :","")||"").trim();const en=(prompt("Common name (English) — menu EN (empty if unknown) :","")||"").trim();const s={scientific:v.trim(),slug:slugify(v.split(" ").slice(0,2).join(" ")),status:"todo",order:f.order,family:f.slug};if(fr||en)s.common={fr,en};f.species.push(s);render();}
+function addSpecies(f){const v=prompt("Nom scientifique :","");if(!v)return;f.species.push({scientific:v.trim(),slug:slugify(v.split(" ").slice(0,2).join(" ")),status:"todo",order:f.order,family:f.slug});render();}
 function addFamily(g){const v=prompt("Nom de la nouvelle famille :","");if(!v)return;g.families.push({slug:slugify(v),name:v.trim(),order:g.order,groupByGenus:false,status:"todo",species:[]});render();}
 
 function render(){
@@ -184,9 +138,6 @@ function render(){
     const h2=el("h2");h2.textContent=g.name;head.appendChild(h2);
     head.appendChild(statusBadge(()=>g.status,v=>g.status=v,NODE_CYCLE));
     const cnt=el("span","cnt");cnt.textContent=`${all.filter(s=>s.status==="published").length}/${all.length} publiées`;head.appendChild(cnt);
-    const onL=!!(ST.landing&&ST.landing[g.order]);
-    const ls=el("span","badge "+(onL?"b-live":"b-soon"));ls.style.marginLeft="8px";ls.textContent="Accueil : "+(onL?"EN LIGNE":"masqué");head.appendChild(ls);
-    const lbtn=el("button","addbtn");lbtn.style.cssText="margin-left:6px;font-size:12px";lbtn.innerHTML='<i class="fas fa-globe"></i> '+(onL?"Masquer de l'accueil":"Afficher sur l'accueil");lbtn.onclick=()=>landingSet(g.order,!onL);head.appendChild(lbtn);
     head.appendChild(el("span","sp"));
     const tg=el("div","toggle");tg.innerHTML=`<button data-l="family" class="${g.displayLevel==='family'?'on':''}">Familles</button><button data-l="species" class="${g.displayLevel==='species'?'on':''}">Espèces</button>`;
     tg.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{g.displayLevel=btn.dataset.l;render();});
@@ -206,103 +157,8 @@ document.getElementById("q").oninput=e=>{q=e.target.value.toLowerCase().trim();r
 const API=(location.origin&&location.origin!=="null")?location.origin:"";
 let KEY=(typeof sessionStorage!=="undefined"&&sessionStorage.getItem("fauna_key"))||"";
 function needKey(){if(!KEY){KEY=(prompt("Mot de passe d'édition :")||"").trim();if(KEY&&typeof sessionStorage!=="undefined")sessionStorage.setItem("fauna_key",KEY);}return KEY;}
-let ST={landing:{},menus:{},published:[]};
-// Réorganisation SUR LE MENU DU SITE : 6 cartes d'ordre (comme la page d'accueil de l'encyclopédie).
-const ORDER_UNITS=[
-  {slug:"caudata",name:"Caudata — Urodèles (salamandres & tritons)",order:"caudata",m:f=>f.order==="caudata"},
-  {slug:"sauria",name:"Sauria — Lézards",order:"sauria",m:f=>f.order==="sauria"&&f.slug!=="amphisbaenia"},
-  {slug:"serpentes",name:"Serpentes — Serpents",order:"serpentes",m:f=>f.order==="serpentes"},
-  {slug:"anura",name:"Anura — Grenouilles & crapauds",order:"anura",m:f=>f.order==="anura"},
-  {slug:"testudines",name:"Testudines — Tortues",order:"testudines",m:f=>f.order==="testudines"},
-  {slug:"amphisbaenia",name:"Amphisbaenia — Amphisbènes",order:"amphisbaenia",m:f=>f.slug==="amphisbaenia"}
-];
-function regroupByOrder(){
-  // idempotent : si la liste est DÉJÀ en 6 ordres, on garde tel quel (préserve ordre + affichage)
-  const cur=DATA.groups.map(g=>g.slug).sort().join(",");
-  const tgt=ORDER_UNITS.map(u=>u.slug).sort().join(",");
-  if(cur===tgt) return;
-  const all=[];DATA.groups.forEach(g=>(g.families||[]).forEach(f=>all.push(f)));
-  DATA.groups=ORDER_UNITS.map(u=>({slug:u.slug,name:u.name,order:u.order,displayLevel:"family",families:all.filter(u.m)}));
-}
-async function applySite(){
-  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  if(!confirm("Appliquer ton arborescence au site ?\nRégénère l'ordre des menus + les pages de famille/genre pour coller à ce que tu vois ici."))return;
-  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
-  try{const r=await fetch(API+"/api/apply-site",{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub},body:exportData()});const d=await r.json().catch(()=>({}));alert(r.ok?(d.note||"Appliqué."):("Erreur : "+(d.error||r.status)));}catch(e){alert("Serveur injoignable.");}
-}
-async function loadServer(){
-  if(!API)return;
-  try{
-    const r=await fetch(API+"/api/species-list",{headers:{"x-fauna-key":needKey()}});
-    if(r.ok){const d=await r.json();if(d&&d.groups){DATA.groups=d.groups;regroupByOrder();}}
-    else if(r.status===401){KEY="";if(typeof sessionStorage!=="undefined")sessionStorage.removeItem("fauna_key");}
-    try{const rs=await fetch(API+"/api/site-state",{headers:{"x-fauna-key":KEY}});if(rs.ok)ST=await rs.json();}catch(e){}
-    render();
-  }catch(e){}
-}
-async function landingSet(order,online){
-  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
-  try{const r=await fetch(API+"/api/landing-toggle/"+order,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub},body:JSON.stringify({online:online})});const d=await r.json().catch(()=>({}));if(r.ok){ST.landing=ST.landing||{};ST.landing[order]=online;render();alert(d.note||"OK");}else alert("Erreur : "+(d.error||r.status));}catch(e){alert("Serveur injoignable.");}
-}
-async function menuSet(order,slug,active){
-  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
-  try{const r=await fetch(API+"/api/menu-toggle/"+order+"/"+slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub},body:JSON.stringify({active:active})});const d=await r.json().catch(()=>({}));if(r.ok){ST.menus[order]=ST.menus[order]||{cells:{}};ST.menus[order].cells[slug]=active;render();alert(d.note||"OK");}else alert("Erreur : "+(d.error||r.status));}catch(e){alert("Serveur injoignable.");}
-}
-async function unpublish(f,s){
-  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  if(!confirm("Dépublier « "+s.scientific+" » ?\n(Retiré du menu / plus cliquable. La fiche reste, réversible.)"))return;
-  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
-  try{const r=await fetch(API+"/api/unpublish/"+s.slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub}});const d=await r.json().catch(()=>({}));if(r.ok){s.status="todo";ST.published=(ST.published||[]).filter(x=>x!==s.slug);render();alert(d.note||"OK");}else alert("Erreur : "+(d.error||r.status));}catch(e){alert("Serveur injoignable.");}
-}
-async function landingToggle(order){
-  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  if(!confirm("Basculer « "+order+" » sur la page d'accueil (afficher ↔ masquer) ?\n(Ça ne touche QUE l'accueil.)"))return;
-  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
-  try{
-    const r=await fetch(API+"/api/landing-toggle/"+order,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub}});
-    const d=await r.json().catch(()=>({}));
-    alert(r.ok?(d.note||"OK"):("Erreur : "+(d.error||r.status)));
-  }catch(e){alert("Serveur injoignable.");}
-}
-async function menuToggle(order,slug){
-  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  if(!confirm("Basculer « "+slug+" » cliquable ↔ coming soon sur la page d'ordre "+order+" ?\n(Ça ne touche QUE cette page d'ordre.)"))return;
-  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
-  try{
-    const r=await fetch(API+"/api/menu-toggle/"+order+"/"+slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub}});
-    const d=await r.json().catch(()=>({}));
-    alert(r.ok?(d.note||"OK"):("Erreur : "+(d.error||r.status)));
-  }catch(e){alert("Serveur injoignable.");}
-}
+async function loadServer(){if(!API)return;try{const r=await fetch(API+"/api/species-list",{headers:{"x-fauna-key":needKey()}});if(r.ok){const d=await r.json();if(d&&d.groups){DATA.groups=d.groups;render();}}else if(r.status===401){KEY="";if(typeof sessionStorage!=="undefined")sessionStorage.removeItem("fauna_key");}}catch(e){}}
 async function saveServer(){if(!API){alert("Disponible une fois l'outil en ligne.");return;}const key=needKey();if(!key)return;try{const r=await fetch(API+"/api/species-list",{method:"PUT",headers:{"Content-Type":"application/json","x-fauna-key":key},body:exportData()});alert(r.ok?"Liste enregistrée sur le serveur.":"Erreur ("+r.status+").");}catch(e){alert("Serveur injoignable.");}}
-async function publishMenus(){
-  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
-  if(!confirm("Régénérer et publier toutes les pages-menus de l'encyclopédie depuis la liste actuelle ?\n(Les pages déjà faites à la main sont préservées.)"))return;
-  try{const r=await fetch(API+"/api/publish-menus",{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub},body:exportData()});
-    const j=await r.json().catch(()=>({}));
-    if(r.ok)alert("Menus publiés ("+(j.count||"?")+" pages). Mise en ligne dans ~2-3 min.");else alert("Erreur : "+(j.error||r.status));
-  }catch(e){alert("Serveur injoignable.");}
-}
-/* ---- miniatures (1200×720, recadrage auto) ---- */
-const previewThumb={};
-function thumbPath(f,s){return `images/encyclopedia/${s.order||f.order}/${s.family||f.slug}/${s.slug}.jpg`;}
-function compressCover(file,W,H){return new Promise(res=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas");c.width=W;c.height=H;const ir=img.width/img.height,tr=W/H;let sw,sh,sx,sy;if(ir>tr){sh=img.height;sw=sh*tr;sx=(img.width-sw)/2;sy=0;}else{sw=img.width;sh=sw/tr;sx=0;sy=(img.height-sh)/2;}c.getContext("2d").drawImage(img,sx,sy,sw,sh,0,0,W,H);res(c.toDataURL("image/jpeg",0.85));};img.onerror=()=>res(null);img.src=URL.createObjectURL(file);});}
-function uploadThumb(f,s){
-  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  const key=needKey();if(!key)return;
-  const inp=document.createElement("input");inp.type="file";inp.accept="image/*";
-  inp.onchange=async()=>{if(!inp.files[0])return;const data=await compressCover(inp.files[0],1200,720);if(!data)return;
-    const p=thumbPath(f,s);
-    try{const r=await fetch(API+"/api/upload",{method:"POST",headers:{"Content-Type":"application/json","x-fauna-key":key},body:JSON.stringify({path:p,data})});
-      if(r.ok){s.thumb=p;previewThumb[p]=data;render();alert("Miniature envoyée. Pense à « Enregistrer sur le serveur ».");}
-      else{alert("Échec de l'envoi ("+r.status+").");}
-    }catch(e){alert("Serveur injoignable.");}
-  };inp.click();
-}
-regroupByOrder();
 render();
 loadServer();
 </script></body></html>
