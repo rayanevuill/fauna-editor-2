@@ -196,23 +196,20 @@ app.post("/api/publish/:slug", needPublish, async (req, res) => {
       await putFile(GITHUB_BRANCH, pth, html, `publication: ${meta.slug} (${l})`);
       written.push(pth);
     }
-    try {
-      const lf = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
-      if (lf) {
-        const list = JSON.parse(lf.content); let famObj=null, ordSlug=null;
-        for (const g of list.groups||[]) for (const fam of g.families||[]) for (const sp of fam.species||[])
-          if (sp.slug === meta.slug) { sp.status="published"; sp.progress="done"; famObj=fam; ordSlug=fam.order; }
-        if (famObj && !PRESERVE.has("encyclopedia/"+ordSlug+"/"+famObj.slug+".html")) {
-          const files=[{path:"editor/species-list.json", html:JSON.stringify(list,null,2)}];
-          MENUS.generatePages({groups:[{families:[famObj]}]}, new Set()).forEach(p=>files.push(p));
-          for (const pre of ["","fr/"]) { const op=pre+"encyclopedia/"+ordSlug+".html"; const ex=await getFile(GITHUB_BRANCH,op).catch(()=>null);
-            if (ex){ const fams=(list.groups||[]).flatMap(g=>g.families||[]).filter(x=>x.order===ordSlug); const grid=MENUS.orderGrid(ordSlug,fams,pre?"fr":"en"); files.push({path:op, html:ex.content.replace(/<div class="species-grid">[\s\S]*?<\/div>\s*<\/div>/, grid+"\n            </div>")}); } }
-          await commitFiles(files, "en ligne: "+meta.slug+" + menus");
-        } else if (famObj) { await putFile(GITHUB_BRANCH,"editor/species-list.json",JSON.stringify(list,null,2),"en ligne: "+meta.slug); }
-      }
-    } catch(e) { console.warn("auto-flip:", e.message); }
+    // On CONSERVE l'état publié pour pouvoir rééditer la fiche à l'identique (plus de fiche vierge).
+    await putFile(DRAFTS_BRANCH, `_states/${meta.slug}.json`, JSON.stringify({ meta, state }, null, 2), `état publié: ${meta.slug}`);
     await deleteFile(DRAFTS_BRANCH, `_drafts/${meta.slug}.json`, `publié: ${meta.slug}`);
     res.json({ ok: true, published: written, note: "Déploiement Hostinger lancé automatiquement (~2-3 min)." });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// État d'une fiche déjà publiée (pour la rééditer). Renvoie { meta, state }.
+app.get("/api/state/:slug", needEditor, async (req, res) => {
+  try {
+    if (!SLUG.test(req.params.slug)) return res.status(400).json({ error: "slug invalide" });
+    const f = await getFile(DRAFTS_BRANCH, `_states/${req.params.slug}.json`).catch(() => null);
+    if (!f) return res.status(404).json({ error: "aucun état enregistré" });
+    res.json(JSON.parse(f.content));
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -287,22 +284,78 @@ app.post("/api/contact", async (req, res) => {
 
 const fs = require("fs");
 const MENUS = require("./editor/menu-generator.js");
-const IMG_OK = /^images\/encyclopedia\/([a-z0-9-]+\/){0,3}[\w.-]+\.(jpe?g|png|webp)$/i;
-async function putBinary(branch, filepath, b64, message) { const e=await getFile(branch,filepath).catch(()=>null); const body={message,content:b64,branch}; if(e)body.sha=e.sha; return (await gh("/repos/"+GITHUB_REPO+"/contents/"+encodeURI(filepath),{method:"PUT",body:JSON.stringify(body)})).json(); }
-async function commitFiles(files, message) {
-  const b=GITHUB_BRANCH;
-  const ref=await (await gh("/repos/"+GITHUB_REPO+"/git/ref/heads/"+b)).json();
-  const baseSha=ref.object.sha;
-  const baseCommit=await (await gh("/repos/"+GITHUB_REPO+"/git/commits/"+baseSha)).json();
-  const tree=files.map(f=>({path:f.path,mode:"100644",type:"blob",content:f.html}));
-  const treeR=await (await gh("/repos/"+GITHUB_REPO+"/git/trees",{method:"POST",body:JSON.stringify({base_tree:baseCommit.tree.sha,tree})})).json();
-  const commitR=await (await gh("/repos/"+GITHUB_REPO+"/git/commits",{method:"POST",body:JSON.stringify({message,tree:treeR.sha,parents:[baseSha]})})).json();
-  await gh("/repos/"+GITHUB_REPO+"/git/refs/heads/"+b,{method:"PATCH",body:JSON.stringify({sha:commitR.sha})});
+const IMG_OK = /^images\/encyclopedia\/[a-z0-9-]+\/[a-z0-9-]+\/[a-z0-9-]+\/[\w.-]+\.(jpe?g|png|webp)$/i;
+async function putBinary(branch, filepath, b64, message) {
+  const existing = await getFile(branch, filepath).catch(() => null);
+  const body = { message, content: b64, branch }; if (existing) body.sha = existing.sha;
+  return (await gh(`/repos/${GITHUB_REPO}/contents/${encodeURI(filepath)}`, { method: "PUT", body: JSON.stringify(body) })).json();
 }
-const PRESERVE=new Set(["encyclopedia/serpentes/viperidae.html","encyclopedia/serpentes/elapidae.html","encyclopedia/sauria/varanidae.html","encyclopedia/sauria/chamaeleonidae.html"]);
-app.post("/api/upload", needEditor, async (req,res)=>{ try{ const fp=(req.body&&req.body.path)||""; if(!IMG_OK.test(fp))return res.status(400).json({error:"chemin d'image non autorisé"}); const m=/^data:image\/[a-z+]+;base64,(.+)$/i.exec((req.body&&req.body.data)||""); if(!m)return res.status(400).json({error:"image invalide"}); if(m[1].length>9000000)return res.status(413).json({error:"image trop lourde"}); await putBinary(GITHUB_BRANCH,fp,m[1],"image: "+fp); res.json({ok:true,path:fp}); }catch(e){res.status(500).json({error:e.message});} });
-app.get("/api/species-list", needEditor, async (req,res)=>{ try{ const f=await getFile(GITHUB_BRANCH,"editor/species-list.json").catch(()=>null); if(f)return res.set("Content-Type","application/json").send(f.content); res.set("Content-Type","application/json").send(fs.readFileSync(path.join(__dirname,"species-list.json"),"utf8")); }catch(e){res.status(500).json({error:e.message});} });
-app.put("/api/species-list", needEditor, async (req,res)=>{ try{ const data=JSON.stringify(req.body,null,2); if(data.length>2000000)return res.status(413).json({error:"liste trop lourde"}); await putFile(GITHUB_BRANCH,"editor/species-list.json",data,"maj liste des especes"); res.json({ok:true}); }catch(e){res.status(500).json({error:e.message});} });
-app.post("/api/publish-menus", needPublish, async (req,res)=>{ try{ let list=(req.body&&req.body.groups)?req.body:null; if(!list){ const f=await getFile(GITHUB_BRANCH,"editor/species-list.json").catch(()=>null); list=f?JSON.parse(f.content):JSON.parse(fs.readFileSync(path.join(__dirname,"species-list.json"),"utf8")); } const files=MENUS.generatePages(list,PRESERVE); const orders={}; (list.groups||[]).forEach(g=>(g.families||[]).forEach(f=>{(orders[f.order]=orders[f.order]||[]).push(f);})); for(const order of Object.keys(orders)){ for(const pre of ["","fr/"]){ const op=pre+"encyclopedia/"+order+".html"; const ex=await getFile(GITHUB_BRANCH,op).catch(()=>null); if(!ex)continue; const grid=MENUS.orderGrid(order,orders[order],pre?"fr":"en"); files.push({path:op, html:ex.content.replace(/<div class="species-grid">[\s\S]*?<\/div>\s*<\/div>/, grid+"\n            </div>")}); } } if(!files.length)return res.status(400).json({error:"rien a generer"}); await commitFiles(files,"maj menus encyclopedie (tableau de bord)"); res.json({ok:true,count:files.length}); }catch(e){res.status(500).json({error:e.message});} });
+async function commitFiles(files, message) {
+  const b = GITHUB_BRANCH;
+  const ref = await (await gh(`/repos/${GITHUB_REPO}/git/ref/heads/${b}`)).json();
+  const baseSha = ref.object.sha;
+  const baseCommit = await (await gh(`/repos/${GITHUB_REPO}/git/commits/${baseSha}`)).json();
+  const tree = files.map(f => ({ path: f.path, mode: "100644", type: "blob", content: f.html }));
+  const treeR = await (await gh(`/repos/${GITHUB_REPO}/git/trees`, { method: "POST", body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree }) })).json();
+  const commitR = await (await gh(`/repos/${GITHUB_REPO}/git/commits`, { method: "POST", body: JSON.stringify({ message, tree: treeR.sha, parents: [baseSha] }) })).json();
+  await gh(`/repos/${GITHUB_REPO}/git/refs/heads/${b}`, { method: "PATCH", body: JSON.stringify({ sha: commitR.sha }) });
+}
+const PRESERVE = new Set(["encyclopedia/serpentes/viperidae.html","encyclopedia/serpentes/elapidae.html","encyclopedia/sauria/varanidae.html","encyclopedia/sauria/chamaeleonidae.html"]);
+app.post("/api/upload", needEditor, async (req, res) => {
+  try {
+    const fp = (req.body && req.body.path) || "";
+    if (!IMG_OK.test(fp)) return res.status(400).json({ error: "chemin d'image non autorisé" });
+    const m = /^data:image\/[a-z+]+;base64,(.+)$/i.exec((req.body && req.body.data) || "");
+    if (!m) return res.status(400).json({ error: "image invalide" });
+    if (m[1].length > 9000000) return res.status(413).json({ error: "image trop lourde" });
+    await putBinary(GITHUB_BRANCH, fp, m[1], `image: ${fp}`);
+    res.json({ ok: true, path: fp });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.get("/api/species-list", needEditor, async (req, res) => {
+  try {
+    const f = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
+    if (f) return res.set("Content-Type", "application/json").send(f.content);
+    res.set("Content-Type", "application/json").send(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8"));
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.put("/api/species-list", needEditor, async (req, res) => {
+  try {
+    const data = JSON.stringify(req.body, null, 2);
+    if (data.length > 2000000) return res.status(413).json({ error: "liste trop lourde" });
+    await putFile(GITHUB_BRANCH, "editor/species-list.json", data, "maj liste des especes");
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.post("/api/publish-menus", needPublish, async (req, res) => {
+  try {
+    let list = (req.body && req.body.groups) ? req.body : null;
+    if (!list) { const f = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null); list = f ? JSON.parse(f.content) : JSON.parse(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8")); }
+    const files = MENUS.generatePages(list, PRESERVE);
+    const menus = list.menus || {};
+    for (const order of Object.keys(menus)) {
+      for (const pre of ["", "fr/"]) {
+        const op = pre + `encyclopedia/${order}.html`;
+        const ex = await getFile(GITHUB_BRANCH, op).catch(() => null);
+        if (!ex) continue;
+        const grid = MENUS.orderGrid(order, menus[order], pre ? "fr" : "en");
+        // Remplace TOUTE la grille (jusqu'a la fermeture grille + conteneur + section),
+        // ancre sur </section> qui est unique -> ne peut plus tronquer ni dedoubler.
+        const gridRe = /<div class="species-grid">[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/;
+        if (!gridRe.test(ex.content)) { console.warn("grille introuvable, page ignoree:", op); continue; }
+        const patched = ex.content.replace(gridRe, grid + "\n            </div>\n        </section>");
+        // Garde-fou structurel : la page doit rester equilibree et n'avoir qu'une grille.
+        const okStruct = (patched.match(/<section/g)||[]).length === (patched.match(/<\/section>/g)||[]).length
+          && (patched.match(/class="species-grid"/g)||[]).length === 1
+          && patched.includes("</footer>");
+        if (!okStruct) { console.warn("structure invalide apres patch, page ignoree:", op); continue; }
+        files.push({ path: op, html: patched });
+      }
+    }
+    if (!files.length) return res.status(400).json({ error: "rien a generer" });
+    await commitFiles(files, "maj menus encyclopedie (tableau de bord)");
+    res.json({ ok: true, count: files.length });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
 
 app.listen(PORT, () => console.log(`Fauna editor backend écoute sur :${PORT}`));

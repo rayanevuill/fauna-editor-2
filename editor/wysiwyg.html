@@ -375,12 +375,12 @@ function edGlobalCap(b){const d=el("div","globalcap");const s=document.createEle
 /* ===================== SOUS-SECTIONS ===================== */
 function subEl(su,si,ki){
   const d=el("div","sub-section");
-  const h=el("button","sub-section-header");h.innerHTML='<i class="fas fa-chevron-down sub-section-arrow"></i>';
+  const h=el("button","sub-section-header active");h.innerHTML='<i class="fas fa-chevron-down sub-section-arrow"></i>';
   const hc=el("div","sub-section-header-content");const ic=document.createElement("i");ic.className="fas secicon "+(su.icon||"fa-cogs");ic.onclick=e=>{e.stopPropagation();openIconPicker(e,su.icon,icon=>{eachLang(c=>c.sections[si].subs[ki].icon=icon);render();});};hc.appendChild(ic);
   const t=document.createElement("span");t.setAttribute("contenteditable","true");t.dataset.ed="1";t.dataset.ph="Titre";t.textContent=su.title||"";t.oninput=()=>su.title=t.textContent;t.onclick=e=>e.stopPropagation();hc.appendChild(t);
   const ctl=el("span","ctl");ctl.appendChild(mini("✕",e=>{e.stopPropagation();eachLang(c=>c.sections[si].subs.splice(ki,1));render();}));hc.appendChild(ctl);
   h.appendChild(hc);h.insertAdjacentHTML("beforeend",'<i class="fas fa-chevron-down sub-section-arrow"></i>');d.appendChild(h);
-  const cont=el("div","sub-section-content");const body=el("div","sub-section-body");
+  const cont=el("div","sub-section-content active");cont.style.maxHeight="none";cont.style.overflow="visible";const body=el("div","sub-section-body");
   const p=document.createElement("p");const sp=document.createElement("span");sp.setAttribute("contenteditable","true");sp.dataset.ed="1";sp.dataset.ph="Texte…";sp.innerHTML=textToHTML(su.text);sp.oninput=()=>su.text=htmlToText(sp);bindSel(sp);p.appendChild(sp);body.appendChild(p);
   cont.appendChild(body);d.appendChild(cont);return d;
 }
@@ -603,23 +603,42 @@ document.addEventListener("click",()=>{closeMenus();setTimeout(()=>{const s=wind
 
 /* ===================== init : pré-remplissage depuis le tableau de bord, ou fiche d'exemple ===================== */
 function blankSection(){return {title:"",icon:"fa-info-circle",blocks:[{type:"text",text:""}],subs:[],subspecies:[]};}
-(function init(){
+// Charge l'état réel d'une fiche existante : d'abord l'état bundlé (fiches d'avant l'outil),
+// puis l'état serveur d'une fiche déjà publiée. Renvoie {meta,state} ou null.
+async function loadRealState(slug){
+  try{ const r=await fetch("states/"+encodeURIComponent(slug)+".json",{cache:"no-store"}); if(r.ok) return await r.json(); }catch(e){}
+  if(API && AUTH.key){ try{ const r=await fetch(API+"/api/state/"+encodeURIComponent(slug),{headers:{"x-fauna-key":AUTH.key}}); if(r.ok) return await r.json(); }catch(e){} }
+  return null;
+}
+function loadStateInto(loaded){
+  if(!loaded||!loaded.state) return false;
+  if(loaded.meta) meta=loaded.meta;
+  state=loaded.state;
+  LANGS.forEach(l=>{ if(!state.langs[l]) state.langs[l]=blankLang(); });
+  return true;
+}
+(async function init(){
   const p=new URLSearchParams(location.search);
-  if(p.get("sci")||p.get("slug")){
-    const sci=(p.get("sci")||"").trim(), slug=(p.get("slug")||"").trim();
+  const slug=(p.get("slug")||"").trim();
+  if(slug){
+    const loaded=await loadRealState(slug);
+    if(loadStateInto(loaded)){ toast&&toast("Fiche existante chargée."); render(); return; }
+  }
+  if(p.get("sci")||slug){
+    const sci=(p.get("sci")||"").trim();
+    if(slug && p.get("existing")==="1"){ alert("Cette fiche a été créée avant l'éditeur : il n'y a pas d'état à recharger, donc l'éditeur repart d'un modèle vierge.\n\nSi tu l'enregistres, elle sera reconstruite au format de l'éditeur. Sinon, laisse-la telle quelle sur le site."); }
     const order=p.get("order")||"sauria", family=p.get("family")||"";
     const o=ORDERS.find(x=>x.slug===order)||{slug:order,name:order.charAt(0).toUpperCase()+order.slice(1)};
     const fa=FAMILIES.find(x=>x.slug===family)||{slug:family,name:family.charAt(0).toUpperCase()+family.slice(1)};
     meta={slug:slug,order:{slug:o.slug,name:o.name},family:{slug:fa.slug,name:fa.name},title:{en:"",fr:"",ar:""},description:{en:"",fr:"",ar:""}};
     state={statusCode:"LC",trendCode:"decreasing",refs:[],langs:{}};
     LANGS.forEach(l=>{const c=blankLang();c.sci=sci;state.langs[l]=c;});
-    SECTION_PRESETS.forEach(p=>LANGS.forEach(l=>state.langs[l].sections.push({title:p[l]||p.en,icon:p.icon,blocks:[{type:"text",text:""}],subs:[],subspecies:[]})));
+    SECTION_PRESETS.forEach(pp=>LANGS.forEach(l=>state.langs[l].sections.push({title:pp[l]||pp.en,icon:pp.icon,blocks:[{type:"text",text:""}],subs:[],subspecies:[]})));
   } else {
-    // s'assurer que toutes les langues existent (structure identique)
     LANGS.forEach(l=>{ if(!state.langs[l]){ const b=JSON.parse(JSON.stringify(state.langs.fr)); b.name="";b.intro=""; (b.sections||[]).forEach(s=>{s.title="";(s.blocks||[]).forEach(bl=>{if(bl.type==="text")bl.text="";(bl.images||[]).forEach(im=>im.cap="");});(s.subs||[]).forEach(su=>{su.title="";su.text="";});(s.subspecies||[]).forEach(sp=>{sp.title="";sp.text="";});}); state.langs[l]=b; } });
   }
+  render();
 })();
-render();
 </script>
 </body>
 </html>

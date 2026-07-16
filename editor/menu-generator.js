@@ -15,7 +15,8 @@
   const GA = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-EZ9624NH1R"></script>\n    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag(\'js\',new Date());gtag(\'config\',\'G-EZ9624NH1R\');</script>';
   const ORDER_NAME = { sauria: "Sauria", serpentes: "Serpentes", testudines: "Testudines", anura: "Anura", caudata: "Caudata" };
   const NAVT = { en: ["Encyclopedia", "About", "Contact", "Donate"], fr: ["Encyclopédie", "À propos", "Contact", "Faire un don"] };
-  const esc = s => (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  // N.B. on n'échappe PAS l'apostrophe (les pages faites main utilisent l'apostrophe littérale ; invisible mais évite un faux diff).
+  const esc = s => (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
   const rel = d => "../".repeat(d);
   const comm = (o, l) => ((o && o.common && o.common[l]) || "");
@@ -82,10 +83,11 @@
     const img = rel(depth) + `images/encyclopedia/${order}/${fam}/${s.slug}.jpg`;
     const name = esc(spName(s, lang)), sci = esc(s.scientific);
     const soon = lang === "en" ? "Coming Soon" : "Bientôt Disponible";
+    const pill = s.iucn ? `<div class="conservation-status status-${s.iucn.toLowerCase()}">${esc(s.iucn)}</div>` : "";
     const inner = `<div class="species-image"><img src="${img}" alt="${sci}" loading="lazy"></div><h3>${name}</h3><p class="scientific-name">${sci}</p>`;
     if (s.status === "published")
-      return `<div class="species-item-wrapper"><a href="${fam}/${s.slug}.html" class="species-item">${inner}</a></div>`;
-    return `<div class="species-item-wrapper coming-soon"><div class="species-item coming-soon">${inner}<span class="coming-soon-badge">${soon}</span></div></div>`;
+      return `<div class="species-item-wrapper"><a href="${fam}/${s.slug}.html" class="species-item">${inner}</a>${pill}</div>`;
+    return `<div class="species-item-wrapper coming-soon"><div class="species-item coming-soon">${inner}<span class="coming-soon-badge">${soon}</span></div>${pill}</div>`;
   }
   function genusList(f) { const seen = []; (f.species || []).forEach(s => { const g = s.scientific.split(" ")[0]; if (!seen.includes(g)) seen.push(g); }); return seen; }
 
@@ -93,9 +95,15 @@
   // en sautant les familles présentes dans existingSet (pages faites à la main).
   function generatePages(list, existingSet) {
     existingSet = existingSet || new Set();
+    const menus = list.menus || {};
     const out = [];
     (list.groups || []).forEach(g => (g.families || []).forEach(f => {
       const order = f.order, fam = f.slug;
+      // Ordres en mode "espèce" (Tortues, Urodèles) : la page d'ordre pointe direct sur les fiches,
+      // pas de page-famille intermédiaire -> on n'en génère pas.
+      if ((menus[order] || {}).mode === "species") return;
+      // Familles inactives (coming-soon) : non cliquables depuis la page d'ordre -> pas de page à générer.
+      if (f.active === false) return;
       const relPath = `encyclopedia/${order}/${fam}.html`;
       if (existingSet.has(relPath)) return;
       const byGenus = !!f.groupByGenus;
@@ -147,13 +155,44 @@
     return out;
   }
 
-  // Grille des familles pour une page d'ordre (à insérer dans la page existante)
-  function orderGrid(order, families, lang) {
-    const imgroot = lang === "en" ? "../images" : "../../images";
-    return '<div class="species-grid">\n' + families.map(f => {
-      const fname = comm(f, lang) || cap(f.slug);
-      return `<div class="species-item-wrapper"><a href="${order}/${f.slug}.html" class="species-item"><div class="species-image"><img src="${imgroot}/encyclopedia/${order}/${f.slug}.jpg" alt="${esc(f.slug)}" loading="lazy"></div><h3>${esc(fname)}</h3></a></div>`;
-    }).join("\n") + '\n                </div>';
+  // Grille d'une page d'ordre, reproduite FIDÈLEMENT depuis list.menus[order].
+  // menu = { mode:"family"|"species", cells:[{slug,active,sci,count,iucn,common:{en,fr},alt:{en,fr},img,hrefEN}] }
+  function orderGrid(order, menu, lang) {
+    menu = menu || { cells: [] };
+    const SP = n => lang === "en" ? "species" : (n === 1 ? "espèce" : "espèces");
+    const soon = lang === "en" ? "Coming Soon" : "Bientôt Disponible";
+    const imgFix = src => lang === "fr" ? (src || "").replace("../images", "../../images") : (src || "");
+    const I = "                "; // indentation d'une case (16 espaces)
+    const cellHTML = c => {
+      const common = esc((c.common && (c.common[lang] || c.common.en)) || c.sci || "");
+      const alt = esc((c.alt && (c.alt[lang] || c.alt.en)) || common);
+      const sci = esc(c.sci || "");
+      const img = imgFix(c.img);
+      const pill = c.iucn ? `\n                    <div class="conservation-status status-${c.iucn.toLowerCase()}">${esc(c.iucn)}</div>` : "";
+      const cnt = (c.count != null) ? `\n                        <p class="species-count">${c.count} <span>${SP(c.count)}</span></p>` : "";
+      const body =
+`<div class="species-image">
+                            <img src="${img}" alt="${alt}" loading="lazy">
+                        </div>
+                        <h3>${common}</h3>
+                        <p class="scientific-name">${sci}</p>`;
+      if (c.active) {
+        const href = c.hrefEN || `${order}/${c.slug}.html`;
+        return `${I}<div class="species-item-wrapper">
+                    <a href="${href}" class="species-item">
+                        ${body}${cnt}
+                    </a>${pill}
+                </div>`;
+      }
+      return `${I}<div class="species-item-wrapper coming-soon">
+                    <div class="species-item coming-soon">
+                        ${body}${cnt}
+                        <span class="coming-soon-badge">${soon}</span>
+                    </div>${pill}
+                </div>`;
+    };
+    const cells = (menu.cells || []).map(cellHTML).join("\n");
+    return '<div class="species-grid">\n' + cells + '\n                </div>';
   }
 
   return { generatePages, orderGrid };
