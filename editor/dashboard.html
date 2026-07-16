@@ -104,8 +104,8 @@ function speciesRow(f,s,arr){
   const l1=document.createElement("div");l1.innerHTML=s.path?`<a href="../${s.path}" target="_blank">${s.scientific}</a>`:s.scientific;l1.style.cursor="pointer";l1.title="Cliquer pour renommer (nom scientifique)";
   l1.onclick=(e)=>{if(e.target.tagName==="A")return;const v=prompt("Nom scientifique :",s.scientific);if(v){s.scientific=v.trim();s.slug=slugify(v.split(" ").slice(0,2).join(" "));render();}};
   const cn=(s.common&&(s.common.fr||s.common.en))||"";
-  const l2=document.createElement("div");l2.textContent=cn||"+ nom commun (menu)";l2.style.cssText="font-size:11px;margin-top:1px;cursor:pointer;color:"+(cn?"#6b7075":"#b98a5e");l2.title="Nom vernaculaire affiché dans le menu du site (FR / EN)";
-  l2.onclick=()=>{const fr=prompt("Nom commun (français) — affiché dans le menu FR :",(s.common&&s.common.fr)||"");if(fr===null)return;const en=prompt("Common name (English) — shown in EN menu :",(s.common&&s.common.en)||"");if(en===null)return;s.common=Object.assign({},s.common,{fr:fr.trim(),en:en.trim()});render();};
+  const l2=document.createElement("div");l2.textContent=cn||"+ nom commun (menu)";l2.style.cssText="font-size:11px;margin-top:1px;cursor:pointer;color:"+(cn?"#6b7075":"#b98a5e");l2.title="Nom vernaculaire affiché dans le menu du site (FR / EN / AR)";
+  l2.onclick=()=>namesModal("Nom commun de l'espèce","<i>"+s.scientific+"</i> — affiché dans le menu du site",s.common||{},n=>{s.common=n;render();});
   sci.appendChild(l1);sci.appendChild(l2);
   r.appendChild(sci);
   const isPub=s.status==="published"||(ST.published||[]).includes(s.slug);
@@ -139,8 +139,8 @@ function familyBlock(g,f,body){
       const list=f.species.filter(s=>genusOf(s)===gen&&matches(s));if(!list.length&&q)return;
       const gh=el("div","genus");gh.appendChild(ordBtns(f.genusOrder,gen,render));
       const gc=(f.genusCommon||{})[gen]||{};const gv=gc.fr||gc.en||"";
-      const h4=el("h4");h4.innerHTML=gv?`${gv} <span style="font-weight:400;font-style:italic;color:#8a8f95;font-size:12px">${gen}</span>`:gen;h4.style.cursor="pointer";h4.title="Nom vernaculaire du genre affiché dans le menu (FR / EN). Cliquer pour éditer.";
-      h4.onclick=()=>{const cur=(f.genusCommon||{})[gen]||{};const fr=prompt("Genre « "+gen+" » — nom commun (français), menu FR :",cur.fr||"");if(fr===null)return;const en=prompt("Genus « "+gen+" » — common name (English), menu EN :",cur.en||"");if(en===null)return;f.genusCommon=Object.assign({},f.genusCommon,{[gen]:{fr:fr.trim(),en:en.trim()}});render();};
+      const h4=el("h4");h4.innerHTML=gv?`${gv} <span style="font-weight:400;font-style:italic;color:#8a8f95;font-size:12px">${gen}</span>`:gen;h4.style.cursor="pointer";h4.title="Nom vernaculaire du genre affiché dans le menu (FR / EN / AR). Cliquer pour éditer.";
+      h4.onclick=()=>namesModal("Nom commun du genre","Genre <i>"+gen+"</i> — affiché dans le menu",((f.genusCommon||{})[gen])||{},n=>{f.genusCommon=Object.assign({},f.genusCommon,{[gen]:n});render();});
       gh.appendChild(h4);
       gh.appendChild(statusBadge(()=>gStatus(f,gen),v=>{f.genusStatus[gen]=v;},NODE_CYCLE));
       gh.appendChild(el("span","sp"));body.appendChild(gh);
@@ -148,6 +148,22 @@ function familyBlock(g,f,body){
     });
   } else sp.forEach(s=>body.appendChild(speciesRow(f,s,f.species)));
   const add=el("button","addbtn");add.innerHTML='<i class="fas fa-plus"></i> Espèce dans '+f.name;add.onclick=()=>addSpecies(f);body.appendChild(add);
+}
+function namesModal(title,subtitle,values,onSave){
+  const v=values||{};
+  const ov=el("div");ov.style.cssText="position:fixed;inset:0;background:rgba(20,15,10,.45);display:flex;align-items:center;justify-content:center;z-index:9999";
+  const pan=el("div");pan.style.cssText="background:#fff;border-radius:10px;padding:18px;width:min(440px,92vw);box-shadow:0 12px 40px rgba(0,0,0,.3)";
+  const t=el("div");t.style.cssText="font-weight:600;color:#3a2f26;margin-bottom:2px";t.textContent=title;
+  const sub=el("div");sub.style.cssText="font-size:13px;color:#7a7068;margin-bottom:12px";sub.innerHTML=subtitle||"";
+  const mk=(lab,val,rtl)=>{const w=el("div");w.style.cssText="margin-bottom:10px";const l=el("label");l.textContent=lab;l.style.cssText="display:block;font-size:12px;color:#6b7075;margin-bottom:3px";const i=document.createElement("input");i.type="text";i.value=val||"";i.style.cssText="width:100%;padding:8px;border:1px solid var(--line,#d9d4cd);border-radius:6px;font-size:14px"+(rtl?";direction:rtl":"");w.appendChild(l);w.appendChild(i);pan.appendChild(w);return i;};
+  pan.appendChild(t);pan.appendChild(sub);
+  const iFr=mk("Français",v.fr);const iEn=mk("English",v.en);const iAr=mk("العربية (arabe)",v.ar,true);
+  const bar=el("div");bar.style.cssText="display:flex;gap:8px;justify-content:flex-end;margin-top:4px";
+  const cancel=el("button","btn");cancel.textContent="Annuler";cancel.onclick=()=>document.body.removeChild(ov);
+  const okb=el("button","btn");okb.textContent="Enregistrer";okb.style.cssText="background:var(--ocre,#C06A2C);color:#fff;border-color:var(--ocre,#C06A2C)";
+  okb.onclick=()=>{document.body.removeChild(ov);onSave({fr:iFr.value.trim(),en:iEn.value.trim(),ar:iAr.value.trim()});};
+  bar.appendChild(cancel);bar.appendChild(okb);pan.appendChild(bar);
+  ov.appendChild(pan);ov.onclick=(e)=>{if(e.target===ov)document.body.removeChild(ov);};document.body.appendChild(ov);iFr.focus();
 }
 function moveSpeciesPicker(srcFam,s){
   // overlay
@@ -171,7 +187,7 @@ function moveSpeciesPicker(srcFam,s){
   ov.appendChild(pan);ov.onclick=(e)=>{if(e.target===ov)document.body.removeChild(ov);};
   document.body.appendChild(ov);
 }
-function addSpecies(f){const v=prompt("Nom scientifique :","");if(!v)return;const fr=(prompt("Nom commun (français) — affiché dans le menu (vide si inconnu) :","")||"").trim();const en=(prompt("Common name (English) — menu EN (empty if unknown) :","")||"").trim();const s={scientific:v.trim(),slug:slugify(v.split(" ").slice(0,2).join(" ")),status:"todo",order:f.order,family:f.slug};if(fr||en)s.common={fr,en};f.species.push(s);render();}
+function addSpecies(f){const v=prompt("Nom scientifique :","");if(!v)return;const s={scientific:v.trim(),slug:slugify(v.split(" ").slice(0,2).join(" ")),status:"todo",order:f.order,family:f.slug};f.species.push(s);render();namesModal("Nom commun de l'espèce","<i>"+s.scientific+"</i> — affiché dans le menu (laisser vide si inconnu)",{},n=>{if(n.fr||n.en||n.ar)s.common=n;render();});}
 function addFamily(g){const v=prompt("Nom de la nouvelle famille :","");if(!v)return;g.families.push({slug:slugify(v),name:v.trim(),order:g.order,groupByGenus:false,status:"todo",species:[]});render();}
 
 function render(){

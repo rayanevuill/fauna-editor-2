@@ -257,11 +257,11 @@ app.post("/api/publish/:slug", needPublish, async (req, res) => {
         const fam2 = JSON.parse(JSON.stringify(famObj)); fam2.active = true;
         MENUS.generatePages({ groups: [{ families: [fam2] }], menus: list.menus }, new Set()).forEach(pg => files.push({ path: pg.path, html: pg.html }));
       } else {
-        // famille FAITE MAIN : injection chirurgicale (préserve le SEO/contenu)
+        // famille FAITE MAIN : synchronise la grille (préserve le SEO/head)
         for (const [pre, lang] of [["", "en"], ["fr/", "fr"]]) {
           const fp = pre + `encyclopedia/${order}/${family}.html`;
           const ex = await getFile(GITHUB_BRANCH, fp).catch(() => null); if (!ex) continue;
-          const out = injectFamilySpecies(ex.content, order, family, famObj, lang);
+          const out = syncFamilyGrid(ex.content, order, family, famObj, lang);
           if (out && out !== ex.content) files.push({ path: fp, html: out });
         }
       }
@@ -381,28 +381,22 @@ async function commitFiles(files, message) {
 }
 const PRESERVE = new Set(["encyclopedia/serpentes/viperidae.html","encyclopedia/serpentes/elapidae.html","encyclopedia/sauria/varanidae.html","encyclopedia/sauria/chamaeleonidae.html"]);
 
-// INJECTION CHIRURGICALE — ajoute dans une page-famille FAITE MAIN les cartes des espèces
-// présentes dans la liste mais absentes de la grille, SANS régénérer la page (on préserve
-// le SEO/contenu fait main). Retourne le HTML modifié, ou null si rien à changer / grille introuvable.
-function injectFamilySpecies(html, order, fam, family, lang) {
+// SYNCHRONISATION DE GRILLE — dans une page-famille FAITE MAIN, remplace UNIQUEMENT le contenu
+// de la <div class="species-grid"> par les cartes de TOUTES les espèces de la liste (dans l'ordre),
+// en préservant tout le reste (head/SEO, nav, titres, footer). Ainsi ajout, RETRAIT et
+// RÉORDONNANCEMENT sont reflétés. Retourne le HTML modifié, ou null si inchangé / grille introuvable.
+function syncFamilyGrid(html, order, fam, family, lang) {
+  if (family.groupByGenus) return null; // familles par-genre : gérées par generatePages
   const depth = lang === "fr" ? 3 : 2;
   const gridRe = /(<div class="species-grid)([^"]*)(">)([\s\S]*?)(<\/div>\s*<\/div>\s*<\/section>)/;
   const m = gridRe.exec(html);
   if (!m) return null;
-  let extra = m[2], inner = m[4];
-  const cards = [];
-  (family.species || []).forEach(s => {
-    const slug = s.slug;
-    // déjà présente ? (par l'image de la carte ou le lien de la fiche)
-    if (inner.includes(`/${fam}/${slug}.jpg`) || inner.includes(`${fam}/${slug}.html`) || inner.includes(`"${slug}.html"`)) return;
-    cards.push("                    " + MENUS.speciesCard(s, lang, order, fam, depth));
-  });
-  if (!cards.length) return null;
-  const newInner = inner.replace(/\s*$/, "\n") + cards.join("\n") + "\n                ";
-  // >1 espèce : on retire la classe de centrage "single-species"
-  const nbWrappers = (newInner.match(/species-item-wrapper/g) || []).length;
-  if (nbWrappers > 1) extra = extra.replace(/\s*single-species/, "");
-  return html.replace(gridRe, (_all, p1, _p2, p3, _p4, p5) => p1 + extra + p3 + newInner + p5);
+  const sp = family.species || [];
+  const cards = sp.map(s => "                    " + MENUS.speciesCard(s, lang, order, fam, depth));
+  const extra = sp.length === 1 ? " single-species" : ""; // classe de centrage si 1 seule espèce
+  const newInner = (cards.length ? "\n" + cards.join("\n") + "\n                " : "\n                ");
+  const out = html.replace(gridRe, (_all, p1, _p2, p3, _p4, p5) => p1 + extra + p3 + newInner + p5);
+  return out === html ? null : out;
 }
 app.post("/api/upload", needEditor, async (req, res) => {
   try {
@@ -567,12 +561,19 @@ app.post("/api/unpublish/:slug", needPublish, async (req, res) => {
         const cell = (menu.cells || []).find(c => c.slug === slug);
         if (cell) { cell.active = false; delete cell.iucn; }
       } else {
-        const stillPub = (famObj.species || []).some(s => s.status === "published");
-        const cell = (menu.cells || []).find(c => c.slug === famObj.slug);
-        if (cell && !stillPub) cell.active = false;
+        // PAS de cascade : dépublier UNE espèce ne désactive PAS la famille (l'état
+        // « cliquable » de la famille reste ton choix explicite via le bouton 🔗).
+        // On régénère seulement le CONTENU de la page-famille pour que l'espèce y passe coming-soon.
         if (!PRESERVE.has(`encyclopedia/${order}/${famObj.slug}.html`)) {
           const fam2 = JSON.parse(JSON.stringify(famObj)); fam2.active = true;
           MENUS.generatePages({ groups: [{ families: [fam2] }], menus: list.menus }, new Set()).forEach(pg => files.push({ path: pg.path, html: pg.html }));
+        } else {
+          for (const [pre, lang] of [["", "en"], ["fr/", "fr"]]) {
+            const fp = pre + `encyclopedia/${order}/${famObj.slug}.html`;
+            const ex = await getFile(GITHUB_BRANCH, fp).catch(() => null); if (!ex) continue;
+            const out = syncFamilyGrid(ex.content, order, famObj.slug, famObj, lang);
+            if (out && out !== ex.content) files.push({ path: fp, html: out });
+          }
         }
       }
       for (const pre of ["", "fr/"]) {
@@ -642,7 +643,7 @@ app.post("/api/apply-site", needPublish, async (req, res) => {
       if (f.active === false || (list.menus[f.order] || {}).mode === "species") continue;
       for (const [pre, lang] of [["", "en"], ["fr/", "fr"]]) {
         const ex = await getFile(GITHUB_BRANCH, pre + rel).catch(() => null); if (!ex) continue;
-        const out = injectFamilySpecies(ex.content, f.order, f.slug, f, lang);
+        const out = syncFamilyGrid(ex.content, f.order, f.slug, f, lang);
         if (out && out !== ex.content) files.push({ path: pre + rel, html: out });
       }
     }
