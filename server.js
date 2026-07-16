@@ -446,22 +446,63 @@ function toggleLandingCard(html, order, online, href) {
   if (!re.test(html)) return { html: html, changed: false };
   return { html: html.replace(re, '<div class="species-item coming-soon">$1    <span class="coming-soon-badge">Coming Soon</span>\n    </div>'), changed: true };
 }
-app.post("/api/landing-online/:order", needPublish, async (req, res) => {
+app.post("/api/landing-toggle/:order", needPublish, async (req, res) => {
   try {
     const order = req.params.order;
     if (!/^[a-z]+$/.test(order)) return res.status(400).json({ error: "ordre invalide" });
-    const online = !(req.body && req.body.online === false); // défaut = mettre en ligne
+    // Le serveur DÉTECTE l'état actuel et l'INVERSE (afficher <-> masquer). Toujours isolé (accueil EN+FR).
+    const ref = await getFile(GITHUB_BRANCH, "encyclopedia.html").catch(() => null);
+    if (!ref) return res.status(500).json({ error: "accueil introuvable" });
+    const currentlyOnline = new RegExp('<a href="[^"]*' + order + '\\.html" class="species-item">[\\s\\S]*?images/encyclopedia/' + order + '\\.jpg').test(ref.content);
+    const online = !currentlyOnline;
     const files = [];
     for (const p of ["encyclopedia.html", "fr/encyclopedia.html"]) {
       const ex = await getFile(GITHUB_BRANCH, p).catch(() => null); if (!ex) continue;
       const r = toggleLandingCard(ex.content, order, online, "encyclopedia/" + order + ".html");
-      // garde-fou : le nombre de cartes ne doit pas changer (pas de casse structurelle)
       const same = (r.html.match(/species-image/g) || []).length === (ex.content.match(/species-image/g) || []).length;
       if (r.changed && same) files.push({ path: p, html: r.html });
     }
-    if (!files.length) return res.status(404).json({ error: "carte introuvable ou déjà dans cet état" });
-    await commitFiles(files, `accueil: ${order} ${online ? "en ligne" : "coming soon"}`);
-    res.json({ ok: true, updated: files.map(f => f.path), note: "Accueil mis à jour (isolé). Déploiement Hostinger (~2-3 min)." });
+    if (!files.length) return res.status(404).json({ error: "carte introuvable" });
+    await commitFiles(files, `accueil: ${order} ${online ? "en ligne" : "masqué"}`);
+    res.json({ ok: true, online: online, note: `« ${order} » est maintenant ${online ? "EN LIGNE" : "MASQUÉ (coming soon)"} sur l'accueil. Déploiement ~2-3 min.` });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Bascule d'une CASE (famille ou espèce) cliquable/coming-soon sur SA page d'ordre. Isolé.
+app.post("/api/menu-toggle/:order/:slug", needPublish, async (req, res) => {
+  try {
+    const order = req.params.order, slug = req.params.slug;
+    if (!/^[a-z]+$/.test(order) || !/^[a-z0-9-]+$/.test(slug)) return res.status(400).json({ error: "paramètre invalide" });
+    const lf = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
+    const list = lf ? JSON.parse(lf.content) : JSON.parse(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8"));
+    const menu = (list.menus || {})[order];
+    if (!menu) return res.status(404).json({ error: "page d'ordre inconnue" });
+    const cell = (menu.cells || []).find(c => c.slug === slug);
+    if (!cell) return res.status(404).json({ error: "case introuvable dans ce menu" });
+    cell.active = !cell.active; // BASCULE
+    const newState = cell.active;
+    const files = [];
+    const gridRe = /<div class="species-grid">[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/;
+    for (const pre of ["", "fr/"]) {
+      const op = pre + `encyclopedia/${order}.html`;
+      const ex = await getFile(GITHUB_BRANCH, op).catch(() => null); if (!ex) continue;
+      if (!gridRe.test(ex.content)) continue;
+      const grid = MENUS.orderGrid(order, menu, pre ? "fr" : "en");
+      const patched = ex.content.replace(gridRe, grid + "\n            </div>\n        </section>");
+      const okStruct = (patched.match(/<section/g) || []).length === (patched.match(/<\/section>/g) || []).length
+        && (patched.match(/class="species-grid"/g) || []).length === 1 && patched.includes("</footer>");
+      if (okStruct) files.push({ path: op, html: patched });
+    }
+    // mode famille : si la famille devient active et n'est pas faite main, (re)générer sa page-famille
+    if (menu.mode === "family" && newState && !PRESERVE.has(`encyclopedia/${order}/${slug}.html`)) {
+      let famObj = null;
+      (list.groups || []).forEach(g => (g.families || []).forEach(F => { if (F.slug === slug && F.order === order) famObj = F; }));
+      if (famObj) { const fam2 = JSON.parse(JSON.stringify(famObj)); fam2.active = true; MENUS.generatePages({ groups: [{ families: [fam2] }], menus: list.menus }, new Set()).forEach(pg => files.push({ path: pg.path, html: pg.html })); }
+    }
+    files.push({ path: "editor/species-list.json", html: JSON.stringify(list, null, 1) });
+    if (files.length < 2) return res.status(500).json({ error: "aucune page d'ordre à mettre à jour" });
+    await commitFiles(files, `menu ${order}: ${slug} ${newState ? "cliquable" : "coming soon"}`);
+    res.json({ ok: true, active: newState, note: `« ${slug} » est maintenant ${newState ? "CLIQUABLE" : "COMING SOON"} sur la page ${order}. Déploiement ~2-3 min.` });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 

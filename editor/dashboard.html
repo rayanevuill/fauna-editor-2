@@ -113,6 +113,8 @@ function familyBlock(g,f,body){
   const h=el("h3");h.textContent=f.name;fh.appendChild(h);
   const c=el("span","fc");c.textContent=`${f.species.filter(s=>s.status==="published").length}/${f.species.length}`;fh.appendChild(c);
   fh.appendChild(statusBadge(()=>f.status,v=>f.status=v,NODE_CYCLE));
+  // Bascule « cliquable sur la page d'ordre » (uniquement les ordres en mode familles)
+  if(f.order!=="testudines"&&f.order!=="caudata"){const mo=el("button","mini");mo.innerHTML='<i class="fas fa-link"></i>';mo.title="Menu de l'ordre : rendre cette famille cliquable ↔ coming soon";mo.onclick=()=>menuToggle(f.order,f.slug);fh.appendChild(mo);}
   fh.appendChild(el("span","sp"));
   const gt=el("span","genusToggle"+(f.groupByGenus?" on":""));gt.textContent="par genre";gt.onclick=()=>{f.groupByGenus=!f.groupByGenus;render();};fh.appendChild(gt);
   const ren=el("button","mini");ren.innerHTML='<i class="fas fa-pen"></i>';ren.title="Renommer";ren.onclick=()=>{const v=prompt("Nom de la famille :",f.name);if(v){f.name=v.trim();f.slug=slugify(v);render();}};fh.appendChild(ren);
@@ -144,7 +146,7 @@ function render(){
     const h2=el("h2");h2.textContent=g.name;head.appendChild(h2);
     head.appendChild(statusBadge(()=>g.status,v=>g.status=v,NODE_CYCLE));
     const cnt=el("span","cnt");cnt.textContent=`${all.filter(s=>s.status==="published").length}/${all.length} publiées`;head.appendChild(cnt);
-    const lb=el("button","addbtn");lb.style.cssText="margin-left:8px;font-size:12px";lb.innerHTML='<i class="fas fa-globe"></i> Accueil : en ligne';lb.title="Rendre ce groupe cliquable sur la page d'accueil de l'encyclopédie (isolé)";lb.onclick=()=>landingOnline(g.order);head.appendChild(lb);
+    const lb=el("button","addbtn");lb.style.cssText="margin-left:8px;font-size:12px";lb.innerHTML='<i class="fas fa-globe"></i> Accueil : afficher/masquer';lb.title="Basculer ce groupe sur la page d'accueil (afficher ↔ masquer). Isolé.";lb.onclick=()=>landingToggle(g.order);head.appendChild(lb);
     head.appendChild(el("span","sp"));
     const tg=el("div","toggle");tg.innerHTML=`<button data-l="family" class="${g.displayLevel==='family'?'on':''}">Familles</button><button data-l="species" class="${g.displayLevel==='species'?'on':''}">Espèces</button>`;
     tg.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{g.displayLevel=btn.dataset.l;render();});
@@ -165,14 +167,24 @@ const API=(location.origin&&location.origin!=="null")?location.origin:"";
 let KEY=(typeof sessionStorage!=="undefined"&&sessionStorage.getItem("fauna_key"))||"";
 function needKey(){if(!KEY){KEY=(prompt("Mot de passe d'édition :")||"").trim();if(KEY&&typeof sessionStorage!=="undefined")sessionStorage.setItem("fauna_key",KEY);}return KEY;}
 async function loadServer(){if(!API)return;try{const r=await fetch(API+"/api/species-list",{headers:{"x-fauna-key":needKey()}});if(r.ok){const d=await r.json();if(d&&d.groups){DATA.groups=d.groups;render();}}else if(r.status===401){KEY="";if(typeof sessionStorage!=="undefined")sessionStorage.removeItem("fauna_key");}}catch(e){}}
-async function landingOnline(order){
+async function landingToggle(order){
   if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  if(!confirm("Rendre « "+order+" » cliquable sur la page d'accueil de l'encyclopédie ?\n(Ça ne touche que l'accueil.)"))return;
+  if(!confirm("Basculer « "+order+" » sur la page d'accueil (afficher ↔ masquer) ?\n(Ça ne touche QUE l'accueil.)"))return;
   const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
   try{
-    const r=await fetch(API+"/api/landing-online/"+order,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub},body:JSON.stringify({online:true})});
+    const r=await fetch(API+"/api/landing-toggle/"+order,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub}});
     const d=await r.json().catch(()=>({}));
-    alert(r.ok?("Accueil mis à jour : « "+order+" » en ligne. Déploiement Hostinger ~2-3 min."):("Erreur : "+(d.error||r.status)));
+    alert(r.ok?(d.note||"OK"):("Erreur : "+(d.error||r.status)));
+  }catch(e){alert("Serveur injoignable.");}
+}
+async function menuToggle(order,slug){
+  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
+  if(!confirm("Basculer « "+slug+" » cliquable ↔ coming soon sur la page d'ordre "+order+" ?\n(Ça ne touche QUE cette page d'ordre.)"))return;
+  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
+  try{
+    const r=await fetch(API+"/api/menu-toggle/"+order+"/"+slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub}});
+    const d=await r.json().catch(()=>({}));
+    alert(r.ok?(d.note||"OK"):("Erreur : "+(d.error||r.status)));
   }catch(e){alert("Serveur injoignable.");}
 }
 async function saveServer(){if(!API){alert("Disponible une fois l'outil en ligne.");return;}const key=needKey();if(!key)return;try{const r=await fetch(API+"/api/species-list",{method:"PUT",headers:{"Content-Type":"application/json","x-fauna-key":key},body:exportData()});alert(r.ok?"Liste enregistrée sur le serveur.":"Erreur ("+r.status+").");}catch(e){alert("Serveur injoignable.");}}
