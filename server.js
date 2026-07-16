@@ -193,7 +193,13 @@ app.post("/api/publish/:slug", needPublish, async (req, res) => {
     const files = [];   // {path, html} -> UN SEUL commit atomique
 
     // 1) La ou les fiche(s) EN/FR/AR (SEULEMENT cette espèce)
-    const langs = ["en", "fr", "ar"].filter(l => state.langs && state.langs[l] && (state.langs[l].name||"").trim());
+    // On génère la fiche pour toute langue ayant un nom, un nom scientifique OU du contenu
+    // (avant : nom obligatoire → fiche non créée si seul le nom scientifique était rempli).
+    const langs = ["en", "fr", "ar"].filter(l => {
+      const c = state.langs && state.langs[l]; if (!c) return false;
+      return (c.name||"").trim() || (c.sci||"").trim() || ((c.sections||[]).length > 0);
+    });
+    if (!langs.length) return res.status(400).json({ error: "fiche vide : renseigne au moins le nom scientifique." });
     for (const l of langs) {
       const { path: pth, html } = P.buildPage(meta, state, l);
       if (!SAFE_PAGE.test(pth)) return res.status(400).json({ error: "chemin non autorisé : " + pth });
@@ -422,6 +428,40 @@ app.post("/api/publish-menus", needPublish, async (req, res) => {
     if (!files.length) return res.status(400).json({ error: "rien a generer" });
     await commitFiles(files, "maj menus encyclopedie (tableau de bord)");
     res.json({ ok: true, count: files.length });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ============================================================================
+// Bascule d'un ORDRE en ligne / coming-soon sur la PAGE D'ACCUEIL de l'encyclopédie.
+// ISOLÉ : ne touche QUE encyclopedia.html (EN) + fr/encyclopedia.html. Un seul commit.
+// ============================================================================
+function toggleLandingCard(html, order, online, href) {
+  const imgE = ("images/encyclopedia/" + order + ".jpg").replace(/[.\/]/g, "\\$&");
+  if (online) {
+    const re = new RegExp('<div class="species-item coming-soon">((?:(?!species-item)[\\s\\S])*?' + imgE + '(?:(?!species-item)[\\s\\S])*?)\\s*<span class="coming-soon-badge">[^<]*</span>\\s*</div>');
+    if (!re.test(html)) return { html: html, changed: false };
+    return { html: html.replace(re, '<a href="' + href + '" class="species-item">$1</a>'), changed: true };
+  }
+  const re = new RegExp('<a href="[^"]*' + order + '\\.html" class="species-item">((?:(?!species-item)[\\s\\S])*?' + imgE + '(?:(?!species-item)[\\s\\S])*?)</a>');
+  if (!re.test(html)) return { html: html, changed: false };
+  return { html: html.replace(re, '<div class="species-item coming-soon">$1    <span class="coming-soon-badge">Coming Soon</span>\n    </div>'), changed: true };
+}
+app.post("/api/landing-online/:order", needPublish, async (req, res) => {
+  try {
+    const order = req.params.order;
+    if (!/^[a-z]+$/.test(order)) return res.status(400).json({ error: "ordre invalide" });
+    const online = !(req.body && req.body.online === false); // défaut = mettre en ligne
+    const files = [];
+    for (const p of ["encyclopedia.html", "fr/encyclopedia.html"]) {
+      const ex = await getFile(GITHUB_BRANCH, p).catch(() => null); if (!ex) continue;
+      const r = toggleLandingCard(ex.content, order, online, "encyclopedia/" + order + ".html");
+      // garde-fou : le nombre de cartes ne doit pas changer (pas de casse structurelle)
+      const same = (r.html.match(/species-image/g) || []).length === (ex.content.match(/species-image/g) || []).length;
+      if (r.changed && same) files.push({ path: p, html: r.html });
+    }
+    if (!files.length) return res.status(404).json({ error: "carte introuvable ou déjà dans cet état" });
+    await commitFiles(files, `accueil: ${order} ${online ? "en ligne" : "coming soon"}`);
+    res.json({ ok: true, updated: files.map(f => f.path), note: "Accueil mis à jour (isolé). Déploiement Hostinger (~2-3 min)." });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 

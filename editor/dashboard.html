@@ -144,6 +144,7 @@ function render(){
     const h2=el("h2");h2.textContent=g.name;head.appendChild(h2);
     head.appendChild(statusBadge(()=>g.status,v=>g.status=v,NODE_CYCLE));
     const cnt=el("span","cnt");cnt.textContent=`${all.filter(s=>s.status==="published").length}/${all.length} publiées`;head.appendChild(cnt);
+    const lb=el("button","addbtn");lb.style.cssText="margin-left:8px;font-size:12px";lb.innerHTML='<i class="fas fa-globe"></i> Accueil : en ligne';lb.title="Rendre ce groupe cliquable sur la page d'accueil de l'encyclopédie (isolé)";lb.onclick=()=>landingOnline(g.order);head.appendChild(lb);
     head.appendChild(el("span","sp"));
     const tg=el("div","toggle");tg.innerHTML=`<button data-l="family" class="${g.displayLevel==='family'?'on':''}">Familles</button><button data-l="species" class="${g.displayLevel==='species'?'on':''}">Espèces</button>`;
     tg.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{g.displayLevel=btn.dataset.l;render();});
@@ -164,6 +165,16 @@ const API=(location.origin&&location.origin!=="null")?location.origin:"";
 let KEY=(typeof sessionStorage!=="undefined"&&sessionStorage.getItem("fauna_key"))||"";
 function needKey(){if(!KEY){KEY=(prompt("Mot de passe d'édition :")||"").trim();if(KEY&&typeof sessionStorage!=="undefined")sessionStorage.setItem("fauna_key",KEY);}return KEY;}
 async function loadServer(){if(!API)return;try{const r=await fetch(API+"/api/species-list",{headers:{"x-fauna-key":needKey()}});if(r.ok){const d=await r.json();if(d&&d.groups){DATA.groups=d.groups;render();}}else if(r.status===401){KEY="";if(typeof sessionStorage!=="undefined")sessionStorage.removeItem("fauna_key");}}catch(e){}}
+async function landingOnline(order){
+  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
+  if(!confirm("Rendre « "+order+" » cliquable sur la page d'accueil de l'encyclopédie ?\n(Ça ne touche que l'accueil.)"))return;
+  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
+  try{
+    const r=await fetch(API+"/api/landing-online/"+order,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub},body:JSON.stringify({online:true})});
+    const d=await r.json().catch(()=>({}));
+    alert(r.ok?("Accueil mis à jour : « "+order+" » en ligne. Déploiement Hostinger ~2-3 min."):("Erreur : "+(d.error||r.status)));
+  }catch(e){alert("Serveur injoignable.");}
+}
 async function saveServer(){if(!API){alert("Disponible une fois l'outil en ligne.");return;}const key=needKey();if(!key)return;try{const r=await fetch(API+"/api/species-list",{method:"PUT",headers:{"Content-Type":"application/json","x-fauna-key":key},body:exportData()});alert(r.ok?"Liste enregistrée sur le serveur.":"Erreur ("+r.status+").");}catch(e){alert("Serveur injoignable.");}}
 async function publishMenus(){
   if(!API){alert("Disponible une fois l'outil en ligne.");return;}

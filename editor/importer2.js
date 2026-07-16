@@ -3,7 +3,7 @@
   "use strict";
   function getParser(){ if(NHP) return html=>NHP.parse(html,{blockTextElements:{script:false,style:false}}); if(typeof DOMParser!=="undefined") return html=>new DOMParser().parseFromString(html,"text/html"); throw new Error("no parser"); }
   const unesc=s=>(s||"").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,"&");
-  function fullText(el){ if(!el)return ""; let h=el.innerHTML; h=h.replace(/<\/?span[^>]*>/g,"").replace(/<em>([\s\S]*?)<\/em>/g,"*$1*").replace(/<ref>(\d+)<\/ref>/g,(m,n)=>"{{r"+n+"}}").replace(/<[^>]+>/g,""); return unesc(h).replace(/\s+/g," ").trim(); }
+  function fullText(el){ if(!el)return ""; let h=el.innerHTML; h=h.replace(/<\/?span[^>]*>/g,"").replace(/<em>([\s\S]*?)<\/em>/g,"*$1*").replace(/<ref>(\d+)<\/ref>/g,(m,n)=>"{{r"+n+"}}").replace(/<[^>]+>/g,""); let t=unesc(h).replace(/\s+/g," ").trim(); t=t.replace(/^[.\u00A0\s]+/,""); if(/\{\{r\d+\}\}$/.test(t)) t+="."; return t; }
   const attr=(el,n)=>el&&el.getAttribute?el.getAttribute(n):null;
   function iconOf(el){ if(!el)return null; const i=el.querySelector("i.fas"); if(!i)return null; return (attr(i,"class")||"").split(/\s+/).find(x=>/^fa-/.test(x)); }
   function capOf(im,lang){ const dcf=attr(im,"data-caption-fr"),dc=attr(im,"data-caption"); if(lang==="fr"&&dcf)return capText(dcf); if(dc)return capText(dc); const capEl=im.parentNode.querySelector('[class$="-caption"] span, .distribution-map-caption span'); return capEl?fullText(capEl):""; }
