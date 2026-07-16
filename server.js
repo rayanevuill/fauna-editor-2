@@ -572,4 +572,47 @@ app.get("/api/site-state", needEditor, async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// APPLIQUER AU SITE : régénère l'encyclopédie depuis l'arborescence (la liste) —
+// ordre des cases de menu = ordre des familles dans la liste ; régénère pages d'ordre + familles + genres.
+function reorderMenusFromList(list) {
+  const menus = list.menus || {};
+  (list.groups || []).forEach(g => {
+    const byOrder = {};
+    (g.families || []).forEach(f => { (byOrder[f.order] = byOrder[f.order] || []).push(f.slug); });
+    Object.keys(byOrder).forEach(o => {
+      const m = menus[o]; if (!m || m.mode !== "family") return;
+      const rank = {}; byOrder[o].forEach((s, i) => rank[s] = i);
+      m.cells.sort((a, b) => (rank[a.slug] == null ? 999 : rank[a.slug]) - (rank[b.slug] == null ? 999 : rank[b.slug]));
+    });
+  });
+}
+app.post("/api/apply-site", needPublish, async (req, res) => {
+  try {
+    // On lit TOUJOURS la liste du dépôt (elle contient le bloc `menus`). L'ordre des familles
+    // vient du dernier « Enregistrer sur le serveur » ; le client peut fournir groups pour l'ordre.
+    const lf = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
+    const list = lf ? JSON.parse(lf.content) : JSON.parse(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8"));
+    if (req.body && req.body.groups) list.groups = req.body.groups; // ordre/prefs à jour, on garde le menus du dépôt
+    reorderMenusFromList(list);
+    const files = [];
+    // pages famille + genre (familles actives, non faites-main)
+    MENUS.generatePages(list, PRESERVE).forEach(pg => files.push({ path: pg.path, html: pg.html }));
+    // pages d'ordre régénérées (ordre des cases = arborescence)
+    const gridRe = /<div class="species-grid">[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/;
+    for (const order of Object.keys(list.menus || {})) {
+      for (const pre of ["", "fr/"]) {
+        const op = pre + `encyclopedia/${order}.html`;
+        const ex = await getFile(GITHUB_BRANCH, op).catch(() => null); if (!ex || !gridRe.test(ex.content)) continue;
+        const grid = MENUS.orderGrid(order, list.menus[order], pre ? "fr" : "en");
+        const patched = ex.content.replace(gridRe, grid + "\n            </div>\n        </section>");
+        const ok = (patched.match(/<section/g) || []).length === (patched.match(/<\/section>/g) || []).length && (patched.match(/class="species-grid"/g) || []).length === 1 && patched.includes("</footer>");
+        if (ok) files.push({ path: op, html: patched });
+      }
+    }
+    files.push({ path: "editor/species-list.json", html: JSON.stringify(list, null, 1) });
+    await commitFiles(files, "appliquer au site (arborescence)");
+    res.json({ ok: true, count: files.length, note: "Encyclopédie régénérée depuis ton arborescence. Déploiement ~2-3 min." });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 app.listen(PORT, () => console.log(`Fauna editor backend écoute sur :${PORT}`));
