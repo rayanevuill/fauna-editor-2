@@ -117,8 +117,9 @@ function speciesRow(f,s,arr){
   const isPub=s.status==="published"||(ST.published||[]).includes(s.slug);
   const sb=el("span","badge "+(isPub?"b-published":"b-soon"));sb.textContent=isPub?"Publié":"Coming soon";sb.title="En ligne = Publié ; sinon Coming soon";r.appendChild(sb);
   const ed=el("a","act");ed.href=`wysiwyg.html?order=${f.order}&family=${f.slug}&slug=${s.slug}&sci=${encodeURIComponent(s.scientific)}`+(s.status==="published"?"&existing=1":"");ed.innerHTML='<i class="fas fa-pen"></i> Éditer';r.appendChild(ed);
-  if(s.status==="published"||(ST.published||[]).includes(s.slug)){const up=el("button","mini");up.innerHTML='<i class="fas fa-eye-slash"></i>';up.title="Dépublier (retirer du menu, la fiche reste)";up.style.color="#c56a00";up.onclick=()=>unpublish(f,s);r.appendChild(up);}
-  const rm=el("button","mini del");rm.innerHTML='<i class="fas fa-xmark"></i>';rm.onclick=()=>{if(confirm("Retirer "+s.scientific+" ?")){f.species.splice(f.species.indexOf(s),1);render();}};r.appendChild(rm);
+  if(s.status==="published"||(ST.published||[]).includes(s.slug)){const up=el("button","mini");up.innerHTML='<i class="fas fa-eye-slash"></i>';up.title="Dépublier (cacher du menu, la fiche reste)";up.style.color="#c56a00";up.onclick=()=>unpublish(f,s);r.appendChild(up);}
+  const dp=el("button","mini");dp.innerHTML='<i class="fas fa-trash-can"></i>';dp.title="Supprimer la PAGE (fichiers HTML EN/FR/AR) — l'espèce reste en coming soon";dp.style.color="#a05a2c";dp.onclick=()=>deletePage(f,s);r.appendChild(dp);
+  const rm=el("button","mini del");rm.innerHTML='<i class="fas fa-xmark"></i>';rm.title="Retirer l'espèce du tableau de bord (ne touche pas au site)";rm.onclick=()=>{if(confirm("Retirer "+s.scientific+" du tableau de bord ?")){f.species.splice(f.species.indexOf(s),1);render();}};r.appendChild(rm);
   return r;
 }
 function familyBlock(g,f,body){
@@ -281,36 +282,13 @@ async function unpublish(f,s){
   const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
   try{const r=await fetch(API+"/api/unpublish/"+s.slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub}});const d=await r.json().catch(()=>({}));if(r.ok){s.status="todo";ST.published=(ST.published||[]).filter(x=>x!==s.slug);render();alert(d.note||"OK");}else alert("Erreur : "+(d.error||r.status));}catch(e){alert("Serveur injoignable.");}
 }
-async function landingToggle(order){
+async function deletePage(f,s){
   if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  if(!confirm("Basculer « "+order+" » sur la page d'accueil (afficher ↔ masquer) ?\n(Ça ne touche QUE l'accueil.)"))return;
+  if(!confirm("Supprimer la PAGE de « "+s.scientific+" » ?\n\nLes fichiers de la fiche (HTML EN/FR/AR) seront supprimés et l'entrée retirée du sitemap.\nL'espèce RESTE dans le tableau de bord, en « coming soon ».\nRéversible : la republier régénère la fiche."))return;
   const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
-  try{
-    const r=await fetch(API+"/api/landing-toggle/"+order,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub}});
-    const d=await r.json().catch(()=>({}));
-    alert(r.ok?(d.note||"OK"):("Erreur : "+(d.error||r.status)));
-  }catch(e){alert("Serveur injoignable.");}
-}
-async function menuToggle(order,slug){
-  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  if(!confirm("Basculer « "+slug+" » cliquable ↔ coming soon sur la page d'ordre "+order+" ?\n(Ça ne touche QUE cette page d'ordre.)"))return;
-  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
-  try{
-    const r=await fetch(API+"/api/menu-toggle/"+order+"/"+slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub}});
-    const d=await r.json().catch(()=>({}));
-    alert(r.ok?(d.note||"OK"):("Erreur : "+(d.error||r.status)));
-  }catch(e){alert("Serveur injoignable.");}
+  try{const r=await fetch(API+"/api/delete-page/"+s.slug,{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub}});const d=await r.json().catch(()=>({}));if(r.ok){s.status="todo";delete s.path;ST.published=(ST.published||[]).filter(x=>x!==s.slug);render();alert(d.note||"Page supprimée.");}else alert("Erreur : "+(d.error||r.status));}catch(e){alert("Serveur injoignable.");}
 }
 async function saveServer(){if(!API){alert("Disponible une fois l'outil en ligne.");return;}const key=needKey();if(!key)return;try{const r=await fetch(API+"/api/species-list",{method:"PUT",headers:{"Content-Type":"application/json","x-fauna-key":key},body:exportData()});alert(r.ok?"Liste enregistrée sur le serveur.":"Erreur ("+r.status+").");}catch(e){alert("Serveur injoignable.");}}
-async function publishMenus(){
-  if(!API){alert("Disponible une fois l'outil en ligne.");return;}
-  const pub=(prompt("Mot de passe de publication :")||"").trim();if(!pub)return;
-  if(!confirm("Régénérer et publier toutes les pages-menus de l'encyclopédie depuis la liste actuelle ?\n(Les pages déjà faites à la main sont préservées.)"))return;
-  try{const r=await fetch(API+"/api/publish-menus",{method:"POST",headers:{"Content-Type":"application/json","x-fauna-publish":pub},body:exportData()});
-    const j=await r.json().catch(()=>({}));
-    if(r.ok)alert("Menus publiés ("+(j.count||"?")+" pages). Mise en ligne dans ~2-3 min.");else alert("Erreur : "+(j.error||r.status));
-  }catch(e){alert("Serveur injoignable.");}
-}
 /* ---- miniatures (1200×720, recadrage auto) ---- */
 const previewThumb={};
 function thumbPath(f,s){return `images/encyclopedia/${s.order||f.order}/${s.family||f.slug}/${s.slug}.jpg`;}

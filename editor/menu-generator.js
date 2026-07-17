@@ -84,7 +84,7 @@
   function itemSpecies(s, lang, order, fam, depth) {
     const img = rel(depth) + `images/encyclopedia/${order}/${fam}/${s.slug}.jpg`;
     const name = esc(spName(s, lang)), sci = esc(s.scientific);
-    const soon = lang === "en" ? "Coming Soon" : "Bientôt Disponible";
+    const soon = lang === "en" ? "Coming Soon" : "Bientôt disponible";
     const pill = s.iucn ? `<div class="conservation-status status-${s.iucn.toLowerCase()}">${esc(s.iucn)}</div>` : "";
     const inner = `<div class="species-image"><img src="${img}" alt="${sci}" loading="lazy"></div><h3>${name}</h3><p class="scientific-name">${sci}</p>`;
     if (s.status === "published")
@@ -146,7 +146,7 @@
           const cr = [[ORDER_NAME[order] || cap(order), ordHref], [cap(fam), famHref], [gen, ""]];
           const grid = sps.map(s => {
             const img = rel(depth) + `images/encyclopedia/${order}/${fam}/${s.slug}.jpg`;
-            const name = esc(spName(s, lang)), sci = esc(s.scientific), soon = lang === "en" ? "Coming Soon" : "Bientôt Disponible";
+            const name = esc(spName(s, lang)), sci = esc(s.scientific), soon = lang === "en" ? "Coming Soon" : "Bientôt disponible";
             const inner = `<div class="species-image"><img src="${img}" alt="${sci}" loading="lazy"></div><h3>${name}</h3><p class="scientific-name">${sci}</p>`;
             return s.status === "published"
               ? `<div class="species-item-wrapper"><a href="${s.slug}.html" class="species-item">${inner}</a></div>`
@@ -167,7 +167,7 @@
   function orderGrid(order, menu, lang) {
     menu = menu || { cells: [] };
     const SP = n => lang === "en" ? "species" : (n === 1 ? "espèce" : "espèces");
-    const soon = lang === "en" ? "Coming Soon" : "Bientôt Disponible";
+    const soon = lang === "en" ? "Coming Soon" : "Bientôt disponible";
     const imgFix = src => lang === "fr" ? (src || "").replace("../images", "../../images") : (src || "");
     const I = "                "; // indentation d'une case (16 espaces)
     const cellHTML = c => {

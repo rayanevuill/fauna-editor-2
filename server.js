@@ -12,6 +12,8 @@ const express = require("express");
 const rateLimit = require("express-rate-limit");
 const nodemailer = require("nodemailer");
 const P = require("./editor/page.js");
+const fs = require("fs");
+const MENUS = require("./editor/menu-generator.js");
 
 const {
   EDITOR_PASSWORD, PUBLISH_PASSWORD, GITHUB_TOKEN,
@@ -380,22 +382,22 @@ app.post("/api/contact", async (req, res) => {
 });
 
 
-const fs = require("fs");
-const MENUS = require("./editor/menu-generator.js");
 // Accepte les miniatures (order/famille/espèce.jpg = 2 segments) ET les photos de contenu
 // (order/famille/espèce/photo.jpg = 3) ET les vignettes famille/ordre (1). 1 à 4 segments.
-const IMG_OK = /^images\/encyclopedia\/([a-z0-9-]+\/){1,4}[\w.-]+\.(jpe?g|png|webp)$/i;
+const IMG_OK = /^images\/encyclopedia\/([a-z0-9-]+\/){1,4}[a-z0-9][\w.-]*\.(jpe?g|png|webp)$/i;
 async function putBinary(branch, filepath, b64, message) {
   const existing = await getFile(branch, filepath).catch(() => null);
   const body = { message, content: b64, branch }; if (existing) body.sha = existing.sha;
   return (await gh(`/repos/${GITHUB_REPO}/contents/${encodeURI(filepath)}`, { method: "PUT", body: JSON.stringify(body) })).json();
 }
-async function commitFiles(files, message) {
+async function commitFiles(files, message, deletions) {
   const b = GITHUB_BRANCH;
   const ref = await (await gh(`/repos/${GITHUB_REPO}/git/ref/heads/${b}`)).json();
   const baseSha = ref.object.sha;
   const baseCommit = await (await gh(`/repos/${GITHUB_REPO}/git/commits/${baseSha}`)).json();
   const tree = files.map(f => ({ path: f.path, mode: "100644", type: "blob", content: f.html }));
+  // Suppressions dans le MÊME commit (sha:null retire le chemin de l'arbre)
+  (deletions || []).forEach(p => tree.push({ path: p, mode: "100644", type: "blob", sha: null }));
   const treeR = await (await gh(`/repos/${GITHUB_REPO}/git/trees`, { method: "POST", body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree }) })).json();
   const commitR = await (await gh(`/repos/${GITHUB_REPO}/git/commits`, { method: "POST", body: JSON.stringify({ message, tree: treeR.sha, parents: [baseSha] }) })).json();
   await gh(`/repos/${GITHUB_REPO}/git/refs/heads/${b}`, { method: "PATCH", body: JSON.stringify({ sha: commitR.sha }) });
@@ -487,7 +489,8 @@ app.post("/api/publish-menus", needPublish, async (req, res) => {
 // Bascule d'un ORDRE en ligne / coming-soon sur la PAGE D'ACCUEIL de l'encyclopédie.
 // ISOLÉ : ne touche QUE encyclopedia.html (EN) + fr/encyclopedia.html. Un seul commit.
 // ============================================================================
-function toggleLandingCard(html, order, online, href) {
+function toggleLandingCard(html, order, online, href, soonLabel) {
+  soonLabel = soonLabel || "Coming Soon";
   const imgE = ("images/encyclopedia/" + order + ".jpg").replace(/[.\/]/g, "\\$&");
   if (online) {
     const re = new RegExp('<div class="species-item coming-soon">((?:(?!species-item)[\\s\\S])*?' + imgE + '(?:(?!species-item)[\\s\\S])*?)\\s*<span class="coming-soon-badge">[^<]*</span>\\s*</div>');
@@ -496,7 +499,7 @@ function toggleLandingCard(html, order, online, href) {
   }
   const re = new RegExp('<a href="[^"]*' + order + '\\.html" class="species-item">((?:(?!species-item)[\\s\\S])*?' + imgE + '(?:(?!species-item)[\\s\\S])*?)</a>');
   if (!re.test(html)) return { html: html, changed: false };
-  return { html: html.replace(re, '<div class="species-item coming-soon">$1    <span class="coming-soon-badge">Coming Soon</span>\n    </div>'), changed: true };
+  return { html: html.replace(re, '<div class="species-item coming-soon">$1    <span class="coming-soon-badge">' + soonLabel + '</span>\n    </div>'), changed: true };
 }
 app.post("/api/landing-toggle/:order", needPublish, async (req, res) => {
   try {
@@ -512,7 +515,7 @@ app.post("/api/landing-toggle/:order", needPublish, async (req, res) => {
     const files = [];
     for (const p of ["encyclopedia.html", "fr/encyclopedia.html"]) {
       const ex = await getFile(GITHUB_BRANCH, p).catch(() => null); if (!ex) continue;
-      const r = toggleLandingCard(ex.content, order, online, "encyclopedia/" + order + ".html");
+      const r = toggleLandingCard(ex.content, order, online, "encyclopedia/" + order + ".html", p.indexOf("fr/") === 0 ? "Bientôt disponible" : "Coming Soon");
       const same = (r.html.match(/species-image/g) || []).length === (ex.content.match(/species-image/g) || []).length;
       if (r.changed && same) files.push({ path: p, html: r.html });
     }
@@ -609,6 +612,72 @@ app.post("/api/unpublish/:slug", needPublish, async (req, res) => {
     files.push({ path: "editor/species-list.json", html: JSON.stringify(list, null, 1) });
     await commitFiles(files, `dépublication: ${slug}`);
     res.json({ ok: true, note: `« ${slug} » retiré de la publication (coming soon). La fiche reste mais n'est plus liée. Déploiement ~2-3 min.` });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// SUPPRIMER LA PAGE d'une espèce : dépublie (coming-soon) PUIS supprime les fichiers de fiche
+// (EN/FR/AR) + nettoie le sitemap — SANS retirer l'espèce de la liste (elle reste coming-soon).
+// Réversible : republier régénère la fiche.
+app.post("/api/delete-page/:slug", needPublish, async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    if (!/^[a-z0-9-]+$/.test(slug)) return res.status(400).json({ error: "slug invalide" });
+    const lf = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
+    const list = lf ? JSON.parse(lf.content) : JSON.parse(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8"));
+    let sp = null, famObj = null, order = null;
+    (list.groups || []).forEach(g => (g.families || []).forEach(F => (F.species || []).forEach(s => { if (s.slug === slug) { sp = s; famObj = F; order = F.order; } })));
+    if (!sp) return res.status(404).json({ error: "espèce introuvable dans la liste" });
+
+    // 1) DÉPUBLIER (même logique que /api/unpublish) : coming-soon partout, sans cascade famille
+    const enPath = sp.path || `encyclopedia/${order}/${famObj.slug}/${slug}.html`;
+    sp.status = "todo"; delete sp.iucn; delete sp.path;
+    const menu = (list.menus || {})[order];
+    const files = [];
+    const gridRe = /<div class="species-grid">[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/;
+    if (menu) {
+      if (menu.mode === "species") {
+        const cell = (menu.cells || []).find(c => c.slug === slug);
+        if (cell) { cell.active = false; delete cell.iucn; }
+      } else if (!PRESERVE.has(`encyclopedia/${order}/${famObj.slug}.html`)) {
+        const fam2 = JSON.parse(JSON.stringify(famObj)); fam2.active = true;
+        MENUS.generatePages({ groups: [{ families: [fam2] }], menus: list.menus }, new Set()).forEach(pg => files.push({ path: pg.path, html: pg.html }));
+      } else {
+        for (const [pre, lang] of [["", "en"], ["fr/", "fr"]]) {
+          const fp = pre + `encyclopedia/${order}/${famObj.slug}.html`;
+          const ex = await getFile(GITHUB_BRANCH, fp).catch(() => null); if (!ex) continue;
+          const out = syncFamilyGrid(ex.content, order, famObj.slug, famObj, lang);
+          if (out && out !== ex.content) files.push({ path: fp, html: out });
+        }
+      }
+      for (const pre of ["", "fr/"]) {
+        const op = pre + `encyclopedia/${order}.html`;
+        const ex = await getFile(GITHUB_BRANCH, op).catch(() => null); if (!ex || !gridRe.test(ex.content)) continue;
+        const grid = MENUS.orderGrid(order, menu, pre ? "fr" : "en");
+        const patched = ex.content.replace(gridRe, grid + "\n            </div>\n        </section>");
+        const ok = (patched.match(/<section/g) || []).length === (patched.match(/<\/section>/g) || []).length && (patched.match(/class="species-grid"/g) || []).length === 1 && patched.includes("</footer>");
+        if (ok) files.push({ path: op, html: patched });
+      }
+    }
+
+    // 2) Fichiers de fiche à SUPPRIMER (EN/FR/AR — seulement ceux qui existent)
+    const deletions = [];
+    if (SAFE_PAGE.test(enPath)) {
+      for (const p of [enPath, "fr/" + enPath, "ar/" + enPath]) {
+        const ex = await getFile(GITHUB_BRANCH, p).catch(() => null);
+        if (ex) deletions.push(p);
+      }
+    }
+
+    // 3) Nettoyer le sitemap (retirer les <url> contenant le slug), si présent
+    const smf = await getFile(GITHUB_BRANCH, "sitemap.xml").catch(() => null);
+    if (smf && smf.content.indexOf(slug) !== -1) {
+      const cleaned = smf.content.replace(/\s*<url>[\s\S]*?<\/url>/g, block => block.indexOf(slug) !== -1 ? "" : block);
+      if (cleaned !== smf.content) files.push({ path: "sitemap.xml", html: cleaned });
+    }
+
+    files.push({ path: "editor/species-list.json", html: JSON.stringify(list, null, 1) });
+    await commitFiles(files, `suppression page: ${slug}`, deletions);
+    res.json({ ok: true, deleted: deletions.length, note: `Page de « ${slug} » supprimée (${deletions.length} fichier(s)). L'espèce reste en coming soon. Déploiement ~2-3 min.` });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
