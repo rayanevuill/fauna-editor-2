@@ -458,7 +458,7 @@ app.post("/api/publish-menus", needPublish, async (req, res) => {
   try {
     let list = (req.body && req.body.groups) ? req.body : null;
     if (!list) { const f = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null); list = f ? JSON.parse(f.content) : JSON.parse(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8")); }
-    const files = MENUS.generatePages(list, PRESERVE);
+    syncMenuCounts(list);     const files = MENUS.generatePages(list, PRESERVE);
     const menus = list.menus || {};
     for (const order of Object.keys(menus)) {
       for (const pre of ["", "fr/"]) {
@@ -714,6 +714,16 @@ function reorderMenusFromList(list) {
     });
   });
 }
+// Recale le compteur de chaque case-famille sur le nombre réel d'espèces de la famille.
+function syncMenuCounts(list){
+  const menus = list.menus || {};
+  (list.groups || []).forEach(g => (g.families || []).forEach(f => {
+    const m = menus[f.order];
+    if (!m || m.mode !== "family") return;
+    const cell = (m.cells || []).find(c => c.slug === f.slug);
+    if (cell && cell.count != null) cell.count = (f.species || []).length;
+  }));
+}
 app.post("/api/apply-site", needPublish, async (req, res) => {
   try {
     // On lit TOUJOURS la liste du dépôt (elle contient le bloc `menus`). L'ordre des familles
@@ -721,7 +731,7 @@ app.post("/api/apply-site", needPublish, async (req, res) => {
     const lf = await getFile(GITHUB_BRANCH, "editor/species-list.json").catch(() => null);
     const list = lf ? JSON.parse(lf.content) : JSON.parse(fs.readFileSync(path.join(__dirname, "species-list.json"), "utf8"));
     if (req.body && req.body.groups) list.groups = req.body.groups; // ordre/prefs à jour, on garde le menus du dépôt
-    reorderMenusFromList(list);
+    reorderMenusFromList(list);     syncMenuCounts(list);
     const files = [];
     // pages famille + genre (familles actives, non faites-main) : régénérées entièrement
     MENUS.generatePages(list, PRESERVE).forEach(pg => files.push({ path: pg.path, html: pg.html }));
