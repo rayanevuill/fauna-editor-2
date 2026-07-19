@@ -702,6 +702,48 @@ app.get("/api/site-state", needEditor, async (req, res) => {
 
 // APPLIQUER AU SITE : régénère l'encyclopédie depuis l'arborescence (la liste) —
 // ordre des cases de menu = ordre des familles dans la liste ; régénère pages d'ordre + familles + genres.
+// Génère sitemap.xml complet depuis la liste : vitrines + encyclopédie + fiches publiées (EN+FR, hreflang).
+function buildSitemap(list) {
+  const SITE = "https://fauna-morocco.org";
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = new Map(); // rel (sans langue) -> {prio, freq}
+  const add = (rel, prio, freq) => { if (!urls.has(rel)) urls.set(rel, { prio, freq }); };
+  // vitrines
+  add("index.html", "1.0", "weekly");
+  add("encyclopedia.html", "0.9", "weekly");
+  ["about.html", "expeditions.html", "donate.html", "contact.html"].forEach(p => add(p, "0.7", "monthly"));
+  ["legal-notice.html", "privacy-policy.html"].forEach(p => add(p, "0.3", "yearly"));
+  // encyclopédie (dérivée de la liste)
+  const menus = list.menus || {};
+  (list.groups || []).forEach(g => (g.families || []).forEach(f => {
+    const order = f.order, fam = f.slug, mode = (menus[order] || {}).mode;
+    add(`encyclopedia/${order}.html`, "0.8", "weekly");
+    if (mode !== "species" && f.active !== false) {
+      add(`encyclopedia/${order}/${fam}.html`, "0.6", "monthly");
+      if (f.groupByGenus) {
+        const seen = new Set();
+        (f.species || []).forEach(s => {
+          const gen = s.scientific.split(" ")[0].toLowerCase();
+          if (!seen.has(gen)) { seen.add(gen); add(`encyclopedia/${order}/${fam}/${gen}.html`, "0.6", "monthly"); }
+        });
+      }
+    }
+    (f.species || []).forEach(s => { if (s.status === "published") add(`encyclopedia/${order}/${fam}/${s.slug}.html`, "0.6", "monthly"); });
+  }));
+  // rendu XML
+  const altBlock = rel =>
+    `    <xhtml:link rel="alternate" hreflang="en" href="${SITE}/${rel}" />\n` +
+    `    <xhtml:link rel="alternate" hreflang="fr" href="${SITE}/fr/${rel}" />\n` +
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}/${rel}" />`;
+  const urlBlock = (loc, m, rel) =>
+    `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${m.freq}</changefreq>\n    <priority>${m.prio}</priority>\n${altBlock(rel)}\n  </url>\n`;
+  let out = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n';
+  for (const [rel, m] of urls) {
+    out += urlBlock(`${SITE}/${rel}`, m, rel);
+    out += urlBlock(`${SITE}/fr/${rel}`, m, rel);
+  }
+  return out + '</urlset>\n';
+}
 function reorderMenusFromList(list) {
   const menus = list.menus || {};
   (list.groups || []).forEach(g => {
@@ -760,7 +802,7 @@ app.post("/api/apply-site", needPublish, async (req, res) => {
       }
     }
     files.push({ path: "editor/species-list.json", html: JSON.stringify(list, null, 1) });
-    await commitFiles(files, "appliquer au site (arborescence)");
+files.push({ path: "sitemap.xml", html: buildSitemap(list) });     await commitFiles(files, "appliquer au site (arborescence)");
     res.json({ ok: true, count: files.length, note: "Encyclopédie régénérée depuis ton arborescence. Déploiement ~2-3 min." });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
